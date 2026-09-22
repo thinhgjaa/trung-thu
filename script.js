@@ -156,6 +156,27 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {}
     }
 
+    // Tiếng giọt nước pha lê rơi thánh thót trên mặt hồ tiên cảnh
+    function playWaterDropSound() {
+        try {
+            initAudioContext();
+            if (!audioContext) return;
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(680 + Math.random() * 80, now);
+            osc.frequency.exponentialRampToValueAtTime(1480 + Math.random() * 150, now + 0.08);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.24, now + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.start(now);
+            osc.stop(now + 0.38);
+        } catch (e) {}
+    }
+
     function toggleMusic(forcePlay) {
         initAudioContext();
         if (!bgAudio) return;
@@ -947,9 +968,177 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ----------------------------------------------------
+    // BỨC TRANH TIÊN CẢNH: MẶT HỒ SOI TRĂNG & ĐOM ĐÓM DẠ QUANG
+    // ----------------------------------------------------
+    function initFairytaleLakeScene() {
+        const mysticLake = document.getElementById('mysticLakeContainer');
+        const firefliesContainer = document.getElementById('firefliesContainer');
+        const lakeTouchOverlay = document.getElementById('lakeTouchOverlay');
+        const heroLotus = document.getElementById('heroLotus');
+        const companionLotus = document.getElementById('companionLotus');
+
+        if (!mysticLake) return;
+
+        // 1. ĐÀN ĐOM ĐÓM DẠ QUANG BAY LẬP LÒE QUANH MẶT HỒ & THỎ NGỌC
+        if (firefliesContainer) {
+            firefliesContainer.innerHTML = '';
+            const fireflyCount = 14;
+            const fireflies = [];
+
+            for (let i = 0; i < fireflyCount; i++) {
+                const fly = document.createElement('div');
+                fly.className = 'fairy-firefly';
+                const size = 3 + Math.random() * 4;
+                const isGreen = Math.random() > 0.45;
+                const glow = isGreen ? '#55efc4' : '#ffeaa7';
+                const bg = isGreen
+                    ? 'radial-gradient(circle, #ffffff 15%, #55efc4 65%, transparent 100%)'
+                    : 'radial-gradient(circle, #ffffff 15%, #ffd56b 65%, transparent 100%)';
+
+                fly.style.width = `${size}px`;
+                fly.style.height = `${size}px`;
+                fly.style.background = bg;
+                fly.style.setProperty('--glow-color', glow);
+                fly.style.setProperty('--flicker-dur', `${1.6 + Math.random() * 2.2}s`);
+                firefliesContainer.appendChild(fly);
+
+                fireflies.push({
+                    el: fly,
+                    x: Math.random() * 320,
+                    y: 15 + Math.random() * 125,
+                    vx: (Math.random() - 0.5) * 0.35,
+                    vy: (Math.random() - 0.5) * 0.25,
+                    baseY: 15 + Math.random() * 125,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.015 + Math.random() * 0.02,
+                    amplitude: 8 + Math.random() * 12
+                });
+            }
+
+            function updateFireflies() {
+                if (currentChapter === 1) {
+                    fireflies.forEach(f => {
+                        f.phase += f.speed;
+                        f.x += f.vx;
+                        f.y = f.baseY + Math.sin(f.phase) * f.amplitude;
+
+                        // Giới hạn biên màn hình mềm mại
+                        if (f.x < -10) f.x = 330;
+                        if (f.x > 330) f.x = -10;
+
+                        f.el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0)`;
+                    });
+                }
+                requestAnimationFrame(updateFireflies);
+            }
+
+            requestAnimationFrame(updateFireflies);
+        }
+
+        // 2. TƯƠNG TÁC CHẠM TẠO SÓNG NƯỚC TRÊN MẶT HỒ
+        function triggerLakeRipple(e) {
+            if (currentChapter !== 1) return;
+            if (e && e.cancelable && e.type !== 'mousedown') e.preventDefault();
+
+            playWaterDropSound();
+            if (navigator.vibrate) navigator.vibrate(15);
+
+            const rect = mysticLake.getBoundingClientRect();
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            }
+
+            if (clientX === undefined) {
+                clientX = rect.left + rect.width * 0.5;
+                clientY = rect.top + rect.height * 0.6;
+            }
+
+            const relX = clientX - rect.left;
+            const relY = clientY - rect.top;
+
+            // Tạo vòng sóng nước tròn lan tỏa
+            const ripple = document.createElement('div');
+            ripple.className = 'water-ripple-ring';
+            ripple.style.left = `${relX}px`;
+            ripple.style.top = `${relY}px`;
+            mysticLake.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1400);
+
+            // Bắn ra 4 hạt bọt nước phát sáng li ti
+            for (let i = 0; i < 4; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'fairy-firefly';
+                bubble.style.width = '4px';
+                bubble.style.height = '4px';
+                bubble.style.background = 'radial-gradient(circle, #fff 20%, #81ecec 80%, transparent)';
+                bubble.style.left = `${relX + (Math.random() * 20 - 10)}px`;
+                bubble.style.top = `${relY + (Math.random() * 10 - 5)}px`;
+                bubble.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.4, 1)';
+                mysticLake.appendChild(bubble);
+
+                requestAnimationFrame(() => {
+                    bubble.style.transform = `translate(${(Math.random() - 0.5) * 40}px, -${20 + Math.random() * 30}px) scale(0)`;
+                    bubble.style.opacity = '0';
+                });
+                setTimeout(() => bubble.remove(), 850);
+            }
+        }
+
+        if (lakeTouchOverlay) {
+            lakeTouchOverlay.addEventListener('click', triggerLakeRipple);
+            lakeTouchOverlay.addEventListener('touchstart', triggerLakeRipple, { passive: false });
+        }
+
+        // 3. TƯƠNG TÁC VỚI HOA ĐĂNG SEN NỔI
+        [heroLotus, companionLotus].forEach(lotus => {
+            if (!lotus) return;
+            lotus.addEventListener('click', (e) => {
+                if (e) e.stopPropagation();
+                playWaterDropSound();
+                playMagicSparkleSound();
+                if (navigator.vibrate) navigator.vibrate([20, 30]);
+
+                lotus.style.transform = 'scale(0.88)';
+                setTimeout(() => {
+                    lotus.style.transform = '';
+                }, 220);
+
+                const ripple = document.createElement('div');
+                ripple.className = 'water-ripple-ring';
+                ripple.style.left = '50%';
+                ripple.style.top = '70%';
+                lotus.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 1400);
+            });
+        });
+
+        // 4. Nhịp hoa quế rơi chạm mặt nước tạo sóng ngẫu nhiên
+        setInterval(() => {
+            if (currentChapter !== 1) return;
+            const randX = 60 + Math.random() * 200;
+            const randY = 15 + Math.random() * 40;
+            const ripple = document.createElement('div');
+            ripple.className = 'water-ripple-ring';
+            ripple.style.left = `${randX}px`;
+            ripple.style.top = `${randY}px`;
+            ripple.style.opacity = '0.55';
+            mysticLake.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1400);
+        }, 3400);
+    }
+
     initMoonOrbitStardust();
     initOsmanthusShower();
     initInteractiveJadeRabbit();
+    initFairytaleLakeScene();
 
     // ----------------------------------------------------
     // 7. CHƯƠNG 2: HỘI HOA ĐĂNG & LỜI CHÚC TRÊN TRỜI SAO
