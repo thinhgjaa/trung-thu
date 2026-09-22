@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Trung Thu Yêu Thương">
+    <meta name="theme-color" content="#070b19">
+    <meta name="format-detection" content="telephone=no">
+    <title>Trung Thu Yêu Thương 🌕 Trọn Vẹn Tình Anh</title>
+    <meta name="description" content="Món quà Trung Thu lãng mạn và ý nghĩa dành tặng người con gái anh yêu nhất trần đời.">
+    <!-- Google Fonts: Be Vietnam Pro & Dancing Script / Playfair for romantic calligraphy -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+    <!-- Background Canvas Layers -->
+    <canvas id="star-canvas"></canvas>
+    <canvas id="firework-canvas"></canvas>
+
+    <!-- Main App Container (Mobile-first viewport framing) -->
+    <div id="app" class="app-container">
+        
+        <!-- Top Navigation & Controls Bar -->
+        <header class="app-header">
+            <div class="chat-bubble-quote" id="headerQuoteContainer">
+                <span class="avatar-icon">👱‍♂️</span>
+                <span class="quote-text" id="headerQuoteText">em sẽ mãi là em bé của đời anh 💕</span>
+            </div>
+            
+            <div class="header-actions">
+                <!-- Music Control Button with spinning disc animation -->
+                <button id="musicToggleBtn" class="btn-music" aria-label="Bật/Tắt nhạc" title="Âm nhạc">
+                    <div class="music-disc" id="musicDisc">
+                        <span class="disc-inner">🎵</span>
+                    </div>
+                    <div class="music-equalizer" id="musicEqualizer">
+                        <span></span><span></span><span></span>
+                    </div>
+                </button>
+            </div>
+        </header>
+
+        <!-- Story Progress Bar (4 Chương Tình Yêu) -->
+        <div class="story-progress-bar" id="storyProgress">
+            <div class="progress-step active" data-step="1" title="Đêm Rằm"></div>
+            <div class="progress-step" data-step="2" title="Hoa Đăng"></div>
+            <div class="progress-step" data-step="3" title="Hộp Bánh & Thư"></div>
+            <div class="progress-step" data-step="4" title="Ước Nguyện"></div>
+        </div>
+
+        <!-- ==============================================
+             CHƯƠNG 1: ĐÊM RẰM HUYỀN ẢO (MẪU ẢNH THỰC TẾ)
+             ============================================== -->
+        <section id="scene-1" class="story-scene scene-active">
+            <!-- Centerpiece: Realistic Moon, Traditional Ring, Rabbit & Branch (Tách nền sống động) -->
+            <div class="moon-stage-container">
+                <!-- Ornamental Vietnamese/East Asian Red & Gold Moon Ring -->
+                <div class="traditional-moon-ring">
+                    <svg class="ring-svg" viewBox="0 0 300 300">
+                        <circle cx="150" cy="150" r="138" class="ring-outer" />
+                        <circle cx="150" cy="150" r="124" class="ring-middle" />
+                        <circle cx="150" cy="150" r="114" class="ring-inner" />
+                        <!-- Stylized golden cloud accents -->
+                        <path d="M 28,150 C 28,138 48,134 60,146 C 72,134 88,142 84,154 C 72,162 40,162 28,150 Z" class="ring-cloud left" />
+                        <path d="M 272,150 C 272,138 252,134 240,146 C 228,134 212,142 216,154 C 228,162 260,162 272,150 Z" class="ring-cloud right" />
+                    </svg>
+                </div>
+
+                <!-- Luminous Full Moon (Hold Target) -->
+                <div class="luminous-moon" id="luminousMoon">
+                    <!-- Rotating Moonlight Beams & Radiance -->
+                    <div class="moon-radial-beams" id="moonRadialBeams"></div>
+                    <div class="moon-glow-aura"></div>
+                    <div class="moon-texture"></div>
+                    
+                    <!-- Orbiting Celestial Stardust Ring -->
+                    <div class="moon-orbit-particles" id="moonOrbitParticles"></div>
+
+                    <!-- SVG Circular Progress Indicator during Hold -->
+                    <svg class="hold-progress-svg" viewBox="0 0 160 160">
+                        <defs>
+                            <linearGradient id="holdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffd56b" />
+                                <stop offset="50%" stop-color="#ff9f43" />
+                                <stop offset="100%" stop-color="#ee5253" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="hold-progress-bg" cx="80" cy="80" r="74" />
+                        <circle class="hold-progress-bar" id="holdProgressBar" cx="80" cy="80" r="74" />
+                    </svg>
+
+                    <!-- Ripple Waves when holding -->
+                    <div class="hold-ripples" id="holdRipples"></div>
+                </div>
+
+                <!-- Osmanthus Petals Shower (Mưa Cánh Hoa Quế Cung Trăng Rơi) -->
+                <div class="osmanthus-petals-container" id="osmanthusPetals"></div>
+
+                <!-- Floating Sky Lanterns (Tách nền chuẩn xác như ảnh mẫu) -->
+                <div class="ambient-sky-lantern lantern-top-right">
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn trời Khổng Minh" class="floating-trans-lantern">
+                </div>
+                <div class="ambient-sky-lantern lantern-mid-right">
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn trời nhỏ" class="floating-trans-lantern scale-sm">
+                </div>
+                <div class="ambient-sky-lantern lantern-center-bottom">
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn trời trung" class="floating-trans-lantern scale-md">
+                </div>
+
+                <!-- Cute White Rabbit on Blooming Osmanthus Branch (Tách nền nghệ thuật sắc nét) -->
+                <div class="rabbit-branch-container" id="rabbitBranchWrapper">
+                    <img src="assets/images/rabbit_branch_transparent.png" alt="Thỏ ngọc bên cành hoa quế" class="rabbit-branch-img" id="jadeRabbit">
+                </div>
+
+                <!-- Interactive Jade Rabbit Touch Zone & Romantic Speech Bubble -->
+                <div class="rabbit-interactive-wrapper" id="rabbitInteractiveWrapper">
+                    <div class="rabbit-speech-bubble" id="rabbitSpeechBubble">
+                        <span class="bubble-sparkle">✨</span>
+                        <span class="bubble-text" id="rabbitBubbleText">Chạm vào thỏ ngọc nè 🐰</span>
+                    </div>
+                    <div class="rabbit-tap-zone" id="rabbitTapZone" role="button" aria-label="Chạm vào thỏ ngọc để nhận lời chúc" title="Chạm vào thỏ ngọc!"></div>
+                    <div class="rabbit-hearts-container" id="rabbitHeartsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Soft Celestial Clouds at bottom -->
+            <div class="dreamy-clouds-bottom">
+                <div class="cloud-layer layer-1"></div>
+                <div class="cloud-layer layer-2"></div>
+            </div>
+
+            <!-- Interactive Hold-to-Charge Prompt -->
+            <div class="hold-action-area">
+                <div class="hold-prompt" id="holdPrompt">
+                    <span class="finger-tap-icon">👆</span>
+                    <span class="prompt-text" id="holdInstructionText">Ấn giữ vào mặt trăng</span>
+                </div>
+                <div class="hold-status-hint" id="holdHintText">Chạm và giữ để đón nhận điều bất ngờ...</div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CHƯƠNG 2: KHAI TRĂNG & HỘI HOA ĐĂNG (BÙNG NỔ KỲ DIỆU)
+             ============================================== -->
+        <section id="scene-2" class="story-scene scene-hidden">
+            <div class="scene-header">
+                <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
+                    <span class="back-arrow">‹</span> Quay lại
+                </button>
+                <span class="chapter-badge">Chương II</span>
+                <h2 class="scene-title" id="ch2Title">Hội Hoa Đăng Khai Mở</h2>
+                <p class="scene-subtitle" id="ch2Subtitle">Ngàn ngọn đèn trời thắp sáng tình yêu đôi ta</p>
+                <div class="lantern-counter-badge" id="lanternCounterBadge">
+                    <span class="counter-sparkle">✨</span>
+                    <span id="lanternCountText">Chạm vào đèn trời để mở điều ước (0/7)</span>
+                </div>
+            </div>
+
+            <!-- Sky Lanterns Interactive Display -->
+            <div class="interactive-sky-scene">
+                <div class="floating-lantern-wishes" id="lanternWishesList">
+                    <!-- Dynamically rendered floating wish lanterns -->
+                </div>
+            </div>
+
+            <!-- Sweet Mid-Autumn Wishes Floating Card -->
+            <div class="wish-reveal-card glass-panel">
+                <div class="card-ornament-row">
+                    <img src="assets/images/real_star_lantern.jpg" alt="Đèn ông sao" class="mini-decor-thumb">
+                    <img src="assets/images/real_sky_lantern.jpg" alt="Đèn trời" class="mini-decor-thumb">
+                    <img src="assets/images/real_carp_lantern.jpg" alt="Đèn cá chép" class="mini-decor-thumb">
+                    <img src="assets/images/real_lotus_lantern.jpg" alt="Đèn hoa đăng" class="mini-decor-thumb">
+                </div>
+                <h3 class="glow-text">Hội Hoa Đăng Sáng Rực Cung Trăng</h3>
+                <p class="wish-quote" id="ch2DynamicWish">
+                    "Chúc em bé một mùa Trung Thu ngập tràn hạnh phúc và tiếng cười!"
+                </p>
+                <div class="tap-lanterns-hint">✨ Chạm vào các chiếc đèn trời bay lên để xem lời nhắn yêu thương ✨</div>
+                <button class="btn-primary" id="btnGoToCh3">
+                    <span>Mở Hộp Bánh Trung Thu & Thư Tình</span>
+                    <span class="btn-arrow">🥮 ➔</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CHƯƠNG 3: HỘP BÁNH NGỌT NGÀO & BỨC THƯ TÌNH
+             ============================================== -->
+        <section id="scene-3" class="story-scene scene-hidden">
+            <div class="scene-header">
+                <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
+                    <span class="back-arrow">‹</span> Quay lại
+                </button>
+                <span class="chapter-badge">Chương III</span>
+                <h2 class="scene-title" id="ch3Title">Hộp Bánh Ngọt Ngào</h2>
+                <p class="scene-subtitle" id="ch3Subtitle">Món quà chứa đựng trọn vẹn yêu thương gửi đến em</p>
+            </div>
+
+            <!-- Interactive Mooncake Box (Click to open) -->
+            <div class="cake-box-interactive" id="cakeBoxTrigger">
+                <div class="cake-box-visual" id="cakeBoxVisual">
+                    <img src="assets/images/mooncake_box.jpg" alt="Hộp bánh trung thu" class="cake-box-img">
+                    <div class="cake-open-badge">
+                        <span class="sparkle-icon">✨</span>
+                        <span id="boxPromptText">Chạm vào hộp bánh để mở quà bí mật 🥮</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Love Letter Scroll / Modal (Opens upon clicking cake box) -->
+            <div class="love-letter-modal" id="loveLetterModal">
+                <div class="letter-scroll-inner glass-panel">
+                    <button class="btn-close-letter" id="btnCloseLetter" aria-label="Đóng thư">✕</button>
+                    
+                    <div class="letter-decoration-top">
+                        <span class="lotus-icon">🌸</span>
+                        <span class="moon-icon">🌕</span>
+                        <span class="lotus-icon">🌸</span>
+                    </div>
+
+                    <h3 class="letter-heading" id="letterTitleText">Bức Thư Tình Dưới Ánh Trăng</h3>
+
+                    <div class="letter-fast-hint" id="letterFastHint">
+                        <span>⚡ Chạm vào đây để hiện nhanh toàn bộ thư</span>
+                    </div>
+
+                    <div class="letter-content-body" id="letterContentBody">
+                        <!-- Typewriter text inserted here dynamically -->
+                    </div>
+
+                    <div class="letter-signature">
+                        <p class="sig-from">Mãi mãi yêu em,</p>
+                        <p class="sig-name" id="letterSenderText">Chàng Chú Cuội ngốc nghếch yêu em nhất đời 💖</p>
+                    </div>
+
+                    <div class="letter-actions">
+                        <button class="btn-primary" id="btnGoToCh4">
+                            <span>Thả Đèn Trời Nguyện Ước</span>
+                            <span class="btn-arrow">🏮✨ ➔</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CHƯƠNG 4: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
+             ============================================== -->
+        <section id="scene-4" class="story-scene scene-hidden">
+            <div class="scene-header">
+                <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
+                    <span class="back-arrow">‹</span> Quay lại
+                </button>
+                <span class="chapter-badge">Chương IV</span>
+                <h2 class="scene-title" id="ch4Title">Thả Đèn Trời Nguyện Ước</h2>
+                <p class="scene-subtitle" id="ch4Subtitle">Gửi gắm ước mơ của em tới ngàn vì sao</p>
+            </div>
+
+            <!-- Wish Lantern Interactive Center -->
+            <div class="wish-release-container" id="wishReleaseContainer">
+                <!-- Companion fleet of lanterns rising together into the starry cosmos -->
+                <div class="lantern-fleet-container" id="lanternFleetContainer"></div>
+
+                <!-- Trail of glowing embers and stardust rising behind lantern -->
+                <div class="lantern-ember-trail" id="lanternEmberTrail"></div>
+
+                <div class="giant-wish-lantern" id="giantWishLantern">
+                    <!-- Warm Fiery Lantern Flame Core Glow -->
+                    <div class="lantern-flame-core" id="lanternFlameCore"></div>
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn ước nguyện" class="giant-lantern-trans-img">
+                    <div class="wish-preview-overlay">
+                        <div class="wish-preview-text" id="wishPreviewText">
+                            "Mong cho hai đứa mình mãi luôn hạnh phúc bên nhau ❤️"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wish Input Card -->
+            <div class="wish-input-card glass-panel" id="wishInputCard">
+                <label for="wishInput" class="wish-label" id="wishPromptText">
+                    Nhắm mắt lại và viết một điều ước Trung Thu của em vào đây nhé... ✨
+                </label>
+
+                <!-- Quick-Wish Suggestion Chips (Tối ưu trải nghiệm chạm trên điện thoại) -->
+                <div class="quick-wish-container">
+                    <div class="quick-wish-chips-scroll" id="quickWishChips">
+                        <button type="button" class="wish-chip" data-wish="Mong cho hai đứa mình mãi luôn hạnh phúc bên nhau 💕">💕 Mãi hạnh phúc bên nhau</button>
+                        <button type="button" class="wish-chip" data-wish="Chúc em bé luôn bình an, rạng rỡ và được yêu thương 🌸">🌸 Em bé luôn bình an, rạng rỡ</button>
+                        <button type="button" class="wish-chip" data-wish="Mong tình yêu đôi mình luôn tròn đầy như ánh trăng rằm 🌕">🌕 Tình yêu tròn đầy như trăng</button>
+                        <button type="button" class="wish-chip" data-wish="Cùng anh đón thêm 100 mùa Trung Thu ngọt ngào nữa nhé ✨">✨ Đón thêm 100 mùa Trung Thu</button>
+                    </div>
+                </div>
+
+                <div class="input-wrapper">
+                    <textarea id="wishInput" rows="2" maxlength="120" placeholder="Viết điều ước ngọt ngào của em tại đây..."></textarea>
+                </div>
+                <button class="btn-primary btn-wish-release" id="btnReleaseWish">
+                    <span class="btn-icon">🏮</span>
+                    <span id="btnReleaseText">Thả Đèn Lên Cung Trăng 🏮✨</span>
+                </button>
+            </div>
+
+            <!-- Success Celebration Overlay (After releasing lantern) -->
+            <div class="wish-success-box glass-panel" id="wishSuccessBox">
+                <div class="success-icon">🌕💖✨</div>
+                <h3 class="success-title" id="successTitleText">Chiếc Đèn Của Em Đã Chạm Cung Trăng!</h3>
+                <p class="success-desc" id="successDescText">
+                    Nguyện ước của em đã được gửi gắm vào ngàn vì sao. Anh hứa sẽ luôn ở bên, che chở và cùng em biến mọi ước mơ thành hiện thực!
+                </p>
+                <div class="final-couple-badge">
+                    <span class="badge-text" id="finalCoupleText">Trung Thu Hạnh Phúc • Mãi Mãi Yêu Em</span>
+                </div>
+                <button class="btn-secondary" id="btnReplayStory">
+                    <span class="btn-icon">🔄</span>
+                    <span id="btnReplayText">Xem Lại Hành Trình Yêu Thương</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Hidden Audio Element -->
+        <audio id="bgAudio" preload="auto" loop></audio>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js?v=6"></script>
+    <script src="script.js?v=6"></script>
+</body>
+</html>
