@@ -648,7 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const moonStageContainer = document.querySelector('.moon-stage-container');
 
-    const totalCircumference = 465;
+    const totalCircumference = 421;
     const holdDuration = (cfg.chapter1 && cfg.chapter1.moonHoldDurationMs) || 1300;
     let holdTimer = null;
     let holdStartTime = 0;
@@ -777,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Gắn sự kiện giữ cho cả Mặt Trăng và Nút "Ấn giữ vào mặt trăng"
-    const interactiveHoldTargets = [luminousMoon, holdPrompt, moonStageContainer].filter(Boolean);
+    const interactiveHoldTargets = [luminousMoon, holdPrompt].filter(Boolean);
 
     interactiveHoldTargets.forEach(target => {
         // Pointer Events (hỗ trợ cả chạm di động và chuột máy tính)
@@ -885,7 +885,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         function handleRabbitTouch(e) {
-            if (e && e.cancelable && e.type !== 'mousedown') e.preventDefault();
+            if (e) {
+                e.stopPropagation();
+                if (e.cancelable && e.type !== 'mousedown') e.preventDefault();
+            }
             if (navigator.vibrate) navigator.vibrate([25, 40, 20]);
             playMagicSparkleSound();
             playRealisticFireworkSound(0.4);

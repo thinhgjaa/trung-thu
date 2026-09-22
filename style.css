@@ -787,11 +787,11 @@ html, body {
 /* Hold-to-Charge Progress Ring */
 .hold-progress-svg {
     position: absolute;
-    top: -10px;
-    left: -10px;
-    width: 160px;
-    height: 160px;
-    transform: rotate(-90deg);
+    top: 50%;
+    left: 50%;
+    width: 145px;
+    height: 145px;
+    transform: translate(-50%, -50%) rotate(-90deg);
     pointer-events: none;
     z-index: 26;
 }
@@ -807,8 +807,8 @@ html, body {
     stroke: url(#holdGrad);
     stroke-width: 7;
     stroke-linecap: round;
-    stroke-dasharray: 465;
-    stroke-dashoffset: 465; /* Fully empty initially */
+    stroke-dasharray: 421;
+    stroke-dashoffset: 421; /* Fully empty initially */
     filter: drop-shadow(0 0 10px #ff7a18);
     transition: stroke-dashoffset 0.05s linear;
 }
