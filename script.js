@@ -1945,30 +1945,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         getOrCreateCachedHeartSprite();
 
-        // 1. Vũ trụ vì sao nhẹ nhàng (160 vì sao để tối ưu hiệu năng)
-        const starCount = 160;
+        // 1. Vũ trụ vì sao nền (150 vì sao tối ưu hiệu năng và độ mượt)
+        const starCount = 150;
         for (let i = 0; i < starCount; i++) {
-            const r = 240 + Math.random() * 600;
+            const r = 220 + Math.random() * 560;
             const theta = Math.random() * Math.PI * 2;
             const phi = (Math.random() - 0.5) * Math.PI;
             const baseX = r * Math.cos(theta) * Math.cos(phi);
             const baseY = r * Math.sin(phi);
             const baseZ = r * Math.sin(theta) * Math.cos(phi);
 
-            const tunnelAngle = Math.random() * Math.PI * 2;
-            const tunnelR = 30 + Math.random() * 480;
-
             gStars.push({
                 baseX: baseX,
                 baseY: baseY,
                 baseZ: baseZ,
-                tunnelX: tunnelR * Math.cos(tunnelAngle),
-                tunnelY: tunnelR * Math.sin(tunnelAngle),
-                tunnelZ: -100 - Math.random() * 2600,
-                x: baseX,
-                y: baseY,
-                z: baseZ,
-                size: Math.random() * 1.6 + 0.6,
+                size: Math.random() * 1.5 + 0.6,
                 color: Math.random() > 0.35 ? '#ffffff' : (Math.random() > 0.5 ? '#ffb8e6' : '#ffd56b'),
                 twinklePhase: Math.random() * Math.PI * 2,
                 twinkleSpeed: 0.02 + Math.random() * 0.03
@@ -1998,35 +1989,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const text = wordsSource[i % wordsSource.length];
             const style = neonStyles[i % neonStyles.length];
             const theta = (i / totalWordSlots) * Math.PI * 2 + (Math.random() - 0.5) * 0.25;
-            const phi = ((i % 5) - 2) * 0.35 + (Math.random() - 0.5) * 0.18;
-            const radius = 230 + Math.random() * 240;
+            const phi = ((i % 5) - 2) * 0.32 + (Math.random() - 0.5) * 0.16;
+            const radius = 230 + Math.random() * 220;
 
             const sprite = getCachedWordSprite(text, style);
 
             const baseX = radius * Math.cos(theta) * Math.cos(phi);
-            const baseY = radius * Math.sin(phi) + (Math.random() - 0.5) * 70;
+            const baseY = radius * Math.sin(phi) + (Math.random() - 0.5) * 60;
             const baseZ = radius * Math.sin(theta) * Math.cos(phi);
 
-            // Hyperspace Fly-Through Stream Coordinates (Phóng thẳng qua mắt người xem)
-            const tunnelAngle = (i * 0.75) + (Math.random() - 0.5) * 0.4;
-            const tunnelRadius = 40 + Math.random() * 180;
-            const tunnelX = tunnelRadius * Math.cos(tunnelAngle);
-            const tunnelY = tunnelRadius * Math.sin(tunnelAngle);
-            const tunnelZ = -150 - (i * 110) - Math.random() * 180;
+            // Độ trễ chiều sâu Z tạo cảm giác các câu chữ lướt bay vào màn hình ấn tượng
+            const staggerZ = (1 - (i / totalWordSlots)) * 500 + Math.random() * 120;
 
             gWords.push({
                 sprite: sprite,
                 baseX: baseX,
                 baseY: baseY,
                 baseZ: baseZ,
-                tunnelX: tunnelX,
-                tunnelY: tunnelY,
-                tunnelZ: tunnelZ,
-                x: tunnelX,
-                y: tunnelY,
-                z: tunnelZ,
+                staggerZ: staggerZ,
                 floatPhase: Math.random() * Math.PI * 2,
-                floatSpeed: 0.012 + Math.random() * 0.018
+                floatSpeed: 0.012 + Math.random() * 0.016
             });
         }
 
@@ -2035,7 +2017,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = midAutumnDecorIcons[i % midAutumnDecorIcons.length];
             const theta = Math.random() * Math.PI * 2;
             const phi = (Math.random() - 0.5) * Math.PI * 0.75;
-            const radius = 220 + Math.random() * 260;
+            const radius = 220 + Math.random() * 240;
             const style = { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 24, bold: true };
             const sprite = getCachedWordSprite(icon, style);
 
@@ -2043,29 +2025,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const baseY = radius * Math.sin(phi);
             const baseZ = radius * Math.sin(theta) * Math.cos(phi);
 
-            const tunnelAngle = Math.random() * Math.PI * 2;
-            const tunnelRadius = 30 + Math.random() * 200;
-            const tunnelX = tunnelRadius * Math.cos(tunnelAngle);
-            const tunnelY = tunnelRadius * Math.sin(tunnelAngle);
-            const tunnelZ = -200 - (i * 140) - Math.random() * 200;
+            const staggerZ = (1 - (i / 14)) * 600 + Math.random() * 150;
 
             gWords.push({
                 sprite: sprite,
                 baseX: baseX,
                 baseY: baseY,
                 baseZ: baseZ,
-                tunnelX: tunnelX,
-                tunnelY: tunnelY,
-                tunnelZ: tunnelZ,
-                x: tunnelX,
-                y: tunnelY,
-                z: tunnelZ,
+                staggerZ: staggerZ,
                 floatPhase: Math.random() * Math.PI * 2,
                 floatSpeed: 0.015 + Math.random() * 0.02
             });
         }
 
-        // 2.1 THÊM CÁC LÁ THƯ TÌNH 3D NỔI BẬT XOAY QUANH VŨ TRỤ (Có thể click để mở)
+        // 2.1 THÊM LÁ THƯ TÌNH 3D NỔI BẬT XOAY QUANH VŨ TRỤ (Có thể click để mở)
         gSpecialLetters = [];
         const specialLetterConfigs = [
             {
@@ -2090,12 +2063,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 baseX: baseX,
                 baseY: baseY,
                 baseZ: baseZ,
-                tunnelX: 0,
-                tunnelY: -30,
-                tunnelZ: -900,
-                x: baseX,
-                y: baseY,
-                z: baseZ,
+                staggerZ: 200,
                 floatPhase: Math.random() * Math.PI * 2,
                 floatSpeed: 0.014
             };
@@ -2104,7 +2072,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // 3. Quả cầu tim 3D đỏ rực phát sáng (Floating Red Hearts)
-        const heartCount = 20;
+        const heartCount = 18;
         for (let i = 0; i < heartCount; i++) {
             spawnHeartObject(true);
         }
@@ -2152,156 +2120,134 @@ document.addEventListener('DOMContentLoaded', () => {
     function render3DLoveGalaxy() {
         if (!isGalaxyRunning || !galaxyCtx || !galaxyCanvas) return;
 
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const cx = w / 2;
-        const cy = h / 2;
+        try {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const cx = w / 2;
+            const cy = h / 2;
 
-        galaxyCtx.clearRect(0, 0, w, h);
+            galaxyCtx.clearRect(0, 0, w, h);
 
-        // 1. Hyperspace Warp Speed Intro Calculation (Phóng cực nhanh lúc mới vào, chậm dần sau 4.2s)
-        let warpFactor = 0;
-        if (galaxyWarpStartTime > 0) {
-            const elapsed = Date.now() - galaxyWarpStartTime;
-            if (elapsed < galaxyWarpDuration) {
-                const progress = elapsed / galaxyWarpDuration;
-                // Exponential decay: Starts at 1.0, plunges fast, smoothly eases down to 0
-                warpFactor = Math.pow(1 - progress, 2.5);
-            } else {
-                galaxyWarpStartTime = 0;
-            }
-        }
-
-        // 1.1 Quán tính & tự động xoay vũ trụ mượt mà
-        if (!isGalaxyDragging) {
-            const warpSpin = warpFactor * 0.045; // Hyperspace rotation speed
-            galaxyRotY += galaxyVelRotY + warpSpin;
-            galaxyRotX += galaxyVelRotX + (warpSpin * 0.2);
-            galaxyVelRotY = galaxyVelRotY * 0.96 + 0.0018 * 0.04;
-            galaxyVelRotX *= 0.94;
-        }
-
-        const cosY = Math.cos(galaxyRotY), sinY = Math.sin(galaxyRotY);
-        const cosX = Math.cos(galaxyRotX), sinX = Math.sin(galaxyRotX);
-
-        // 2. Vẽ vì sao nền vũ trụ (Batch rendering + Hyperspace streak tails when zooming fast)
-        galaxyCtx.save();
-        for (let i = 0; i < gStars.length; i++) {
-            const s = gStars[i];
-            s.twinklePhase += s.twinkleSpeed;
-            const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(s.twinklePhase));
-
-            let sx, sy, sz;
-            if (warpFactor > 0.005) {
-                s.tunnelZ += (75 * warpFactor + 10);
-                if (s.tunnelZ > 200) s.tunnelZ = -2600;
-                const blend = 1 - warpFactor;
-                sx = s.tunnelX * warpFactor + s.baseX * blend;
-                sy = s.tunnelY * warpFactor + s.baseY * blend;
-                sz = s.tunnelZ * warpFactor + s.baseZ * blend;
-            } else {
-                sx = s.baseX;
-                sy = s.baseY;
-                sz = s.baseZ;
+            // 1. Hyperspace Warp Speed Intro Calculation (Phóng nhanh như phim viễn tưởng rồi chậm dần sau 3.8s)
+            let warpFactor = 0;
+            if (galaxyWarpStartTime > 0) {
+                const elapsed = Date.now() - galaxyWarpStartTime;
+                if (elapsed < galaxyWarpDuration) {
+                    const progress = elapsed / galaxyWarpDuration;
+                    // Exponential deceleration curve: swooshes in super fast and eases smoothly
+                    warpFactor = Math.pow(1 - progress, 2.4);
+                } else {
+                    galaxyWarpStartTime = 0;
+                }
             }
 
-            const x1 = sx * cosY - sz * sinY;
-            const z1 = sx * sinY + sz * cosY;
-            const y1 = sy * cosX - z1 * sinX;
-            const z2 = sy * sinX + z1 * cosX;
+            // 1.1 Quán tính xoay vũ trụ & hiệu ứng xoay nhanh khi phóng vào
+            if (!isGalaxyDragging) {
+                const warpSpin = warpFactor * 0.032;
+                galaxyRotY += galaxyVelRotY + warpSpin;
+                galaxyRotX += galaxyVelRotX + (warpSpin * 0.15);
+                galaxyVelRotY = galaxyVelRotY * 0.96 + 0.0018 * 0.04;
+                galaxyVelRotX *= 0.94;
+            }
 
-            const zView = z2 + 650;
-            if (zView > 50) {
-                const scale = galaxyFov / zView;
+            const cosY = Math.cos(galaxyRotY), sinY = Math.sin(galaxyRotY);
+            const cosX = Math.cos(galaxyRotX), sinX = Math.sin(galaxyRotX);
+
+            // 2. Render vì sao nền vũ trụ (có đuôi tia sáng radial khi đang lướt nhanh)
+            galaxyCtx.save();
+            for (let i = 0; i < gStars.length; i++) {
+                const s = gStars[i];
+                s.twinklePhase += s.twinkleSpeed;
+                const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(s.twinklePhase));
+
+                const x1 = s.baseX * cosY - s.baseZ * sinY;
+                const z1 = s.baseX * sinY + s.baseZ * cosY;
+                const y1 = s.baseY * cosX - z1 * sinX;
+                const z2 = s.baseY * sinX + z1 * cosX;
+
+                // Safe camera depth calculation
+                const zView = Math.max(120, z2 + 650 + (warpFactor * 600));
+                const scale = Math.min(2.0, Math.max(0.04, galaxyFov / zView));
                 const px = cx + x1 * scale;
                 const py = cy + y1 * scale;
-                const alpha = Math.min(1, Math.max(0.15, (scale * 1.1) * twinkle));
 
-                if (warpFactor > 0.08) {
-                    const streakScale = galaxyFov / (zView + warpFactor * 320);
-                    const prevPx = cx + x1 * streakScale;
-                    const prevPy = cy + y1 * streakScale;
+                if (!Number.isFinite(px) || !Number.isFinite(py)) continue;
+
+                const alpha = Math.min(1, Math.max(0.12, (scale * 1.05) * twinkle));
+
+                if (warpFactor > 0.06) {
+                    // Radial hyperspace star streaks
+                    const dirX = (px - cx) * 0.16 * warpFactor;
+                    const dirY = (py - cy) * 0.16 * warpFactor;
+                    const streakStartX = px - dirX;
+                    const streakStartY = py - dirY;
 
                     galaxyCtx.strokeStyle = s.color;
-                    galaxyCtx.globalAlpha = alpha * 0.9;
-                    galaxyCtx.lineWidth = Math.max(1, s.size * scale * (1 + warpFactor * 2.5));
+                    galaxyCtx.globalAlpha = Math.min(1, alpha * 1.2);
+                    galaxyCtx.lineWidth = Math.min(2.6, Math.max(0.8, s.size * scale));
                     galaxyCtx.beginPath();
-                    galaxyCtx.moveTo(prevPx, prevPy);
+                    galaxyCtx.moveTo(streakStartX, streakStartY);
                     galaxyCtx.lineTo(px, py);
                     galaxyCtx.stroke();
                 } else {
                     galaxyCtx.fillStyle = s.color;
                     galaxyCtx.globalAlpha = alpha;
                     galaxyCtx.beginPath();
-                    galaxyCtx.arc(px, py, s.size * scale, 0, Math.PI * 2);
+                    galaxyCtx.arc(px, py, Math.max(0.6, s.size * scale), 0, Math.PI * 2);
                     galaxyCtx.fill();
                 }
             }
-        }
-        galaxyCtx.restore();
+            galaxyCtx.restore();
 
-        // 3. Thu thập các đối tượng cần sắp xếp thứ tự chiều sâu Z
-        const renderQueue = [];
+            // 3. Sắp xếp thứ tự Z của Chữ, Icon, Thư 3D và Trái Tim
+            const renderQueue = [];
 
-        // 3.1 Chữ tình yêu & Icon Trung Thu & Thư 3D
-        for (let i = 0; i < gWords.length; i++) {
-            const wObj = gWords[i];
-            wObj.floatPhase += wObj.floatSpeed;
-            const floatY = Math.sin(wObj.floatPhase) * 8;
+            // 3.1 Chữ tình yêu & Icon & Thư 3D
+            for (let i = 0; i < gWords.length; i++) {
+                const wObj = gWords[i];
+                wObj.floatPhase += wObj.floatSpeed;
+                const floatY = Math.sin(wObj.floatPhase) * 7;
 
-            let wx, wy, wz;
-            if (warpFactor > 0.005) {
-                // Rushing forward through the screen at high speed!
-                wObj.tunnelZ += (65 * warpFactor + 14);
-                if (wObj.tunnelZ > 380) wObj.tunnelZ = -2800;
-                const blend = 1 - warpFactor;
-                wx = wObj.tunnelX * warpFactor + wObj.baseX * blend;
-                wy = wObj.tunnelY * warpFactor + (wObj.baseY + floatY) * blend;
-                wz = wObj.tunnelZ * warpFactor + wObj.baseZ * blend;
-            } else {
-                wx = wObj.baseX;
-                wy = wObj.baseY + floatY;
-                wz = wObj.baseZ;
-            }
+                const currY = wObj.baseY + floatY;
+                const x1 = wObj.baseX * cosY - wObj.baseZ * sinY;
+                const z1 = wObj.baseX * sinY + wObj.baseZ * cosY;
+                const y1 = currY * cosX - z1 * sinX;
+                const z2 = currY * sinX + z1 * cosX;
 
-            const x1 = wx * cosY - wz * sinY;
-            const z1 = wx * sinY + wz * cosY;
-            const y1 = wy * cosX - z1 * sinX;
-            const z2 = wy * sinX + z1 * cosX;
+                // Safe camera depth with staggered entrance
+                const itemStagger = (wObj.staggerZ || 0) * warpFactor;
+                const zView = Math.max(100, z2 + 650 + (warpFactor * 750) + itemStagger);
 
-            const zView = z2 + 650;
-            if (zView > 70) {
                 renderQueue.push({
                     type: 'word',
                     data: wObj,
                     x: x1,
                     y: y1,
-                    z: z2,
+                    z: z2 - itemStagger,
                     zView: zView
                 });
             }
-        }
 
-        // 3.2 Quả cầu tim 3D đỏ rực
-        const heartSprite = getOrCreateCachedHeartSprite();
-        for (let i = gHearts.length - 1; i >= 0; i--) {
-            const hObj = gHearts[i];
-            hObj.y += hObj.vy;
-            hObj.swayPhase += hObj.swaySpeed;
-            const swayX = Math.sin(hObj.swayPhase) * hObj.swayAmp;
+            // 3.2 Quả cầu tim 3D đỏ rực
+            const heartSprite = getOrCreateCachedHeartSprite();
+            for (let i = gHearts.length - 1; i >= 0; i--) {
+                const hObj = gHearts[i];
+                hObj.y += hObj.vy;
+                hObj.swayPhase += hObj.swaySpeed;
+                const swayX = Math.sin(hObj.swayPhase) * hObj.swayAmp;
 
-            if (hObj.y < -380) {
-                hObj.y = 380;
-            }
+                if (hObj.y < -380) {
+                    hObj.y = 380;
+                }
 
-            const currX = hObj.baseX + swayX;
-            const x1 = currX * cosY - hObj.baseZ * sinY;
-            const z1 = currX * sinY + hObj.baseZ * cosY;
-            const y1 = hObj.y * cosX - z1 * sinX;
-            const z2 = hObj.y * sinX + z1 * cosX;
+                const currX = hObj.baseX + swayX;
+                const x1 = currX * cosY - hObj.baseZ * sinY;
+                const z1 = currX * sinY + hObj.baseZ * cosY;
+                const y1 = hObj.y * cosX - z1 * sinX;
+                const z2 = hObj.y * sinX + z1 * cosX;
 
-            const zView = z2 + 650 + cameraZOffset;
-            if (zView > 60) {
+                const zView = Math.max(90, z2 + 650 + (warpFactor * 650));
+
                 renderQueue.push({
                     type: 'heart',
                     data: hObj,
@@ -2311,76 +2257,83 @@ document.addEventListener('DOMContentLoaded', () => {
                     zView: zView
                 });
             }
-        }
 
-        // Sắp xếp đối tượng từ xa tới gần
-        renderQueue.sort((a, b) => b.z - a.z);
+            // Sắp xếp đối tượng từ xa tới gần (Painters Algorithm)
+            renderQueue.sort((a, b) => b.z - a.z);
 
-        // 4. Render các đối tượng bằng drawImage (Hardware Accelerated Blitting - 0ms lag!)
-        for (let i = 0; i < renderQueue.length; i++) {
-            const item = renderQueue[i];
-            const scale = galaxyFov / item.zView;
-            const px = cx + item.x * scale;
-            const py = cy + item.y * scale;
+            // 4. Render các đối tượng GPU Blitting
+            for (let i = 0; i < renderQueue.length; i++) {
+                const item = renderQueue[i];
+                const scale = Math.min(2.2, Math.max(0.04, galaxyFov / item.zView));
+                const px = cx + item.x * scale;
+                const py = cy + item.y * scale;
 
-            if (item.type === 'word') {
-                const sprite = item.data.sprite;
-                const alpha = Math.min(1, Math.max(0.18, scale * 1.2));
-                const pulse = item.data.isSpecialLetter ? (1 + Math.sin(Date.now() * 0.0035) * 0.04) : 1;
-                const drawW = sprite.width * scale * pulse;
-                const drawH = sprite.height * scale * pulse;
+                if (!Number.isFinite(px) || !Number.isFinite(py) || scale <= 0) continue;
 
-                // Lưu tọa độ chiếu màn hình để bắt click vào thư 3D
-                if (item.data.isSpecialLetter) {
-                    item.data.screenX = px;
-                    item.data.screenY = py;
-                    item.data.drawW = drawW;
-                    item.data.drawH = drawH;
-                    item.data.alpha = alpha;
+                if (item.type === 'word') {
+                    const sprite = item.data.sprite;
+                    if (!sprite || !sprite.canvas) continue;
+                    const alpha = Math.min(1, Math.max(0.18, scale * 1.25));
+                    const pulse = item.data.isSpecialLetter ? (1 + Math.sin(Date.now() * 0.0035) * 0.05) : 1;
+                    const drawW = sprite.width * scale * pulse;
+                    const drawH = sprite.height * scale * pulse;
+
+                    // Lưu tọa độ chiếu màn hình để bắt click vào thư 3D
+                    if (item.data.isSpecialLetter) {
+                        item.data.screenX = px;
+                        item.data.screenY = py;
+                        item.data.drawW = drawW;
+                        item.data.drawH = drawH;
+                        item.data.alpha = alpha;
+                    }
+
+                    galaxyCtx.globalAlpha = alpha;
+                    galaxyCtx.drawImage(sprite.canvas, px - drawW / 2, py - drawH / 2, drawW, drawH);
+                } else if (item.type === 'heart') {
+                    const hObj = item.data;
+                    const alpha = Math.min(1, Math.max(0.22, scale * 1.2));
+                    const hSize = hObj.size * scale * 1.25;
+
+                    galaxyCtx.save();
+                    galaxyCtx.translate(px, py);
+                    galaxyCtx.rotate(hObj.rot);
+                    galaxyCtx.globalAlpha = alpha;
+                    galaxyCtx.drawImage(heartSprite, -hSize / 2, -hSize / 2, hSize, hSize);
+                    galaxyCtx.restore();
+                }
+            }
+
+            // 5. Render các hạt tim bùng nổ khi chạm màn hình
+            for (let i = gBursts.length - 1; i >= 0; i--) {
+                const b = gBursts[i];
+                b.x += b.vx;
+                b.y += b.vy;
+                b.vy += 0.08;
+                b.alpha -= b.decay;
+                b.rot += b.rotSpeed;
+
+                if (b.alpha <= 0) {
+                    gBursts.splice(i, 1);
+                    continue;
                 }
 
-                galaxyCtx.globalAlpha = alpha;
-                galaxyCtx.drawImage(sprite.canvas, px - drawW / 2, py - drawH / 2, drawW, drawH);
-            } else if (item.type === 'heart') {
-                const hObj = item.data;
-                const alpha = Math.min(1, Math.max(0.25, scale * 1.15));
-                const hSize = hObj.size * scale * 1.25;
-
                 galaxyCtx.save();
-                galaxyCtx.translate(px, py);
-                galaxyCtx.rotate(hObj.rot);
-                galaxyCtx.globalAlpha = alpha;
-                galaxyCtx.drawImage(heartSprite, -hSize / 2, -hSize / 2, hSize, hSize);
+                galaxyCtx.translate(b.x, b.y);
+                galaxyCtx.rotate(b.rot);
+                galaxyCtx.globalAlpha = Math.max(0, Math.min(1, b.alpha));
+                galaxyCtx.font = `${b.size}px sans-serif`;
+                galaxyCtx.textAlign = 'center';
+                galaxyCtx.textBaseline = 'middle';
+                galaxyCtx.fillText(b.text, 0, 0);
                 galaxyCtx.restore();
             }
+        } catch (err) {
+            console.error("Galaxy render error handled:", err);
         }
 
-        // 5. Render các hạt tim bùng nổ khi chạm màn hình
-        for (let i = gBursts.length - 1; i >= 0; i--) {
-            const b = gBursts[i];
-            b.x += b.vx;
-            b.y += b.vy;
-            b.vy += 0.08;
-            b.alpha -= b.decay;
-            b.rot += b.rotSpeed;
-
-            if (b.alpha <= 0) {
-                gBursts.splice(i, 1);
-                continue;
-            }
-
-            galaxyCtx.save();
-            galaxyCtx.translate(b.x, b.y);
-            galaxyCtx.rotate(b.rot);
-            galaxyCtx.globalAlpha = b.alpha;
-            galaxyCtx.font = `${b.size}px sans-serif`;
-            galaxyCtx.textAlign = 'center';
-            galaxyCtx.textBaseline = 'middle';
-            galaxyCtx.fillText(b.text, 0, 0);
-            galaxyCtx.restore();
+        if (isGalaxyRunning) {
+            galaxyAnimId = requestAnimationFrame(render3DLoveGalaxy);
         }
-
-        galaxyAnimId = requestAnimationFrame(render3DLoveGalaxy);
     }
 
     function start3DLoveGalaxy() {
