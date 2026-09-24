@@ -804,10 +804,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (holdPrompt) holdPrompt.classList.add('holding');
 
         if (moonHoldStage === 0) {
-            if (holdInstructionText) holdInstructionText.textContent = "Đang tụ năng lượng ánh trăng... ✨";
+            if (holdInstructionText) holdInstructionText.textContent = "Đang mở món quà bí mật... ✨";
             if (holdHintText) holdHintText.textContent = "Giữ để khám phá điều bất ngờ... 🌸";
         } else {
-            if (holdInstructionText) holdInstructionText.textContent = "Đang mở món quà bí mật... ✨";
+            if (holdInstructionText) holdInstructionText.textContent = "Đang mở điều bí mật tiếp theo... ✨";
             if (holdHintText) holdHintText.textContent = "Giữ tiếp để mở điều bất ngờ tiếp theo... 🎁✨";
         }
 
@@ -859,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (holdInstructionText) {
             if (moonHoldStage === 0) {
-                holdInstructionText.textContent = cfg.holdInstruction || "Ấn giữ vào mặt trăng";
+                holdInstructionText.textContent = cfg.holdInstruction || "Ấn giữ để mở quà ✨";
             } else {
                 holdInstructionText.textContent = "Ấn giữ lần nữa để mở điều bí mật 🎁✨";
             }
@@ -874,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (heldDuration > 100 && heldDuration < holdDuration) {
                 if (holdHintText) {
                     if (moonHoldStage === 0) {
-                        holdHintText.textContent = "Giữ ngón tay trên trăng khoảng 1 giây để mở điều bất ngờ nhé em! ✨";
+                        holdHintText.textContent = "Giữ khoảng 1 giây để mở điều bất ngờ nhé em! ✨";
                     } else {
                         holdHintText.textContent = "Giữ tiếp 1 giây để mở món quà tiếp theo nhé! 💖";
                     }
@@ -1031,9 +1031,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     if (holdHintText) {
                         if (moonHoldStage === 0) {
-                            holdHintText.textContent = "Ấn và GIỮ ngón tay trên trăng 1 giây để mở bất ngờ nhé! 🌕✨";
+                            holdHintText.textContent = "Ấn và GIỮ 1 giây để mở bất ngờ nhé! 🌕✨";
                         } else {
-                            holdHintText.textContent = "Ấn và GIỮ ngón tay lần nữa để mở điều bí mật! 💖";
+                            holdHintText.textContent = "Ấn và GIỮ lần nữa để mở điều bí mật! 💖";
                         }
                     }
                 }
@@ -1327,14 +1327,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let typewriterTimer = null;
 
     const defaultParagraphs = [
-        "Gửi em bé yêu dấu của anh,",
-        "Đêm nay trăng rằm tháng Tám sáng tỏ khắp nhân gian, người người rộn rã rước đèn ngắm trăng...",
-        "Nhưng với anh, cảnh sắc đẹp nhất và lung linh nhất chính là được nhìn thấy nụ cười của em.",
-        "Trăng rằm có sáng tỏ đến đâu cũng không bằng ánh mắt rạng ngời của em. Giữa vạn người tưng bừng hội ngộ, điều may mắn nhất của anh chính là có em kề bên.",
-        "Cảm ơn em vì đã là một điều thật kỳ diệu và ngọt ngào trong cuộc sống của anh. Mong rằng mọi mùa Trung Thu và những ngày tháng sau này, người luôn ở bên chăm sóc, cưng chiều em sẽ là anh.",
-        "Chúc em bé một mùa Trung Thu thật ấm áp, rạng rỡ và luôn luôn là cô gái hạnh phúc nhất thế gian nhé! 💕🌕✨"
+        "Gửi ngừi anh iuu !!",
+        "Trung Thu năm nay thật sự rất khác biệt, vì đây là mùa lễ đầu tiên anh được đón cùng dí em.",
+        "Cảm ơn em đã xuất hiện và cùng anh tạo nên một buổi tối thật trọn vẹn và nhiều niềm vui nà .",
+        "Anh chỉ mong là những ngày tháng sắp tới và cả những mùa trăng sau này, tụi mình vẫn sẽ luôn kề bước bên nhau như thế này.",
+        "Chúc em mụt mùa Trung Thu thật ấm áp, bình an, lúc nào cũng rạng rỡ và hạnh phúc nheee!"
     ];
-
     const letterParagraphs = (cfg.chapter2 && cfg.chapter2.letterParagraphs) || defaultParagraphs;
 
     function startRoyalLoveLetter() {
@@ -1955,16 +1953,17 @@ document.addEventListener('DOMContentLoaded', () => {
             : [
                 "Trung Thu vui vẻ bên anh",
                 "Yêu em thật nhiều",
-                `${cfg.senderName || 'Anh'} ♡ ${cfg.receiverName || 'Em Bé'}`,
-                `Chúc ${cfg.receiverName || 'em bé'} Trung Thu vui vẻ`,
+                "Xuân Thịnh ♡ Thanh Vy",
+                "Chúc em iuu trung Thu vui vẻ",
+                "Yêu em thật nhiều",
+                "Trung Thu vui vẻ bên anh",
                 "Bên anh thật lâu nhé",
                 "Em là món quà tuyệt nhất",
-                "Cùng anh đón ngàn mùa trăng",
                 "Thương em nhất trần đời 💕",
-                "Mãi yêu công chúa của anh",
-                "Harumi gift box",
-                "Yêu em 3000 ✨",
-                "Trung Thu ngọt ngào bên nhau"
+                "Mãi yêu epes của anh",
+                "Nụ cười của em là đẹp nhất",
+                "Em là ngừi dệ thưn nhất quả đất",
+                "Yêu em 3000 ✨"
             ];
 
         const totalWordSlots = 32;

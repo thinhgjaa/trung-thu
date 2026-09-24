@@ -4187,10 +4187,53 @@ body.in-galaxy {
     background: rgba(184, 88, 10, 0.3);
 }
 
-.galaxy-letter-actions {
+.galaxy-parchment .letter-signature-container,
+.galaxy-parchment .galaxy-letter-actions {
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border-top: 0 solid transparent !important;
+    transform: translateY(16px) scale(0.97);
+    pointer-events: none;
+    overflow: hidden;
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                max-height 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                margin-top 0.45s ease,
+                padding-top 0.45s ease,
+                visibility 0.65s;
+}
+
+.galaxy-letter-modal.letter-finished .galaxy-parchment .letter-signature-container,
+.galaxy-parchment.letter-finished .letter-signature-container {
+    opacity: 1;
+    visibility: visible;
+    max-height: 160px;
+    margin-top: 16px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid rgba(197, 155, 39, 0.28) !important;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    overflow: visible;
+}
+
+.galaxy-parchment .galaxy-letter-actions {
     display: flex;
     gap: 10px;
-    margin-top: 14px;
+}
+
+.galaxy-letter-modal.letter-finished .galaxy-parchment .galaxy-letter-actions,
+.galaxy-parchment.letter-finished .galaxy-letter-actions {
+    opacity: 1;
+    visibility: visible;
+    max-height: 100px;
+    margin-top: 14px !important;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    overflow: visible;
+    transition-delay: 0.18s;
 }
 
 .galaxy-letter-actions .btn-close-letter-action {

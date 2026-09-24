@@ -1,6 +1,5 @@
 // ====================================================================
 // CẤU HÌNH DỰ ÁN WEB QUÀ TẶNG TRUNG THU
-// Bạn có thể dễ dàng chỉnh sửa tên, ảnh, lời chúc, bài hát tại đây!
 // ====================================================================
 
 const TRUNG_THU_CONFIG = {
@@ -8,21 +7,19 @@ const TRUNG_THU_CONFIG = {
     senderName: "Anh",
     receiverName: "Em Bé",
     headerQuote: "👱‍♂️: em sẽ mãi là em bé của đời anh 💕",
-    holdInstruction: "Ấn giữ vào mặt trăng",
+    holdInstruction: "Ấn giữ để mở quà ✨",
 
     // 2. Nhạc nền
-    // Bạn có thể thay bằng file mp3 của bạn trong thư mục assets/audio/ (vd: "assets/audio/nhac_tinh_yeu.mp3")
-    // Hoặc giữ link nhạc nền lofi du dương lãng mạn dưới đây:
     music: {
-        src: "https://files.catbox.moe/u8g5r6.mp3", // Bản nhạc piano acoustic Trung Thu lãng mạn
-        title: "Ánh Trăng Tình Yêu (Romantic Acoustic Lofi)",
+        src: "https://files.catbox.moe/u8g5r6.mp3",
+        title: "Ánh Trăng Tình Yêu",
         autoplayOnHold: true
     },
 
     // 3. Chương 1: Đêm Rằm Huyền Ảo
     chapter1: {
         subtitle: "Mùa trăng rằm này, anh có một điều bất ngờ dành tặng riêng em...",
-        moonHoldDurationMs: 1300 // Thời gian ấn giữ nhạy hơn (1.3 giây)
+        moonHoldDurationMs: 1200 // 1.2 giây ấn giữ
     },
 
     // 4. Chương 2: Thư Tình Cung Trăng
@@ -32,12 +29,13 @@ const TRUNG_THU_CONFIG = {
         letterTitle: "Bức Thư Tình Gửi Em Bé Dưới Ánh Trăng",
         letterSender: "Chàng Chú Cuội ngốc nghếch yêu em nhất đời 💖",
         letterParagraphs: [
-            "Gửi em bé yêu dấu của anh,",
+            "Gửi ngừi anh iuuu !!!",
+            "Đây là lễ Trung Thu đầu tiên mờ anh được đón cùng dí em, cảm ơn em vì đã đến bên anh.",
             "Đêm nay trăng rằm tháng Tám sáng tỏ khắp nhân gian, người người rộn rã rước đèn ngắm trăng...",
             "Nhưng với anh, cảnh sắc đẹp nhất và lung linh nhất chính là được nhìn thấy nụ cười của em.",
             "Trăng rằm có sáng tỏ đến đâu cũng không bằng ánh mắt rạng ngời của em. Giữa vạn người tưng bừng hội ngộ, điều may mắn nhất của anh chính là có em kề bên.",
             "Cảm ơn em vì đã là một điều thật kỳ diệu và ngọt ngào trong cuộc sống của anh. Mong rằng mọi mùa Trung Thu và những ngày tháng sau này, người luôn ở bên chăm sóc, cưng chiều em sẽ là anh.",
-            "Chúc em bé một mùa Trung Thu thật ấm áp, rạng rỡ và luôn luôn là cô gái hạnh phúc nhất thế gian nhé! 💕🌕✨"
+            "Chúc em bé một mùa Trung Thu thật ấm áp, rạng rỡ và luôn luôn là cô gái hạnh phúc nhất thế gian nhé!"
         ]
     },
 
