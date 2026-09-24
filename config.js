@@ -50,12 +50,12 @@ const TRUNG_THU_CONFIG = {
         afterWishSuccessTitle: "Chiếc Đèn Của Em Đã Chạm Tới Cung Trăng 🌕💫",
         afterWishSuccessText: "Nguyện ước của em đã được gửi gắm vào ngàn vì sao. Anh hứa sẽ luôn ở bên, che chở và cùng em biến mọi ước mơ thành hiện thực!",
         replayButton: "Xem Lại Hành Trình Yêu Thương 🔄",
-        goToGalaxyButton: "Khám Phá Vũ Trụ Yêu Thương 🌌✨"
+        goToGalaxyButton: "Mở Hộp Quà Bí Mật 🎁✨"
     },
 
-    // 6. Chương 4: Vũ Trụ Tình Yêu (3D Love Galaxy - Trend TikTok Siêu Lãng Mạn)
+    // 6. Chương 4: Hộp Quà Bí Mật
     chapter4: {
-        title: "Vũ Trụ Tình Yêu",
+        title: "Hộp Quà Bí Mật",
         centerStickerTop: "Quà trung thu bất ngờ",
         centerStickerBottom: "của ảnh 🌸",
         loveWords: [

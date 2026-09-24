@@ -782,6 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startHolding(e) {
         if (currentChapter !== 1) return;
         if (isHolding) return;
+        if (Date.now() - stage1TransformTime < 800) return; // Khóa 800ms sau khi vừa biến hình mặt trăng
 
         // Chặn cuộn trang ngoài ý muốn khi đang giữ trên điện thoại
         if (e && e.cancelable && e.type !== 'mousedown') {
@@ -792,6 +793,9 @@ document.addEventListener('DOMContentLoaded', () => {
             initAudioContext();
         } catch (err) { }
 
+        if (chimeInterval) { clearInterval(chimeInterval); chimeInterval = null; }
+        if (holdTimer) { cancelAnimationFrame(holdTimer); holdTimer = null; }
+
         isHolding = true;
         holdStartTime = Date.now();
 
@@ -801,10 +805,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (moonHoldStage === 0) {
             if (holdInstructionText) holdInstructionText.textContent = "Đang tụ năng lượng ánh trăng... ✨";
-            if (holdHintText) holdHintText.textContent = "Giữ để khám phá điều ước bất ngờ... 🌸";
+            if (holdHintText) holdHintText.textContent = "Giữ để khám phá điều bất ngờ... 🌸";
         } else {
-            if (holdInstructionText) holdInstructionText.textContent = "Đang tụ năng lượng yêu thương... 💖";
-            if (holdHintText) holdHintText.textContent = "Giữ thêm lần nữa để mở cánh cửa Vũ Trụ Yêu... 🌌✨";
+            if (holdInstructionText) holdInstructionText.textContent = "Đang mở món quà bí mật... ✨";
+            if (holdHintText) holdHintText.textContent = "Giữ tiếp để mở điều bất ngờ tiếp theo... 🎁✨";
         }
 
         if (holdProgressBar) {
@@ -846,8 +850,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const heldDuration = Date.now() - holdStartTime;
         isHolding = false;
 
-        if (holdTimer) cancelAnimationFrame(holdTimer);
-        if (chimeInterval) clearInterval(chimeInterval);
+        if (holdTimer) { cancelAnimationFrame(holdTimer); holdTimer = null; }
+        if (chimeInterval) { clearInterval(chimeInterval); chimeInterval = null; }
 
         // Khôi phục trạng thái thị giác
         if (luminousMoon) luminousMoon.classList.remove('holding');
@@ -857,7 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (moonHoldStage === 0) {
                 holdInstructionText.textContent = cfg.holdInstruction || "Ấn giữ vào mặt trăng";
             } else {
-                holdInstructionText.textContent = "Ấn giữ lần nữa để mở Vũ Trụ Yêu 🌌✨";
+                holdInstructionText.textContent = "Ấn giữ lần nữa để mở điều bí mật 🎁✨";
             }
         }
 
@@ -872,7 +876,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (moonHoldStage === 0) {
                         holdHintText.textContent = "Giữ ngón tay trên trăng khoảng 1 giây để mở điều bất ngờ nhé em! ✨";
                     } else {
-                        holdHintText.textContent = "Giữ tiếp 1 giây để bước vào Vũ Trụ Yêu nào! 💖";
+                        holdHintText.textContent = "Giữ tiếp 1 giây để mở món quà tiếp theo nhé! 💖";
                     }
                 }
             }
@@ -889,10 +893,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let stage1TransformTime = 0;
 
+    let lastHoldSuccessTime = 0;
+
     function completeHoldSuccess() {
         isHolding = false;
-        if (holdTimer) cancelAnimationFrame(holdTimer);
-        if (chimeInterval) clearInterval(chimeInterval);
+        lastHoldSuccessTime = Date.now();
+        if (holdTimer) { cancelAnimationFrame(holdTimer); holdTimer = null; }
+        if (chimeInterval) { clearInterval(chimeInterval); chimeInterval = null; }
 
         if (luminousMoon) luminousMoon.classList.remove('holding');
         if (holdPrompt) holdPrompt.classList.remove('holding');
@@ -902,9 +909,11 @@ document.addEventListener('DOMContentLoaded', () => {
             holdProgressBar.style.strokeDashoffset = totalCircumference;
         }
 
-        if (cfg.music && cfg.music.autoplayOnHold !== false) {
-            toggleMusic(true);
-        }
+        try {
+            if (cfg.music && cfg.music.autoplayOnHold !== false) {
+                toggleMusic(true);
+            }
+        } catch (e) { }
 
         if (moonHoldStage === 0) {
             // Lần giữ 1 thành công: Biến hình Mặt Trăng ➔ Ảnh Bạn Gái (tvy.jpg)
@@ -912,9 +921,11 @@ document.addEventListener('DOMContentLoaded', () => {
             stage1TransformTime = Date.now();
             quickTapCount = 0;
 
-            if (navigator.vibrate) navigator.vibrate([50, 70, 150]);
-            playCelebrationChord();
-            playMagicSparkleSound();
+            try {
+                if (navigator.vibrate) navigator.vibrate([50, 70, 150]);
+                playCelebrationChord();
+                playMagicSparkleSound();
+            } catch (e) { }
 
             const moonSphereContainer = document.getElementById('moonSphereContainer');
             const moonSphereImg = document.getElementById('moonSphereImg');
@@ -936,12 +947,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (luminousMoon) {
                 luminousMoon.classList.add('transformed-active');
                 const rect = luminousMoon.getBoundingClientRect();
-                burstGalaxyHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
                 createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
             }
 
-            if (holdInstructionText) holdInstructionText.textContent = "Ấn giữ lần nữa để mở Vũ Trụ Yêu 🌌✨";
-            if (holdHintText) holdHintText.textContent = "Nụ cười của em thắp sáng cả Cung Trăng 💖 Giữ tiếp lần nữa nào!";
+            if (holdInstructionText) holdInstructionText.textContent = "Ấn giữ lần nữa để mở điều bí mật 🎁✨";
+            if (holdHintText) holdHintText.textContent = "Vẫn còn một món quà bất ngờ đang chờ em... Giữ tiếp nào! 💖";
 
         } else {
             // Khóa an toàn 800ms để tránh việc nhấp đúp vô tình nhảy luôn sang màn 2
@@ -949,12 +959,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Lần giữ 2 thành công: Mở cánh cửa bước vào Chương II (3D Galaxy Universe)!
-            if (navigator.vibrate) navigator.vibrate([60, 80, 180]);
-            playCelebrationChord();
-            playRealisticFireworkSound(1.2);
+            // Lần giữ 2 thành công: Mở cánh cửa bước vào Chương II!
+            try {
+                if (navigator.vibrate) navigator.vibrate([60, 80, 180]);
+                playCelebrationChord();
+                playRealisticFireworkSound(1.2);
+            } catch (e) { }
 
-            if (holdHintText) holdHintText.textContent = "Khai mở thành công cánh cửa Vũ Trụ Yêu! 🌌✨";
+            if (holdHintText) holdHintText.textContent = "Mở khóa thành công món quà bí mật! 🎁✨";
 
             if (luminousMoon) {
                 const rect = luminousMoon.getBoundingClientRect();
@@ -963,7 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 goToScene(2);
-            }, 550);
+            }, 500);
         }
     }
 
@@ -992,6 +1004,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hỗ trợ bấm/chạm vào Mặt Trăng để bắn pháo hoa rực rỡ & giữ để nạp năng lượng
         target.addEventListener('click', (e) => {
             if (currentChapter === 1) {
+                if (Date.now() - lastHoldSuccessTime < 800) return; // Bỏ qua click sinh ra ngay sau khi nhả ngón tay sau khi giữ
+
                 const rect = luminousMoon ? luminousMoon.getBoundingClientRect() : target.getBoundingClientRect();
                 const clickX = (e.clientX && e.clientX > 0) ? e.clientX : (rect.left + rect.width / 2);
                 const clickY = (e.clientY && e.clientY > 0) ? e.clientY : (rect.top + rect.height / 2);
@@ -1019,7 +1033,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (moonHoldStage === 0) {
                             holdHintText.textContent = "Ấn và GIỮ ngón tay trên trăng 1 giây để mở bất ngờ nhé! 🌕✨";
                         } else {
-                            holdHintText.textContent = "Ấn và GIỮ ngón tay lần nữa để bước vào Vũ Trụ Yêu! 💖";
+                            holdHintText.textContent = "Ấn và GIỮ ngón tay lần nữa để mở điều bí mật! 💖";
                         }
                     }
                 }
@@ -1080,22 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initInteractiveJadeRabbit() {
         const rabbitTapZone = document.getElementById('rabbitTapZone');
         const rabbitBranchWrapper = document.getElementById('rabbitBranchWrapper');
-        const rabbitSpeechBubble = document.getElementById('rabbitSpeechBubble');
-        const rabbitBubbleText = document.getElementById('rabbitBubbleText');
         const rabbitHeartsContainer = document.getElementById('rabbitHeartsContainer');
-        let bubbleTimer = null;
-        let rabbitQuoteIdx = 0;
-
-        const rabbitQuotes = [
-            "🐰 Thỏ ngọc chúc em bé Trung Thu ngập tràn hạnh phúc! 🌸",
-            "💕 Ở đây có chàng Cuội thương em nhất trần đời đó! ✨",
-            "🌕 Trăng rằm sáng soi, nhưng nụ cười của em mới là đẹp nhất!",
-            "✨ Tặng em túi bụi sao lấp lánh mang lại vạn điều ước! 💫",
-            "🥮 Bánh dẻo bánh nướng cũng không ngọt ngào bằng em! 💕",
-            "🐰 Thỏ ngọc gửi tặng em một triệu trái tim yêu thương nè! 💖",
-            "🌸 Chúc công chúa nhỏ của anh luôn an yên và rạng rỡ! 🎀",
-            "🌕 Mùa trăng này và mãi mãi sau này, anh đều muốn cùng em ngắm trăng! 🏮"
-        ];
 
         function handleRabbitTouch(e) {
             if (e) {
@@ -1111,18 +1110,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 rabbitBranchWrapper.classList.remove('rabbit-hopping');
                 void rabbitBranchWrapper.offsetWidth;
                 rabbitBranchWrapper.classList.add('rabbit-hopping');
-            }
-
-            // Hiện bong bóng thoại lời chúc ngọt ngào
-            if (rabbitSpeechBubble && rabbitBubbleText) {
-                rabbitBubbleText.textContent = rabbitQuotes[rabbitQuoteIdx % rabbitQuotes.length];
-                rabbitQuoteIdx++;
-                rabbitSpeechBubble.classList.add('active');
-
-                if (bubbleTimer) clearTimeout(bubbleTimer);
-                bubbleTimer = setTimeout(() => {
-                    rabbitSpeechBubble.classList.remove('active');
-                }, 4500);
             }
 
             // Bắn tim và icon trung thu bay lên từ chú thỏ
@@ -1145,10 +1132,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     rabbitHeartsContainer.appendChild(heart);
                     setTimeout(() => heart.remove(), 1600);
                 }
-            }
-
-            if (holdHintText && currentChapter === 1) {
-                holdHintText.textContent = "Thỏ ngọc đang lắng nghe tâm tư của em bé đó! 🐰✨";
             }
         }
 
