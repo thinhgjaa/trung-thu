@@ -1072,6 +1072,7 @@ html, body {
     transform: scale(1.18);
     transform-origin: center 22%;
     transition: transform 0.4s ease;
+    z-index: 20;
 }
 
 /* Traditional Ornamental Red & Gold Moon Ring - Concentric with the Moon */
@@ -4778,6 +4779,11 @@ body.in-galaxy {
     z-index: 100 !important;
 }
 
+.gf-moon-active .moon-stage-container,
+.moon-stage-container:has(.transformed-gf) {
+    z-index: 50 !important;
+}
+
 .moon-sphere-container {
     transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.6s ease;
 }
@@ -4787,7 +4793,7 @@ body.in-galaxy {
 }
 
 .moon-sphere-container.transformed-gf {
-    z-index: 50 !important;
+    z-index: 100 !important;
     background: #000000 !important;
     box-shadow: 
         0 0 0 4px rgba(255, 235, 170, 0.98),
@@ -4809,21 +4815,26 @@ body.in-galaxy {
     display: none !important;
 }
 
-/* Lower opacity of overlapping background clouds & ring so portrait is 100% unobstructed */
-.gf-moon-active .cloud-moon-whisper,
-.gf-moon-active .cloud-auspicious-left,
-.gf-moon-active .cloud-auspicious-right {
-    opacity: 0.15 !important;
-    transition: opacity 0.6s ease;
-}
-
+/* Ensure traditional ornamental gold ring and celestial clouds remain 100% visible framing the portrait from behind */
 .gf-moon-active .traditional-moon-ring {
-    opacity: 0.35 !important;
-    transition: opacity 0.6s ease;
+    opacity: 0.95 !important;
+    visibility: visible !important;
+    display: block !important;
+    z-index: 5 !important;
+    transition: opacity 0.5s ease;
 }
 
-.gf-moon-active .moon-radial-beams {
-    opacity: 0.25 !important;
+.gf-moon-active .celestial-clouds-atmosphere,
+.gf-moon-active .flowing-cloud {
+    opacity: 0.85 !important;
+    visibility: visible !important;
+    z-index: 2 !important; /* Kept behind moon stage (z-index 50) so clouds don't cut across photo */
+}
+
+.gf-moon-active .moon-radial-beams,
+.gf-moon-active .moon-glow-aura,
+.gf-moon-active .moon-glow-halo-far {
+    opacity: 0.85 !important;
 }
 
 @keyframes gfPortraitPulse {
