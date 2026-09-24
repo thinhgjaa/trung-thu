@@ -267,8 +267,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    let isStarCanvasPaused = false;
+
     function drawStars() {
         if (!starCtx) return;
+        if (isStarCanvasPaused) {
+            requestAnimationFrame(drawStars);
+            return;
+        }
         starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
 
         // Draw twinkling stars with soft ethereal depth bloom
@@ -670,10 +676,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 5. SCENE & STORY PROGRESSION CONTROLLER
+    // 5. SCENE & STORY PROGRESSION CONTROLLER (3 CHƯƠNG TÌNH YÊU)
     // ----------------------------------------------------
     let currentChapter = 1;
-    const totalChapters = 4;
+    const totalChapters = 3;
     const progressSteps = document.querySelectorAll('.progress-step');
 
     function updateProgressUI(chapterNum) {
@@ -692,8 +698,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentSceneEl = document.getElementById(`scene-${currentChapter}`);
         const nextSceneEl = document.getElementById(`scene-${chapterNum}`);
 
-        if (currentChapter === 4 && chapterNum !== 4) {
+        if (currentChapter === 2 && chapterNum !== 2) {
             stop3DLoveGalaxy();
+            isStarCanvasPaused = false;
+            document.body.classList.remove('in-galaxy');
+        } else if (chapterNum === 2) {
+            isStarCanvasPaused = true;
+            document.body.classList.add('in-galaxy');
         }
 
         if (currentSceneEl) {
@@ -738,11 +749,9 @@ document.addEventListener('DOMContentLoaded', () => {
         playChime(650, 0.4);
 
         if (chapterNum === 2) {
-            startRoyalLoveLetter();
+            start3DLoveGalaxy();
         } else if (chapterNum === 3) {
             initChapter3Wish();
-        } else if (chapterNum === 4) {
-            start3DLoveGalaxy();
         }
     }
 
@@ -766,6 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let chimeInterval = null;
     let quickTapCount = 0;
     let quickTapResetTimer = null;
+    let moonHoldStage = 0; // 0: Super Moon, 1: Girlfriend Photo (tvy.jpg)
 
     function startHolding(e) {
         if (currentChapter !== 1) return;
@@ -786,8 +796,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hiệu ứng thị giác phản hồi tức thì
         if (luminousMoon) luminousMoon.classList.add('holding');
         if (holdPrompt) holdPrompt.classList.add('holding');
-        if (holdInstructionText) holdInstructionText.textContent = "Đang nạp năng lượng... ✨";
-        if (holdHintText) holdHintText.textContent = "Ánh trăng đang tụ năng lượng yêu thương... ✨";
+
+        if (moonHoldStage === 0) {
+            if (holdInstructionText) holdInstructionText.textContent = "Đang tụ năng lượng ánh trăng... ✨";
+            if (holdHintText) holdHintText.textContent = "Giữ để khám phá điều ước bất ngờ... 🌸";
+        } else {
+            if (holdInstructionText) holdInstructionText.textContent = "Đang tụ năng lượng yêu thương... 💖";
+            if (holdHintText) holdHintText.textContent = "Giữ thêm lần nữa để mở cánh cửa Vũ Trụ Yêu... 🌌✨";
+        }
 
         if (holdProgressBar) {
             holdProgressBar.style.transition = 'none';
@@ -834,8 +850,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Khôi phục trạng thái thị giác
         if (luminousMoon) luminousMoon.classList.remove('holding');
         if (holdPrompt) holdPrompt.classList.remove('holding');
-        if (holdInstructionText && cfg.holdInstruction) {
-            holdInstructionText.textContent = cfg.holdInstruction;
+
+        if (holdInstructionText) {
+            if (moonHoldStage === 0) {
+                holdInstructionText.textContent = cfg.holdInstruction || "Ấn giữ vào mặt trăng";
+            } else {
+                holdInstructionText.textContent = "Ấn giữ lần nữa để mở Vũ Trụ Yêu 🌌✨";
+            }
         }
 
         if (holdProgressBar) {
@@ -845,7 +866,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (currentChapter === 1) {
             if (heldDuration > 100 && heldDuration < holdDuration) {
-                if (holdHintText) holdHintText.textContent = "Giữ ngón tay trên trăng khoảng 1 giây để mở nhé em! ✨";
+                if (holdHintText) {
+                    if (moonHoldStage === 0) {
+                        holdHintText.textContent = "Giữ ngón tay trên trăng khoảng 1 giây để mở điều bất ngờ nhé em! ✨";
+                    } else {
+                        holdHintText.textContent = "Giữ tiếp 1 giây để bước vào Vũ Trụ Yêu nào! 💖";
+                    }
+                }
             }
         }
     }
@@ -858,6 +885,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => wave.remove(), 1000);
     }
 
+    let stage1TransformTime = 0;
+
     function completeHoldSuccess() {
         isHolding = false;
         if (holdTimer) cancelAnimationFrame(holdTimer);
@@ -866,24 +895,72 @@ document.addEventListener('DOMContentLoaded', () => {
         if (luminousMoon) luminousMoon.classList.remove('holding');
         if (holdPrompt) holdPrompt.classList.remove('holding');
 
-        if (navigator.vibrate) navigator.vibrate([60, 80, 160]);
-        playCelebrationChord();
-        playRealisticFireworkSound(1.2);
+        if (holdProgressBar) {
+            holdProgressBar.style.transition = 'stroke-dashoffset 0.35s ease';
+            holdProgressBar.style.strokeDashoffset = totalCircumference;
+        }
 
         if (cfg.music && cfg.music.autoplayOnHold !== false) {
             toggleMusic(true);
         }
 
-        if (holdHintText) holdHintText.textContent = "Khai mở thành công! Trăng rằm tỏa sáng! 🌕✨";
+        if (moonHoldStage === 0) {
+            // Lần giữ 1 thành công: Biến hình Mặt Trăng ➔ Ảnh Bạn Gái (tvy.jpg)
+            moonHoldStage = 1;
+            stage1TransformTime = Date.now();
+            quickTapCount = 0;
 
-        if (luminousMoon) {
-            const rect = luminousMoon.getBoundingClientRect();
-            createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 70);
+            if (navigator.vibrate) navigator.vibrate([50, 70, 150]);
+            playCelebrationChord();
+            playMagicSparkleSound();
+
+            const moonSphereContainer = document.getElementById('moonSphereContainer');
+            const moonSphereImg = document.getElementById('moonSphereImg');
+            const moonGfBadge = document.getElementById('moonGfBadge');
+
+            if (moonSphereImg) {
+                moonSphereImg.src = 'assets/images/tvy.jpg';
+            }
+
+            if (moonSphereContainer) {
+                moonSphereContainer.classList.add('transformed-gf');
+            }
+
+            if (moonGfBadge) {
+                moonGfBadge.style.display = 'block';
+            }
+
+            if (luminousMoon) {
+                const rect = luminousMoon.getBoundingClientRect();
+                burstGalaxyHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
+                createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
+            }
+
+            if (holdInstructionText) holdInstructionText.textContent = "Ấn giữ lần nữa để mở Vũ Trụ Yêu 🌌✨";
+            if (holdHintText) holdHintText.textContent = "Nụ cười của em thắp sáng cả Cung Trăng 💖 Giữ tiếp lần nữa nào!";
+
+        } else {
+            // Khóa an toàn 800ms để tránh việc nhấp đúp vô tình nhảy luôn sang màn 2
+            if (Date.now() - stage1TransformTime < 800) {
+                return;
+            }
+
+            // Lần giữ 2 thành công: Mở cánh cửa bước vào Chương II (3D Galaxy Universe)!
+            if (navigator.vibrate) navigator.vibrate([60, 80, 180]);
+            playCelebrationChord();
+            playRealisticFireworkSound(1.2);
+
+            if (holdHintText) holdHintText.textContent = "Khai mở thành công cánh cửa Vũ Trụ Yêu! 🌌✨";
+
+            if (luminousMoon) {
+                const rect = luminousMoon.getBoundingClientRect();
+                createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 70);
+            }
+
+            setTimeout(() => {
+                goToScene(2);
+            }, 550);
         }
-
-        setTimeout(() => {
-            goToScene(2);
-        }, 550);
     }
 
     // Gắn sự kiện giữ cho cả Mặt Trăng và Nút "Ấn giữ vào mặt trăng"
@@ -1363,7 +1440,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const wishInputCard = document.getElementById('wishInputCard');
     const wishSuccessBox = document.getElementById('wishSuccessBox');
     const btnReplayStory = document.getElementById('btnReplayStory');
-    const scene3El = document.getElementById('scene-3');
+    const scene3El = document.getElementById('scene-2');
 
     function initChapter3Wish() {
         if (wishPreviewText && cfg.chapter3 && cfg.chapter3.defaultWish) {
@@ -1587,7 +1664,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnGoToGalaxy.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
             playCelebrationChord();
-            goToScene(4);
+            goToScene(2);
         });
     }
 
@@ -1595,7 +1672,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnGalaxyBack) {
         btnGalaxyBack.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate(15);
-            goToScene(3);
+            goToScene(1);
         });
     }
 
@@ -1610,7 +1687,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 9. CHƯƠNG 4: 3D LOVE GALAXY ENGINE (TREND TIKTOK)
+    // 9. CHƯƠNG 4: 3D LOVE GALAXY ENGINE (HIGH PERFORMANCE CACHED SPRITES)
     // ----------------------------------------------------
     const galaxyCanvas = document.getElementById('galaxyCanvas');
     let galaxyCtx = galaxyCanvas ? galaxyCanvas.getContext('2d') : null;
@@ -1629,6 +1706,185 @@ document.addEventListener('DOMContentLoaded', () => {
     let gWords = [];
     let gHearts = [];
     let gBursts = [];
+    let gSpecialLetters = [];
+    let galaxyPointerDownX = 0, galaxyPointerDownY = 0;
+
+    // Pre-rendered Sprites Cache (Triệt tiêu 100% hiện tượng giật lag do shadowBlur)
+    let cachedHeartCanvas = null;
+    const cachedWordSprites = new Map();
+
+    // Tạo sprite trái tim 3D đỏ rực phát sáng (Chỉ render 1 lần duy nhất trên offscreen canvas)
+    function getOrCreateCachedHeartSprite() {
+        if (cachedHeartCanvas) return cachedHeartCanvas;
+        const size = 64;
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const ctx = c.getContext('2d');
+
+        ctx.translate(size / 2, size / 2 - 4);
+        ctx.scale(1.15, 1.15);
+
+        ctx.shadowColor = '#ff1744';
+        ctx.shadowBlur = 14;
+
+        const grad = ctx.createRadialGradient(-3, -4, 2, 0, 3, 24);
+        grad.addColorStop(0, '#ff758c');
+        grad.addColorStop(0.3, '#ff1744');
+        grad.addColorStop(0.75, '#d50000');
+        grad.addColorStop(1, '#8b0000');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(0, 7);
+        ctx.bezierCurveTo(-14, -10, -26, 6, 0, 26);
+        ctx.bezierCurveTo(26, 6, 14, -10, 0, 7);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.beginPath();
+        ctx.ellipse(-6, 2, 5, 2.5, -Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        cachedHeartCanvas = c;
+        return cachedHeartCanvas;
+    }
+
+    // Pre-render chữ neon tình yêu vào offscreen sprite để GPU vẽ cực nhanh
+    function getCachedWordSprite(text, style) {
+        const key = text + '_' + style.color + '_' + style.glow + '_' + style.size + '_' + style.fontType;
+        if (cachedWordSprites.has(key)) return cachedWordSprites.get(key);
+
+        const fontName = style.fontType === 'dancing' ? '"Dancing Script", cursive' : '"Quicksand", sans-serif';
+        const weight = style.bold ? '700' : '600';
+        const fontSize = style.size * 2;
+        const fontStr = `${weight} ${fontSize}px ${fontName}`;
+
+        const measureC = document.createElement('canvas');
+        const mCtx = measureC.getContext('2d');
+        mCtx.font = fontStr;
+        const metrics = mCtx.measureText(text);
+        const textW = Math.ceil(metrics.width);
+        const textH = Math.ceil(style.size * 2.8);
+        const pad = 32;
+
+        const c = document.createElement('canvas');
+        c.width = textW + pad * 2;
+        c.height = textH + pad * 2;
+        const ctx = c.getContext('2d');
+
+        ctx.font = fontStr;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const cx = c.width / 2;
+        const cy = c.height / 2;
+
+        // Render quầng sáng neon 2 lớp
+        ctx.shadowColor = style.glow;
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = style.color;
+        ctx.fillText(text, cx, cy);
+
+        ctx.shadowBlur = 30;
+        ctx.fillText(text, cx, cy);
+
+        // Lớp lõi sắc nét
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = style.color;
+        ctx.fillText(text, cx, cy);
+
+        const spriteObj = {
+            canvas: c,
+            width: c.width / 2,
+            height: c.height / 2
+        };
+        cachedWordSprites.set(key, spriteObj);
+        return spriteObj;
+    }
+
+    // Tạo sprite nổi bật cho Lá Thư Tình 3D bồng bềnh trong vũ trụ (dạng thẻ neon phát sáng sang trọng)
+    function getOrCreateSpecialLetterSprite(title, badgeText) {
+        const key = `special_letter_${title}_${badgeText}`;
+        if (cachedWordSprites.has(key)) return cachedWordSprites.get(key);
+
+        const scale = 2; // high-dpi cho chữ cực nét
+        const testC = document.createElement('canvas');
+        const testCtx = testC.getContext('2d');
+
+        testCtx.font = `bold ${24 * scale}px "Dancing Script", cursive`;
+        const titleW = testCtx.measureText(title).width;
+
+        testCtx.font = `bold ${12 * scale}px "Quicksand", sans-serif`;
+        const badgeW = testCtx.measureText(badgeText).width;
+
+        const maxContentW = Math.max(titleW, badgeW);
+        const padX = 26 * scale;
+        const pillW = Math.ceil(maxContentW + padX * 2);
+        const pillH = Math.ceil(68 * scale);
+
+        const canvasW = pillW + 36 * scale;
+        const canvasH = pillH + 36 * scale;
+
+        const c = document.createElement('canvas');
+        c.width = canvasW;
+        c.height = canvasH;
+        const ctx = c.getContext('2d');
+
+        const ox = (canvasW - pillW) / 2;
+        const oy = (canvasH - pillH) / 2;
+        const radius = 18 * scale;
+
+        // 1. Quầng hào quang phát sáng vàng kim & hồng ngọc
+        ctx.shadowColor = '#ffd56b';
+        ctx.shadowBlur = 18 * scale;
+
+        // 2. Khung thẻ bo tròn mờ ảo
+        ctx.fillStyle = 'rgba(255, 30, 110, 0.32)';
+        ctx.strokeStyle = 'rgba(255, 220, 140, 0.95)';
+        ctx.lineWidth = 1.8 * scale;
+
+        ctx.beginPath();
+        if (ctx.roundRect) {
+            ctx.roundRect(ox, oy, pillW, pillH, radius);
+        } else {
+            ctx.rect(ox, oy, pillW, pillH);
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        // Lớp viền thứ 2 phản quang
+        ctx.shadowColor = '#ff2a8d';
+        ctx.shadowBlur = 10 * scale;
+        ctx.strokeStyle = 'rgba(255, 120, 190, 0.65)';
+        ctx.lineWidth = 1 * scale;
+        ctx.stroke();
+
+        // 3. Tiêu đề lá thư tình (Dancing Script mềm mại)
+        ctx.shadowColor = '#ff79c6';
+        ctx.shadowBlur = 14 * scale;
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${24 * scale}px "Dancing Script", cursive`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(title, canvasW / 2, oy + 26 * scale);
+
+        // 4. Tag kêu gọi hành động
+        ctx.shadowColor = '#ffd56b';
+        ctx.shadowBlur = 8 * scale;
+        ctx.fillStyle = '#ffd56b';
+        ctx.font = `bold ${12 * scale}px "Quicksand", sans-serif`;
+        ctx.fillText(badgeText, canvasW / 2, oy + 49 * scale);
+
+        const spriteObj = {
+            canvas: c,
+            width: c.width / scale,
+            height: c.height / scale,
+            isSpecialLetter: true
+        };
+        cachedWordSprites.set(key, spriteObj);
+        return spriteObj;
+    }
 
     // Neon Styling Palettes
     const neonStyles = [
@@ -1643,12 +1899,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resizeGalaxyCanvas() {
         if (!galaxyCanvas) return;
-        galaxyCanvas.width = window.innerWidth * (window.devicePixelRatio || 1);
-        galaxyCanvas.height = window.innerHeight * (window.devicePixelRatio || 1);
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        galaxyCanvas.width = window.innerWidth * dpr;
+        galaxyCanvas.height = window.innerHeight * dpr;
         galaxyCanvas.style.width = `${window.innerWidth}px`;
         galaxyCanvas.style.height = `${window.innerHeight}px`;
         if (galaxyCtx) {
-            galaxyCtx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+            galaxyCtx.scale(dpr, dpr);
         }
     }
 
@@ -1658,20 +1915,22 @@ document.addEventListener('DOMContentLoaded', () => {
         gHearts = [];
         gBursts = [];
 
-        // 1. Vũ trụ ngàn vì sao lấp lánh (220 vì sao)
-        const starCount = 220;
+        getOrCreateCachedHeartSprite();
+
+        // 1. Vũ trụ vì sao nhẹ nhàng (160 vì sao để tối ưu hiệu năng)
+        const starCount = 160;
         for (let i = 0; i < starCount; i++) {
-            const r = 250 + Math.random() * 650;
+            const r = 240 + Math.random() * 600;
             const theta = Math.random() * Math.PI * 2;
             const phi = (Math.random() - 0.5) * Math.PI;
             gStars.push({
                 x: r * Math.cos(theta) * Math.cos(phi),
                 y: r * Math.sin(phi),
                 z: r * Math.sin(theta) * Math.cos(phi),
-                size: Math.random() * 1.8 + 0.6,
-                color: Math.random() > 0.3 ? '#ffffff' : (Math.random() > 0.5 ? '#ffb8e6' : '#ffd56b'),
+                size: Math.random() * 1.6 + 0.6,
+                color: Math.random() > 0.35 ? '#ffffff' : (Math.random() > 0.5 ? '#ffb8e6' : '#ffd56b'),
                 twinklePhase: Math.random() * Math.PI * 2,
-                twinkleSpeed: 0.02 + Math.random() * 0.04
+                twinkleSpeed: 0.02 + Math.random() * 0.03
             });
         }
 
@@ -1693,47 +1952,83 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Trung Thu ngọt ngào bên nhau"
             ];
 
-        const totalWordSlots = 38;
+        const totalWordSlots = 32;
         for (let i = 0; i < totalWordSlots; i++) {
             const text = wordsSource[i % wordsSource.length];
             const style = neonStyles[i % neonStyles.length];
-            const theta = (i / totalWordSlots) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
-            const phi = ((i % 5) - 2) * 0.35 + (Math.random() - 0.5) * 0.2;
-            const radius = 240 + Math.random() * 260;
+            const theta = (i / totalWordSlots) * Math.PI * 2 + (Math.random() - 0.5) * 0.25;
+            const phi = ((i % 5) - 2) * 0.35 + (Math.random() - 0.5) * 0.18;
+            const radius = 230 + Math.random() * 240;
+
+            const sprite = getCachedWordSprite(text, style);
 
             gWords.push({
-                text: text,
+                sprite: sprite,
                 x: radius * Math.cos(theta) * Math.cos(phi),
-                y: radius * Math.sin(phi) + (Math.random() - 0.5) * 80,
+                y: radius * Math.sin(phi) + (Math.random() - 0.5) * 70,
                 z: radius * Math.sin(theta) * Math.cos(phi),
-                style: style,
-                isIcon: false,
+                floatPhase: Math.random() * Math.PI * 2,
+                floatSpeed: 0.012 + Math.random() * 0.018
+            });
+        }
+
+        // Xen kẽ các icon neon Trung Thu (Trăng khuyết, ngôi sao, bánh trung thu)
+        for (let i = 0; i < 14; i++) {
+            const icon = midAutumnDecorIcons[i % midAutumnDecorIcons.length];
+            const theta = Math.random() * Math.PI * 2;
+            const phi = (Math.random() - 0.5) * Math.PI * 0.75;
+            const radius = 220 + Math.random() * 260;
+            const style = { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 24, bold: true };
+            const sprite = getCachedWordSprite(icon, style);
+
+            gWords.push({
+                sprite: sprite,
+                x: radius * Math.cos(theta) * Math.cos(phi),
+                y: radius * Math.sin(phi),
+                z: radius * Math.sin(theta) * Math.cos(phi),
                 floatPhase: Math.random() * Math.PI * 2,
                 floatSpeed: 0.015 + Math.random() * 0.02
             });
         }
 
-        // Xen kẽ các icon neon Trung Thu (Trăng khuyết, ngôi sao, bánh trung thu)
-        for (let i = 0; i < 18; i++) {
-            const icon = midAutumnDecorIcons[i % midAutumnDecorIcons.length];
-            const theta = Math.random() * Math.PI * 2;
-            const phi = (Math.random() - 0.5) * Math.PI * 0.8;
-            const radius = 220 + Math.random() * 280;
+        // 2.1 THÊM CÁC LÁ THƯ TÌNH 3D NỔI BẬT XOAY QUANH VŨ TRỤ (Có thể click để mở)
+        gSpecialLetters = [];
+        const specialLetterConfigs = [
+            {
+                title: "💌 Bức Thư Tình Của Anh 🌸",
+                badge: "✨ Chạm vào để mở thư ✨",
+                theta: -Math.PI / 2,
+                phi: 0,
+                radius: 200,
+                y: -18
+            },
+            {
+                title: "🌸 Quà Trung Thu Của Ảnh ✉️",
+                badge: "✨ Chạm vào để mở thư ✨",
+                theta: Math.PI / 2,
+                phi: 0,
+                radius: 210,
+                y: 20
+            }
+        ];
 
-            gWords.push({
-                text: icon,
-                x: radius * Math.cos(theta) * Math.cos(phi),
-                y: radius * Math.sin(phi),
-                z: radius * Math.sin(theta) * Math.cos(phi),
-                style: { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 24, bold: true },
-                isIcon: true,
+        specialLetterConfigs.forEach(sCfg => {
+            const sprite = getOrCreateSpecialLetterSprite(sCfg.title, sCfg.badge);
+            const letterObj = {
+                sprite: sprite,
+                isSpecialLetter: true,
+                x: sCfg.radius * Math.cos(sCfg.theta) * Math.cos(sCfg.phi),
+                y: sCfg.y,
+                z: sCfg.radius * Math.sin(sCfg.theta) * Math.cos(sCfg.phi),
                 floatPhase: Math.random() * Math.PI * 2,
-                floatSpeed: 0.02 + Math.random() * 0.025
-            });
-        }
+                floatSpeed: 0.014
+            };
+            gWords.push(letterObj);
+            gSpecialLetters.push(letterObj);
+        });
 
         // 3. Quả cầu tim 3D đỏ rực phát sáng (Floating Red Hearts)
-        const heartCount = 28;
+        const heartCount = 20;
         for (let i = 0; i < heartCount; i++) {
             spawnHeartObject(true);
         }
@@ -1741,55 +2036,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function spawnHeartObject(initialRandomY = false) {
         const theta = Math.random() * Math.PI * 2;
-        const radius = 160 + Math.random() * 280;
-        const y = initialRandomY ? (Math.random() * 700 - 350) : 380;
+        const radius = 150 + Math.random() * 260;
+        const y = initialRandomY ? (Math.random() * 650 - 325) : 360;
 
         gHearts.push({
             baseX: radius * Math.cos(theta),
             y: y,
             baseZ: radius * Math.sin(theta),
             size: 20 + Math.random() * 18,
-            vy: -(0.7 + Math.random() * 0.9),
+            vy: -(0.6 + Math.random() * 0.8),
             swayPhase: Math.random() * Math.PI * 2,
-            swaySpeed: 0.02 + Math.random() * 0.025,
-            swayAmp: 15 + Math.random() * 25,
-            rot: (Math.random() - 0.5) * 0.4
+            swaySpeed: 0.018 + Math.random() * 0.02,
+            swayAmp: 14 + Math.random() * 22,
+            rot: (Math.random() - 0.5) * 0.35
         });
-    }
-
-    // Vẽ trái tim 3D đỏ rực phát sáng với ánh bóng nổi bật
-    function draw3DGlowingHeart(ctx, x, y, size, alpha, rot) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(rot);
-        ctx.scale(size / 30, size / 30);
-        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
-
-        // Quầng hào quang đỏ rực
-        ctx.shadowColor = '#ff1744';
-        ctx.shadowBlur = 20;
-
-        // Gradient 3D bóng bẩy căng mọng
-        const grad = ctx.createRadialGradient(-3, -4, 2, 0, 3, 24);
-        grad.addColorStop(0, '#ff758c');
-        grad.addColorStop(0.3, '#ff1744');
-        grad.addColorStop(0.75, '#d50000');
-        grad.addColorStop(1, '#8b0000');
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.moveTo(0, 7);
-        ctx.bezierCurveTo(-14, -10, -26, 6, 0, 26);
-        ctx.bezierCurveTo(26, 6, 14, -10, 0, 7);
-        ctx.fill();
-
-        // Vệt sáng highlight thủy tinh 3D
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-        ctx.beginPath();
-        ctx.ellipse(-6, 2, 5, 2.5, -Math.PI / 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
     }
 
     // Bắn chùm tim & bụi sao khi người dùng chạm vào màn hình
@@ -1797,17 +2057,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const emojis = ['❤️', '💖', '✨', '🌸', '💕'];
         for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const speed = 2.5 + Math.random() * 4.5;
+            const speed = 2.5 + Math.random() * 4;
             gBursts.push({
                 x: screenX,
                 y: screenY,
                 vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed - 1.5,
+                vy: Math.sin(angle) * speed - 1.2,
                 text: emojis[Math.floor(Math.random() * emojis.length)],
-                size: 16 + Math.random() * 14,
+                size: 16 + Math.random() * 12,
                 alpha: 1,
-                decay: 0.02 + Math.random() * 0.015,
-                rot: (Math.random() - 0.5) * 0.5,
+                decay: 0.022 + Math.random() * 0.015,
+                rot: (Math.random() - 0.5) * 0.4,
                 rotSpeed: (Math.random() - 0.5) * 0.08
             });
         }
@@ -1827,21 +2087,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isGalaxyDragging) {
             galaxyRotY += galaxyVelRotY;
             galaxyRotX += galaxyVelRotX;
-            galaxyVelRotY = galaxyVelRotY * 0.96 + 0.002 * 0.04;
+            galaxyVelRotY = galaxyVelRotY * 0.96 + 0.0018 * 0.04;
             galaxyVelRotX *= 0.94;
         }
 
         const cosY = Math.cos(galaxyRotY), sinY = Math.sin(galaxyRotY);
         const cosX = Math.cos(galaxyRotX), sinX = Math.sin(galaxyRotX);
 
-        // 2. Vẽ vì sao nền vũ trụ
+        // 2. Vẽ vì sao nền vũ trụ (Vẽ theo batch, siêu nhẹ)
         galaxyCtx.save();
         for (let i = 0; i < gStars.length; i++) {
             const s = gStars[i];
             s.twinklePhase += s.twinkleSpeed;
             const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(s.twinklePhase));
 
-            // Xoay 3D
             const x1 = s.x * cosY - s.z * sinY;
             const z1 = s.x * sinY + s.z * cosY;
             const y1 = s.y * cosX - z1 * sinX;
@@ -1863,14 +2122,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         galaxyCtx.restore();
 
-        // 3. Thu thập các đối tượng cần sắp xếp thứ tự chiều sâu Z (Z-sorting)
+        // 3. Thu thập các đối tượng cần sắp xếp thứ tự chiều sâu Z
         const renderQueue = [];
 
-        // 3.1 Chữ tình yêu & icon
+        // 3.1 Chữ tình yêu (Sprites đã pre-render)
         for (let i = 0; i < gWords.length; i++) {
             const wObj = gWords[i];
             wObj.floatPhase += wObj.floatSpeed;
-            const floatY = Math.sin(wObj.floatPhase) * 10;
+            const floatY = Math.sin(wObj.floatPhase) * 8;
 
             const x1 = wObj.x * cosY - wObj.z * sinY;
             const z1 = wObj.x * sinY + wObj.z * cosY;
@@ -1891,14 +2150,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 3.2 Quả cầu tim 3D đỏ rực
+        const heartSprite = getOrCreateCachedHeartSprite();
         for (let i = gHearts.length - 1; i >= 0; i--) {
             const hObj = gHearts[i];
             hObj.y += hObj.vy;
             hObj.swayPhase += hObj.swaySpeed;
             const swayX = Math.sin(hObj.swayPhase) * hObj.swayAmp;
 
-            if (hObj.y < -420) {
-                hObj.y = 420;
+            if (hObj.y < -380) {
+                hObj.y = 380;
             }
 
             const currX = hObj.baseX + swayX;
@@ -1920,10 +2180,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Sắp xếp đối tượng từ xa tới gần (Painters Algorithm)
+        // Sắp xếp đối tượng từ xa tới gần
         renderQueue.sort((a, b) => b.z - a.z);
 
-        // 4. Render các đối tượng theo thứ tự chiều sâu
+        // 4. Render các đối tượng bằng drawImage (Hardware Accelerated Blitting - 0ms lag!)
         for (let i = 0; i < renderQueue.length; i++) {
             const item = renderQueue[i];
             const scale = galaxyFov / item.zView;
@@ -1931,42 +2191,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const py = cy + item.y * scale;
 
             if (item.type === 'word') {
-                const wObj = item.data;
-                const alpha = Math.min(1, Math.max(0.2, (scale * 1.25)));
+                const sprite = item.data.sprite;
+                const alpha = Math.min(1, Math.max(0.18, scale * 1.2));
+                const pulse = item.data.isSpecialLetter ? (1 + Math.sin(Date.now() * 0.0035) * 0.04) : 1;
+                const drawW = sprite.width * scale * pulse;
+                const drawH = sprite.height * scale * pulse;
+
+                // Lưu tọa độ chiếu màn hình để bắt click vào thư 3D
+                if (item.data.isSpecialLetter) {
+                    item.data.screenX = px;
+                    item.data.screenY = py;
+                    item.data.drawW = drawW;
+                    item.data.drawH = drawH;
+                    item.data.alpha = alpha;
+                }
+
+                galaxyCtx.globalAlpha = alpha;
+                galaxyCtx.drawImage(sprite.canvas, px - drawW / 2, py - drawH / 2, drawW, drawH);
+            } else if (item.type === 'heart') {
+                const hObj = item.data;
+                const alpha = Math.min(1, Math.max(0.25, scale * 1.15));
+                const hSize = hObj.size * scale * 1.25;
 
                 galaxyCtx.save();
                 galaxyCtx.translate(px, py);
-                galaxyCtx.scale(scale, scale);
+                galaxyCtx.rotate(hObj.rot);
                 galaxyCtx.globalAlpha = alpha;
-
-                const fontName = wObj.style.fontType === 'dancing' ? '"Dancing Script", cursive' : '"Quicksand", sans-serif';
-                const weight = wObj.style.bold ? '700' : '500';
-                galaxyCtx.font = `${weight} ${wObj.style.size}px ${fontName}`;
-                galaxyCtx.textAlign = 'center';
-                galaxyCtx.textBaseline = 'middle';
-
-                // Hào quang phát sáng neon đặc trưng của screenshot
-                galaxyCtx.shadowColor = wObj.style.glow;
-                galaxyCtx.shadowBlur = 18;
-                galaxyCtx.fillStyle = wObj.style.color;
-
-                galaxyCtx.fillText(wObj.text, 0, 0);
-
-                // Lặp lại nét vẽ để tăng độ rực neon
-                if (scale > 0.75) {
-                    galaxyCtx.shadowBlur = 26;
-                    galaxyCtx.fillText(wObj.text, 0, 0);
-                }
-
+                galaxyCtx.drawImage(heartSprite, -hSize / 2, -hSize / 2, hSize, hSize);
                 galaxyCtx.restore();
-            } else if (item.type === 'heart') {
-                const hObj = item.data;
-                const alpha = Math.min(1, Math.max(0.3, scale * 1.1));
-                draw3DGlowingHeart(galaxyCtx, px, py, hObj.size * scale, alpha, hObj.rot);
             }
         }
 
-        // 5. Render các hạt tim / bụi sao bùng nổ khi chạm màn hình
+        // 5. Render các hạt tim bùng nổ khi chạm màn hình
         for (let i = gBursts.length - 1; i >= 0; i--) {
             const b = gBursts[i];
             b.x += b.vx;
@@ -1987,8 +2243,6 @@ document.addEventListener('DOMContentLoaded', () => {
             galaxyCtx.font = `${b.size}px sans-serif`;
             galaxyCtx.textAlign = 'center';
             galaxyCtx.textBaseline = 'middle';
-            galaxyCtx.shadowColor = '#ff2a8d';
-            galaxyCtx.shadowBlur = 12;
             galaxyCtx.fillText(b.text, 0, 0);
             galaxyCtx.restore();
         }
@@ -2003,11 +2257,10 @@ document.addEventListener('DOMContentLoaded', () => {
         init3DGalaxyEntities();
         galaxyAnimId = requestAnimationFrame(render3DLoveGalaxy);
 
-        // Bắn tim chúc mừng khi lần đầu mở Vũ Trụ Yêu
         setTimeout(() => {
             burstGalaxyHearts(window.innerWidth / 2, window.innerHeight * 0.45, 10);
             playMagicSparkleSound();
-        }, 500);
+        }, 400);
     }
 
     function stop3DLoveGalaxy() {
@@ -2018,12 +2271,190 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ----------------------------------------------------
+    // BỨC THƯ TÌNH TRONG VŨ TRỤ (EMBEDDED GALAXY LOVE LETTER)
+    // ----------------------------------------------------
+    const galaxyEnvelopeWrapper = document.getElementById('galaxyEnvelopeWrapper');
+    const romanticEnvelope = document.getElementById('romanticEnvelope');
+    const galaxyLetterModal = document.getElementById('galaxyLetterModal');
+    const galaxyLetterBody = document.getElementById('galaxyLetterBody');
+    const galaxyLetterFastHint = document.getElementById('galaxyLetterFastHint');
+    const galaxyLetterTitleText = document.getElementById('galaxyLetterTitleText');
+    const galaxyLetterSenderText = document.getElementById('galaxyLetterSenderText');
+    const galaxyStickerCard = document.getElementById('galaxyStickerCard');
+    const btnToggleGalaxyLetter = document.getElementById('btnToggleGalaxyLetter');
+    const btnCloseGalaxyLetter = document.getElementById('btnCloseGalaxyLetter');
+    const galaxyLetterBackdrop = document.getElementById('galaxyLetterBackdrop');
+    const btnLetterExploreGalaxy = document.getElementById('btnLetterExploreGalaxy');
+    const btnGalaxyGoToCh3 = document.getElementById('btnGalaxyGoToCh3');
+
+    let isGalaxyLetterOpen = false;
+    let isGalaxyLetterTyping = false;
+    let isEnvelopeOpening = false;
+    let galaxyTypewriterTimer = null;
+    let hasGalaxyLetterTypedOnce = false;
+
+    // Khởi tạo thông tin người gửi/tiêu đề thư trong vũ trụ
+    if (cfg.chapter2) {
+        if (galaxyLetterTitleText && cfg.chapter2.letterTitle) galaxyLetterTitleText.textContent = cfg.chapter2.letterTitle;
+        if (galaxyLetterSenderText && cfg.chapter2.letterSender) galaxyLetterSenderText.textContent = cfg.chapter2.letterSender;
+    }
+
+    function triggerEnvelopeOpen() {
+        if (isGalaxyLetterOpen || isEnvelopeOpening) return;
+        isEnvelopeOpening = true;
+
+        if (romanticEnvelope) {
+            romanticEnvelope.classList.remove('open');
+            romanticEnvelope.classList.add('opening');
+        }
+
+        if (navigator.vibrate) navigator.vibrate([40, 60, 90]);
+        playFlameIgniteSound();
+        playMagicSparkleSound();
+
+        const envelopeEl = romanticEnvelope || galaxyEnvelopeWrapper;
+        if (envelopeEl) {
+            const rect = envelopeEl.getBoundingClientRect();
+            burstGalaxyHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+        }
+
+        setTimeout(() => {
+            if (romanticEnvelope) {
+                romanticEnvelope.classList.add('open');
+            }
+            openGalaxyLoveLetter();
+            isEnvelopeOpening = false;
+        }, 400);
+    }
+
+    function openGalaxyLoveLetter() {
+        if (!galaxyLetterModal) return;
+        isGalaxyLetterOpen = true;
+        galaxyLetterModal.classList.add('active');
+        galaxyLetterModal.setAttribute('aria-hidden', 'false');
+        const wrapper = document.getElementById('galaxyUniverseWrapper');
+        if (wrapper) wrapper.classList.add('letter-open');
+        if (navigator.vibrate) navigator.vibrate([30, 45]);
+        playCelebrationChord();
+
+        if (!hasGalaxyLetterTypedOnce) {
+            hasGalaxyLetterTypedOnce = true;
+            typewriterGalaxyLetter();
+        }
+    }
+
+    function closeGalaxyLoveLetter() {
+        if (!galaxyLetterModal) return;
+        isGalaxyLetterOpen = false;
+        isEnvelopeOpening = false;
+        galaxyLetterModal.classList.remove('active');
+        galaxyLetterModal.setAttribute('aria-hidden', 'true');
+        const wrapper = document.getElementById('galaxyUniverseWrapper');
+        if (wrapper) wrapper.classList.remove('letter-open');
+        if (romanticEnvelope) {
+            romanticEnvelope.classList.remove('opening', 'open');
+        }
+        if (navigator.vibrate) navigator.vibrate(15);
+        playChime(540, 0.25);
+    }
+
+    function typewriterGalaxyLetter() {
+        if (!galaxyLetterBody) return;
+        galaxyLetterBody.innerHTML = '';
+        isGalaxyLetterTyping = true;
+        if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'block';
+
+        let pIdx = 0;
+        let cIdx = 0;
+        let activeP = document.createElement('p');
+        activeP.className = 'scroll-paragraph salutation';
+        galaxyLetterBody.appendChild(activeP);
+
+        function typeNext() {
+            if (!isGalaxyLetterTyping || pIdx >= letterParagraphs.length) {
+                isGalaxyLetterTyping = false;
+                if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'none';
+                return;
+            }
+
+            const target = letterParagraphs[pIdx];
+            if (cIdx < target.length) {
+                activeP.textContent += target[cIdx];
+                cIdx++;
+                galaxyTypewriterTimer = setTimeout(typeNext, 20);
+            } else {
+                pIdx++;
+                cIdx = 0;
+                if (pIdx < letterParagraphs.length) {
+                    activeP = document.createElement('p');
+                    activeP.className = 'scroll-paragraph';
+                    galaxyLetterBody.appendChild(activeP);
+                    galaxyTypewriterTimer = setTimeout(typeNext, 130);
+                } else {
+                    isGalaxyLetterTyping = false;
+                    if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'none';
+                }
+            }
+        }
+
+        typeNext();
+    }
+
+    function completeGalaxyTypewriterImmediately() {
+        if (!galaxyLetterBody) return;
+        if (galaxyTypewriterTimer) clearTimeout(galaxyTypewriterTimer);
+        isGalaxyLetterTyping = false;
+
+        galaxyLetterBody.innerHTML = '';
+        letterParagraphs.forEach((text, idx) => {
+            const p = document.createElement('p');
+            p.className = 'scroll-paragraph';
+            if (idx === 0) p.classList.add('salutation');
+            p.textContent = text;
+            galaxyLetterBody.appendChild(p);
+        });
+
+        if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'none';
+        if (navigator.vibrate) navigator.vibrate(15);
+    }
+
+    if (galaxyLetterFastHint) {
+        galaxyLetterFastHint.addEventListener('click', completeGalaxyTypewriterImmediately);
+    }
+    if (galaxyLetterBody) {
+        galaxyLetterBody.addEventListener('click', () => {
+            if (isGalaxyLetterTyping) completeGalaxyTypewriterImmediately();
+        });
+    }
+
+
+
+    // Nút đóng thư
+    const closeLetterTriggers = [btnCloseGalaxyLetter, galaxyLetterBackdrop, btnLetterExploreGalaxy].filter(Boolean);
+    closeLetterTriggers.forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeGalaxyLoveLetter();
+        });
+    });
+
+    // Nút tiếp tục đến Thả Đèn Trời Nguyện Ước từ bức thư trong Vũ Trụ
+    if (btnGalaxyGoToCh3) {
+        btnGalaxyGoToCh3.addEventListener('click', () => {
+            closeGalaxyLoveLetter();
+            goToScene(3);
+        });
+    }
+
     // Tương tác chạm & vuốt xoay 3D Galaxy (Pointer / Touch events)
     if (galaxyCanvas) {
         galaxyCanvas.addEventListener('pointerdown', (e) => {
             isGalaxyDragging = true;
             galaxyLastX = e.clientX;
             galaxyLastY = e.clientY;
+            galaxyPointerDownX = e.clientX;
+            galaxyPointerDownY = e.clientY;
         });
 
         window.addEventListener('pointermove', (e) => {
@@ -2042,11 +2473,54 @@ document.addEventListener('DOMContentLoaded', () => {
             isGalaxyDragging = false;
         });
 
-        // Chạm vào màn hình để thả tim & tạo bụi sao
+        // Hiệu ứng rê chuột trên Desktop: đổi thành bàn tay click khi lướt qua lá thư 3D
+        galaxyCanvas.addEventListener('pointermove', (e) => {
+            if (isGalaxyDragging || isGalaxyLetterOpen) return;
+            let isOverLetter = false;
+            for (let i = 0; i < gSpecialLetters.length; i++) {
+                const sObj = gSpecialLetters[i];
+                if (sObj.screenX !== undefined && sObj.alpha > 0.22) {
+                    const padX = (sObj.drawW / 2) + 16;
+                    const padY = (sObj.drawH / 2) + 14;
+                    if (Math.abs(e.clientX - sObj.screenX) <= padX && Math.abs(e.clientY - sObj.screenY) <= padY) {
+                        isOverLetter = true;
+                        break;
+                    }
+                }
+            }
+            galaxyCanvas.style.cursor = isOverLetter ? 'pointer' : 'grab';
+        });
+
+        // Chạm vào màn hình: nếu chạm trúng lá thư tình 3D thì mở thư, nếu chạm vùng khác thì bắn tim
         galaxyCanvas.addEventListener('click', (e) => {
-            if (navigator.vibrate) navigator.vibrate(18);
-            playChime(640, 0.25);
-            burstGalaxyHearts(e.clientX, e.clientY, 6);
+            if (isGalaxyLetterOpen) return;
+
+            const dragDist = Math.hypot(e.clientX - galaxyPointerDownX, e.clientY - galaxyPointerDownY);
+            if (dragDist > 10) return; // Đang vuốt xoay màn hình, không kích hoạt click
+
+            let clickedLetter = false;
+            for (let i = 0; i < gSpecialLetters.length; i++) {
+                const sObj = gSpecialLetters[i];
+                if (sObj.screenX !== undefined && sObj.alpha > 0.22) {
+                    const padX = (sObj.drawW / 2) + 24;
+                    const padY = (sObj.drawH / 2) + 18;
+                    if (Math.abs(e.clientX - sObj.screenX) <= padX && Math.abs(e.clientY - sObj.screenY) <= padY) {
+                        clickedLetter = true;
+                        if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
+                        burstGalaxyHearts(e.clientX, e.clientY, 15);
+                        playCelebrationChord();
+                        playMagicSparkleSound();
+                        openGalaxyLoveLetter();
+                        break;
+                    }
+                }
+            }
+
+            if (!clickedLetter) {
+                if (navigator.vibrate) navigator.vibrate(18);
+                playChime(640, 0.25);
+                burstGalaxyHearts(e.clientX, e.clientY, 6);
+            }
         });
     }
 
@@ -2086,6 +2560,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const clusterFolklore = document.getElementById('backdropFolklore');
 
     function renderParallax() {
+        if (currentChapter !== 1) {
+            requestAnimationFrame(renderParallax);
+            return;
+        }
+
         parallaxCurrentX += (parallaxTargetX - parallaxCurrentX) * 0.045;
         parallaxCurrentY += (parallaxTargetY - parallaxCurrentY) * 0.045;
 
@@ -2102,5 +2581,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
         requestAnimationFrame(renderParallax);
     }
+
+    // Girlfriend Photo Cameo Modal Handler
+    const gfCameoBtn = document.getElementById('gfCameoBtn');
+    const gfPhotoModal = document.getElementById('gfPhotoModal');
+    const gfModalClose = document.getElementById('gfModalClose');
+    const gfModalBackdrop = document.getElementById('gfModalBackdrop');
+
+    function openGfModal() {
+        if (!gfPhotoModal) return;
+        gfPhotoModal.classList.add('active');
+        gfPhotoModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeGfModal() {
+        if (!gfPhotoModal) return;
+        gfPhotoModal.classList.remove('active');
+        gfPhotoModal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (gfCameoBtn) gfCameoBtn.addEventListener('click', openGfModal);
+    if (gfModalClose) gfModalClose.addEventListener('click', closeGfModal);
+    if (gfModalBackdrop) gfModalBackdrop.addEventListener('click', closeGfModal);
+
+    // ----------------------------------------------------
+    // PRELOADER & WELCOME SCREEN LOGIC
+    // ----------------------------------------------------
+    const appPreloader = document.getElementById('appPreloader');
+    const preloaderBarFill = document.getElementById('preloaderBarFill');
+    const preloaderPercentText = document.getElementById('preloaderPercentText');
+    const preloaderStatusArea = document.getElementById('preloaderStatusArea');
+    const preloaderEnterArea = document.getElementById('preloaderEnterArea');
+    const btnEnterApp = document.getElementById('btnEnterApp');
+
+    const assetsToPreload = [
+        'assets/images/luminous_super_moon.jpg',
+        'assets/images/tvy.jpg',
+        'assets/images/sky_lantern_screen_transparent.png',
+        'assets/images/lotus_pure.png',
+        'assets/images/rabbit_branch_transparent.png',
+        'assets/images/anime_cuoi_cay_da.jpg'
+    ];
+
+    let loadedCount = 0;
+    const totalAssets = assetsToPreload.length;
+    let isPreloadDone = false;
+
+    function updatePreloaderProgress(percent) {
+        if (preloaderBarFill) preloaderBarFill.style.width = `${percent}%`;
+        if (preloaderPercentText) preloaderPercentText.textContent = `${percent}%`;
+    }
+
+    function revealEnterButton() {
+        if (isPreloadDone) return;
+        isPreloadDone = true;
+        updatePreloaderProgress(100);
+
+        setTimeout(() => {
+            if (preloaderStatusArea) preloaderStatusArea.style.display = 'none';
+            if (preloaderEnterArea) preloaderEnterArea.style.display = 'block';
+        }, 350);
+    }
+
+    if (totalAssets > 0) {
+        assetsToPreload.forEach(src => {
+            const img = new Image();
+            img.onload = img.onerror = () => {
+                loadedCount++;
+                const pct = Math.round((loadedCount / totalAssets) * 100);
+                updatePreloaderProgress(pct);
+                if (loadedCount >= totalAssets) {
+                    revealEnterButton();
+                }
+            };
+            img.src = src;
+        });
+
+        // Safety fallback timer (max 2.8s) in case network delays
+        setTimeout(revealEnterButton, 2800);
+    } else {
+        revealEnterButton();
+    }
+
+    if (btnEnterApp) {
+        btnEnterApp.addEventListener('click', () => {
+            initAudioContext();
+            toggleMusic(true);
+            playChime(700, 0.6);
+            if (navigator.vibrate) navigator.vibrate([30, 50]);
+
+            // Kích hoạt chuỗi hiệu ứng xuất hiện từ từ từng thành phần của bức tranh tiên cảnh
+            document.body.classList.add('painting-reveal-active');
+
+            // Đồng bộ tiếng chuông tinh tú ngân vang theo từng tầng của bức tranh
+            setTimeout(() => playChime(520, 0.45, 'sine'), 400);  // Vòng tường vân & mây
+            setTimeout(() => playChime(680, 0.55, 'sine'), 750);  // Siêu mặt trăng tỏa sáng
+            setTimeout(() => playChime(850, 0.60, 'sine'), 1150); // Thỏ ngọc bên cành hoa quế
+            setTimeout(() => playChime(1020, 0.50, 'sine'), 1500); // Mặt hồ soi trăng & hoa sen
+
+            if (appPreloader) {
+                appPreloader.classList.add('loaded-fade-out');
+                setTimeout(() => {
+                    appPreloader.style.display = 'none';
+                }, 850);
+            }
+        });
+    }
+
     requestAnimationFrame(renderParallax);
 });
+
+
+

@@ -799,12 +799,21 @@ html, body {
     right: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding-top: calc(12px + env(safe-area-inset-top, 0px));
     padding-bottom: 8px;
     padding-left: calc(16px + env(safe-area-inset-left, 0px));
     padding-right: calc(16px + env(safe-area-inset-right, 0px));
     z-index: 50;
+    pointer-events: none;
+}
+
+.header-actions {
+    margin-left: auto;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .chat-bubble-quote {
@@ -1065,47 +1074,54 @@ html, body {
     transition: transform 0.4s ease;
 }
 
-/* Traditional Ornamental Red & Gold Moon Ring */
+/* Traditional Ornamental Red & Gold Moon Ring - Concentric with the Moon */
 .traditional-moon-ring {
     position: absolute;
-    top: 42%;
-    left: 50%;
-    width: 270px;
-    height: 270px;
+    top: 26%;
+    left: 35%;
+    width: 220px;
+    height: 220px;
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 10;
+    opacity: 0.75;
+    animation: moonRingSpinSlow 60s linear infinite;
+}
+
+@keyframes moonRingSpinSlow {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .ring-svg {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 0 16px rgba(231, 76, 60, 0.5));
+    filter: drop-shadow(0 0 12px rgba(255, 175, 50, 0.45));
 }
 
 .ring-outer {
     fill: none;
-    stroke: #b33939;
-    stroke-width: 6;
+    stroke: rgba(225, 80, 60, 0.65);
+    stroke-width: 3.5;
 }
 
 .ring-middle {
     fill: none;
-    stroke: #e1b12c;
-    stroke-width: 2.5;
-    stroke-dasharray: 6 3;
+    stroke: rgba(255, 215, 107, 0.85);
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
 }
 
 .ring-inner {
     fill: none;
-    stroke: #831030;
-    stroke-width: 3;
+    stroke: rgba(180, 40, 60, 0.5);
+    stroke-width: 2;
 }
 
 .ring-cloud {
     fill: #ffd56b;
-    opacity: 0.9;
-    filter: drop-shadow(0 0 6px rgba(255, 215, 107, 0.8));
+    opacity: 0.85;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 107, 0.9));
 }
 
 /* Luminous Full Moon (Hold Target - Tọa lạc trên cao bên trái cung trăng, ngắm nhìn thỏ ngọc) */
@@ -1113,8 +1129,8 @@ html, body {
     position: absolute;
     top: 26%;
     left: 35%;
-    width: 125px;
-    height: 125px;
+    width: 175px;
+    height: 175px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
     cursor: pointer;
@@ -1122,58 +1138,123 @@ html, body {
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
-    transition: transform 0.15s ease, filter 0.15s ease;
+    filter: drop-shadow(0 0 28px rgba(255, 220, 100, 0.7)) drop-shadow(0 0 56px rgba(255, 180, 40, 0.35));
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+    animation: moonFloatSway 8s ease-in-out infinite alternate;
+}
+
+@keyframes moonFloatSway {
+    0%   { filter: drop-shadow(0 0 22px rgba(255, 220, 100, 0.65)) drop-shadow(0 0 50px rgba(255, 180, 40, 0.30)); }
+    50%  { filter: drop-shadow(0 0 35px rgba(255, 235, 140, 0.85)) drop-shadow(0 0 70px rgba(255, 200, 60, 0.50)); }
+    100% { filter: drop-shadow(0 0 26px rgba(255, 210, 90, 0.70)) drop-shadow(0 0 55px rgba(255, 175, 35, 0.35)); }
+}
+
+.luminous-moon:hover {
+    transform: translate(-50%, -50%) scale(1.04);
+    filter: drop-shadow(0 0 38px rgba(255, 240, 160, 0.95)) drop-shadow(0 0 80px rgba(255, 200, 60, 0.60));
 }
 
 .luminous-moon:active, .luminous-moon.holding {
-    transform: translate(-50%, -50%) scale(0.94);
-    filter: brightness(1.15) drop-shadow(0 0 30px rgba(255, 215, 107, 0.9));
+    transform: translate(-50%, -50%) scale(0.97);
+    filter: drop-shadow(0 0 55px rgba(255, 240, 160, 1)) drop-shadow(0 0 100px rgba(255, 200, 60, 0.85)) brightness(1.25);
+}
+
+/* Multi-Layered Ethereal Moon Glow Aura */
+.moon-glow-halo-far {
+    position: absolute;
+    inset: -60px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 240, 160, 0.40) 0%,
+        rgba(255, 200, 80, 0.20) 40%,
+        rgba(255, 150, 30, 0.08) 65%,
+        transparent 78%
+    );
+    filter: blur(22px);
+    animation: moonHaloBreathe 6s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .moon-glow-aura {
     position: absolute;
-    inset: -18px;
+    inset: -28px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 225, 130, 0.4) 10%, rgba(255, 170, 50, 0.18) 45%, transparent 70%);
-    filter: blur(10px);
-    animation: moonPulse 4s ease-in-out infinite;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 210, 0.60) 10%,
+        rgba(255, 220, 100, 0.35) 45%,
+        rgba(255, 170, 40, 0.12) 70%,
+        transparent 82%
+    );
+    filter: blur(16px);
+    animation: moonPulse 4s ease-in-out infinite alternate;
     pointer-events: none;
+    z-index: 2;
 }
 
-.moon-texture {
+@keyframes moonHaloBreathe {
+    0%   { transform: scale(0.90); opacity: 0.65; }
+    50%  { transform: scale(1.05); opacity: 0.90; }
+    100% { transform: scale(1.15); opacity: 1.00; }
+}
+
+/* Realistic Luminous Super Moon Sphere */
+.moon-sphere-container {
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #fffde8 0%, #fae29c 45%, #e6a845 85%, #be6d1d 100%);
-    box-shadow: 
-        inset -10px -10px 20px rgba(184, 88, 10, 0.6),
-        inset 8px 8px 16px rgba(255, 255, 255, 0.8),
-        0 0 30px rgba(255, 220, 100, 0.65);
     overflow: hidden;
+    box-shadow:
+        0 0 0 2px rgba(255, 245, 200, 0.55),
+        0 0 20px rgba(255, 240, 160, 0.80),
+        0 0 55px rgba(255, 200, 80, 0.55),
+        0 0 100px rgba(255, 160, 40, 0.30),
+        inset 0 0 25px rgba(255, 255, 240, 0.85),
+        inset 0 -15px 30px rgba(200, 140, 20, 0.30);
+    z-index: 5;
+    background: radial-gradient(circle at 40% 35%, #ffe8a0, #c8890a);
 }
 
-/* Subtle moon crater markings */
-.moon-texture::before {
-    content: '';
-    position: absolute;
-    top: 25%;
-    left: 30%;
-    width: 28px;
-    height: 24px;
-    border-radius: 40% 50% 45% 40%;
-    background: rgba(190, 115, 30, 0.22);
-    filter: blur(3px);
+.moon-sphere-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    filter: contrast(1.10) brightness(1.08) saturate(1.08);
+    animation: moonSurfaceGlow 7s ease-in-out infinite alternate;
 }
-.moon-texture::after {
-    content: '';
+
+@keyframes moonSurfaceGlow {
+    0%   { filter: contrast(1.05) brightness(1.02) saturate(1.00); }
+    50%  { filter: contrast(1.12) brightness(1.10) saturate(1.12); }
+    100% { filter: contrast(1.18) brightness(1.16) saturate(1.06); }
+}
+
+.moon-specular-glow {
     position: absolute;
-    bottom: 25%;
-    right: 25%;
-    width: 38px;
-    height: 32px;
-    border-radius: 50% 40% 45% 55%;
-    background: rgba(180, 100, 20, 0.25);
-    filter: blur(4px);
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 220, 0.20) 40%, transparent 65%),
+        radial-gradient(ellipse at 70% 75%, rgba(200, 130, 20, 0.18) 0%, transparent 50%);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 6;
+}
+
+.moon-lunar-edge-highlight {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 248, 210, 0.75);
+    box-shadow:
+        inset 0 0 18px rgba(255, 230, 140, 0.65),
+        inset -4px -4px 12px rgba(180, 110, 10, 0.25);
+    pointer-events: none;
+    z-index: 7;
 }
 
 /* Ambient Transparent Sky Lanterns (Chuẩn xác như hình chụp) */
@@ -1482,8 +1563,8 @@ html, body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 145px;
-    height: 145px;
+    width: 156px;
+    height: 156px;
     transform: translate(-50%, -50%) rotate(-90deg);
     pointer-events: none;
     z-index: 26;
@@ -3560,6 +3641,7 @@ html, body {
 }
 
 /* Khi bàn phím ảo điện thoại xuất hiện */
+#scene-2.keyboard-focused .wish-release-container,
 #scene-3.keyboard-focused .wish-release-container,
 #scene-4.keyboard-focused .wish-release-container,
 #scene-5.keyboard-focused .wish-release-container {
@@ -3567,18 +3649,21 @@ html, body {
     margin: 0;
 }
 
+#scene-2.keyboard-focused .giant-wish-lantern,
 #scene-3.keyboard-focused .giant-wish-lantern,
 #scene-4.keyboard-focused .giant-wish-lantern,
 #scene-5.keyboard-focused .giant-wish-lantern {
     transform: scale(0.62);
 }
 
+#scene-2.keyboard-focused .scene-header,
 #scene-3.keyboard-focused .scene-header,
 #scene-4.keyboard-focused .scene-header,
 #scene-5.keyboard-focused .scene-header {
     margin-bottom: 2px;
 }
 
+#scene-2.keyboard-focused .scene-subtitle,
 #scene-3.keyboard-focused .scene-subtitle,
 #scene-4.keyboard-focused .scene-subtitle,
 #scene-5.keyboard-focused .scene-subtitle {
@@ -3710,8 +3795,8 @@ html, body {
         height: 240px;
     }
     .luminous-moon {
-        width: 120px;
-        height: 120px;
+        width: 130px;
+        height: 130px;
     }
     .revolving-lantern-container {
         transform: scale(0.92);
@@ -3892,26 +3977,28 @@ html, body {
     cursor: grabbing;
 }
 
-/* Center Floating HUD (Lyrics + Sticker Card like user screenshot) */
-.galaxy-center-hud {
+/* Top Floating Lyric Banner */
+.galaxy-lyric-hud {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: calc(84px + env(safe-area-inset-top, 0px));
+    left: 0;
+    right: 0;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
     pointer-events: none;
     z-index: 25;
-    gap: 12px;
-    width: 90%;
-    max-width: 380px;
+    padding: 0 16px;
+    transition: opacity 0.4s ease;
+}
+
+.letter-open .galaxy-lyric-hud {
+    opacity: 0 !important;
 }
 
 .galaxy-lyric-banner {
     font-family: var(--font-main);
     font-weight: 800;
-    font-size: clamp(0.88rem, 3.8vw, 1.15rem);
+    font-size: clamp(0.85rem, 3.6vw, 1.1rem);
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -3925,67 +4012,27 @@ html, body {
 }
 
 @keyframes lyricGlowPulse {
-    0% { transform: scale(0.98); opacity: 0.9; text-shadow: 0 0 8px rgba(255, 255, 255, 0.9), 0 0 16px rgba(255, 105, 180, 0.7); }
-    100% { transform: scale(1.02); opacity: 1; text-shadow: 0 0 12px rgba(255, 255, 255, 1), 0 0 24px rgba(255, 105, 180, 0.95), 0 0 40px rgba(224, 86, 253, 0.85); }
+    0% { opacity: 0.82; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1.02); text-shadow: 0 0 12px #fff, 0 0 25px #ff79c6, 0 0 45px #e056fd; }
 }
 
-/* White Sticker Badge from screenshot */
-.galaxy-sticker-card {
-    background: #ffffff;
-    color: #0d0d12;
-    border-radius: 14px;
-    padding: 9px 20px;
-    box-shadow: 
-        0 6px 26px rgba(0, 0, 0, 0.65), 
-        0 0 20px rgba(255, 255, 255, 0.4),
-        0 0 45px rgba(255, 77, 148, 0.35);
-    text-align: center;
-    pointer-events: auto;
-    user-select: none;
-    font-family: var(--font-main);
-    animation: stickerFloat 3.8s ease-in-out infinite alternate;
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Optimization: Hide heavy backdrop blurs when in Galaxy to eliminate all GPU lag */
+body.in-galaxy #celestial-backdrop,
+body.in-galaxy .deep-depth-atmosphere,
+body.in-galaxy .backdrop-folklore-cluster,
+body.in-galaxy .desktop-decorative-scene {
+    display: none !important;
 }
-
-.galaxy-sticker-card:active {
-    transform: scale(0.94);
-}
-
-.galaxy-sticker-card .sticker-line.top {
-    font-size: 0.92rem;
-    font-weight: 700;
-    line-height: 1.25;
-    color: #1a1a24;
-}
-
-.galaxy-sticker-card .sticker-line.bot {
-    font-size: 1.05rem;
-    font-weight: 800;
-    line-height: 1.3;
-    color: #0b0b10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 1px;
-}
-
-@keyframes stickerFloat {
-    0% { transform: translateY(0) rotate(-0.5deg); }
-    100% { transform: translateY(-7px) rotate(0.8deg); }
+body.in-galaxy {
+    background: #020308 !important;
 }
 
 /* HUD Controls */
 .galaxy-hud-controls {
     position: absolute;
-    top: calc(18px + env(safe-area-inset-top, 0px));
+    top: calc(14px + env(safe-area-inset-top, 0px));
     left: calc(16px + env(safe-area-inset-left, 0px));
-    right: calc(16px + env(safe-area-inset-right, 0px));
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 30;
+    z-index: 55;
     pointer-events: none;
 }
 
@@ -3999,30 +4046,6 @@ html, body {
     border: 1px solid rgba(255, 120, 190, 0.45) !important;
     color: #ff9fdb !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 120, 190, 0.25) !important;
-}
-
-.btn-galaxy-add-heart {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(238, 82, 83, 0.28);
-    border: 1px solid rgba(255, 107, 107, 0.6);
-    color: #ffffff;
-    font-size: 1.15rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 0 16px rgba(238, 82, 83, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition: transform 0.2s, background 0.2s;
-    touch-action: manipulation;
-}
-
-.btn-galaxy-add-heart:active {
-    transform: scale(0.88);
-    background: rgba(238, 82, 83, 0.55);
 }
 
 .galaxy-touch-hint {
@@ -4058,3 +4081,749 @@ html, body {
     0% { transform: scale(1); box-shadow: 0 6px 20px rgba(224, 86, 253, 0.5), 0 0 15px rgba(255, 77, 148, 0.35); }
     100% { transform: scale(1.02); box-shadow: 0 8px 30px rgba(224, 86, 253, 0.8), 0 0 30px rgba(255, 77, 148, 0.6); }
 }
+
+/* Sticker Action Tag (Chạm để mở thư tình) */
+.sticker-action-tag {
+    margin-top: 6px;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ff4d94, #e056fd);
+    color: #ffffff;
+    font-size: 0.74rem;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(255, 77, 148, 0.45);
+    animation: tapTagPulse 1.8s infinite alternate;
+}
+
+@keyframes tapTagPulse {
+    0% { transform: scale(0.96); box-shadow: 0 0 6px rgba(255, 77, 148, 0.4); }
+    100% { transform: scale(1.04); box-shadow: 0 0 14px rgba(224, 86, 253, 0.8); }
+}
+
+
+
+/* Embedded Royal Love Letter Modal inside Galaxy */
+.galaxy-letter-modal {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(48px + env(safe-area-inset-top, 0px)) 16px 24px;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.92);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.galaxy-letter-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+.galaxy-letter-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 4, 12, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.galaxy-scroll-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 440px;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    animation: scrollUnrollGalaxy 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scrollUnrollGalaxy {
+    0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.galaxy-parchment {
+    max-height: 68vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.85),
+        0 0 35px rgba(255, 215, 120, 0.45);
+}
+
+.btn-close-galaxy-letter {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(184, 88, 10, 0.15);
+    border: 1px solid rgba(184, 88, 10, 0.4);
+    color: #8b3a00;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s;
+    touch-action: manipulation;
+}
+
+.btn-close-galaxy-letter:active {
+    transform: scale(0.9);
+    background: rgba(184, 88, 10, 0.3);
+}
+
+.galaxy-letter-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.galaxy-letter-actions .btn-close-letter-action {
+    flex: 1;
+    font-size: 0.84rem;
+    padding: 11px 12px;
+}
+
+.galaxy-letter-actions .btn-scroll-action {
+    flex: 1.3;
+    font-size: 0.84rem;
+    padding: 11px 12px;
+}
+
+/* ==============================================
+   GIRLFRIEND PHOTO CAMEO & ROMANTIC MODAL STYLES
+   ============================================== */
+.btn-gf-cameo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(20, 15, 35, 0.72);
+    border: 1.5px solid rgba(255, 215, 120, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 4px 10px 4px 5px;
+    border-radius: 28px;
+    cursor: pointer;
+    box-shadow: 
+        0 4px 18px rgba(0, 0, 0, 0.45),
+        0 0 14px rgba(255, 215, 120, 0.35);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    outline: none;
+}
+
+.btn-gf-cameo:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: rgba(255, 235, 170, 0.9);
+    box-shadow: 
+        0 6px 22px rgba(255, 180, 50, 0.4),
+        0 0 22px rgba(255, 215, 120, 0.6);
+}
+
+.btn-gf-cameo:active {
+    transform: scale(0.96);
+}
+
+.cameo-glow-aura {
+    position: absolute;
+    inset: -3px;
+    border-radius: 30px;
+    background: radial-gradient(circle, rgba(255, 215, 120, 0.5) 0%, transparent 75%);
+    filter: blur(4px);
+    opacity: 0.7;
+    animation: cameoPulse 3s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes cameoPulse {
+    0%   { opacity: 0.4; transform: scale(0.96); }
+    100% { opacity: 0.9; transform: scale(1.04); }
+}
+
+.cameo-avatar-ring {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid #ffeaa7;
+    box-shadow: 0 0 8px rgba(255, 215, 120, 0.7);
+    z-index: 2;
+}
+
+.cameo-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.cameo-label-tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff2d6;
+    font-family: 'Dancing Script', 'Quicksand', sans-serif;
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 8px rgba(255, 215, 120, 0.7);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+/* Girlfriend Romantic Photo Modal */
+.gf-photo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gf-photo-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.gf-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(15, 12, 30, 0.88) 0%, rgba(5, 3, 12, 0.96) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.gf-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    background: linear-gradient(145deg, rgba(28, 20, 48, 0.92) 0%, rgba(16, 11, 30, 0.96) 100%);
+    border: 1.5px solid rgba(255, 215, 120, 0.65);
+    border-radius: 24px;
+    padding: 24px 20px 20px 20px;
+    box-shadow: 
+        0 15px 45px rgba(0, 0, 0, 0.65),
+        0 0 35px rgba(255, 180, 50, 0.25),
+        inset 0 0 20px rgba(255, 235, 170, 0.1);
+    text-align: center;
+    z-index: 2;
+    transform: scale(0.88) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gf-photo-modal.active .gf-modal-card {
+    transform: scale(1) translateY(0);
+}
+
+.gf-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 215, 120, 0.4);
+    color: #ffd56b;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.gf-modal-close:hover {
+    background: rgba(255, 100, 100, 0.3);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.gf-crown-badge {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffd56b;
+    background: rgba(255, 215, 120, 0.12);
+    border: 1px solid rgba(255, 215, 120, 0.35);
+    padding: 4px 14px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(255, 215, 120, 0.6);
+}
+
+.gf-card-title {
+    font-family: 'Dancing Script', 'Playfair Display', cursive;
+    font-size: 1.55rem;
+    color: #fff;
+    margin: 4px 0 6px 0;
+    text-shadow: 0 0 12px rgba(255, 220, 140, 0.8);
+}
+
+.gf-title-divider {
+    font-size: 0.8rem;
+    color: #ffd56b;
+    margin-bottom: 16px;
+    opacity: 0.8;
+}
+
+/* GF Photo Frame Container */
+.gf-photo-frame-container {
+    position: relative;
+    width: 210px;
+    height: 250px;
+    margin: 0 auto 16px auto;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 225, 150, 0.8);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(255, 215, 120, 0.45),
+        inset 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.gf-portrait-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(1.04) contrast(1.05);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.gf-photo-frame-container:hover .gf-portrait-photo {
+    transform: scale(1.06);
+}
+
+.gf-photo-glow-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    box-shadow: inset 0 0 20px rgba(255, 215, 120, 0.5);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.gf-photo-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.gf-corner-sparkle {
+    position: absolute;
+    color: #ffeaa7;
+    font-size: 0.9rem;
+    z-index: 4;
+    animation: sparkleBreathe 2s ease-in-out infinite alternate;
+}
+
+.gf-corner-sparkle.sp-1 { top: 6px; left: 8px; }
+.gf-corner-sparkle.sp-2 { top: 6px; right: 8px; animation-delay: 0.5s; }
+.gf-corner-sparkle.sp-3 { bottom: 6px; left: 8px; animation-delay: 1s; }
+.gf-corner-sparkle.sp-4 { bottom: 6px; right: 8px; animation-delay: 1.5s; }
+
+@keyframes sparkleBreathe {
+    0%   { opacity: 0.4; transform: scale(0.8); }
+    100% { opacity: 1;   transform: scale(1.2); }
+}
+
+.gf-quote-container {
+    background: rgba(255, 215, 120, 0.08);
+    border: 1px solid rgba(255, 215, 120, 0.25);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.gf-quote-text {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #ffe6ed;
+    font-style: italic;
+    margin: 0 0 8px 0;
+}
+
+.gf-heart-seal {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ff7675;
+    text-shadow: 0 0 8px rgba(255, 118, 117, 0.6);
+}
+
+/* In-letter girlfriend photo frame custom adjustments */
+.scroll-gf-frame .gf-painting-wrapper {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid rgba(255, 215, 120, 0.7);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.scroll-gf-frame .gf-painting-img {
+    max-height: 220px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.gf-heart-tag {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 10, 25, 0.82);
+    border: 1px solid rgba(255, 215, 120, 0.6);
+    color: #ffd56b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 16px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ==============================================
+   ROYAL MID-AUTUMN PRELOADER & WELCOME SCREEN
+   ============================================== */
+.app-preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #18122b 0%, #070412 100%);
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+}
+
+.app-preloader.loaded-fade-out {
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+.preloader-backdrop {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 35%, rgba(255, 215, 120, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.preloader-content {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    z-index: 2;
+}
+
+.preloader-moon-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 24px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preloader-moon-ring {
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 215, 120, 0.6);
+    animation: preloaderRingRotate 20s linear infinite;
+}
+
+@keyframes preloaderRingRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.preloader-moon-glow {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 220, 100, 0.45) 0%, transparent 75%);
+    filter: blur(14px);
+    animation: preloaderGlowPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes preloaderGlowPulse {
+    0% { transform: scale(0.9); opacity: 0.5; }
+    100% { transform: scale(1.15); opacity: 1; }
+}
+
+.preloader-moon-icon {
+    font-size: 4rem;
+    position: relative;
+    z-index: 3;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 120, 0.8));
+    animation: preloaderMoonFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes preloaderMoonFloat {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-8px); }
+}
+
+.preloader-title {
+    font-family: 'Dancing Script', 'Playfair Display', cursive;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px 0;
+    text-shadow: 0 0 16px rgba(255, 215, 120, 0.85);
+}
+
+.preloader-subtitle {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.92rem;
+    color: #ffe6ed;
+    margin: 0 0 28px 0;
+    opacity: 0.9;
+    letter-spacing: 0.3px;
+}
+
+/* Preloader Progress Bar */
+.preloader-status-container {
+    background: rgba(255, 215, 120, 0.08);
+    border: 1px solid rgba(255, 215, 120, 0.25);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.preloader-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 215, 120, 0.2);
+}
+
+.preloader-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffd56b 0%, #ff9f43 50%, #ee5253 100%);
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(255, 215, 120, 0.8);
+    transition: width 0.3s ease;
+}
+
+.preloader-status-text {
+    font-size: 0.84rem;
+    color: #ffd56b;
+    font-weight: 600;
+}
+
+/* Enter Button (Appears after 100% loaded) */
+.preloader-enter-container {
+    animation: preloaderPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes preloaderPopIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.btn-enter-app {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ffd56b 0%, #ff9f43 50%, #ee5253 100%);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 
+        0 8px 25px rgba(255, 159, 67, 0.5),
+        0 0 25px rgba(255, 215, 120, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-enter-app:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 
+        0 12px 35px rgba(255, 159, 67, 0.7),
+        0 0 35px rgba(255, 215, 120, 0.9);
+}
+
+.btn-enter-app:active {
+    transform: scale(0.97);
+}
+
+/* ==============================================
+   CINEMATIC STAGGERED PAINTING REVEAL (HIỆN BỨC TRANH TỪ TỪ TỪNG CÁI)
+   ============================================== */
+.painting-reveal-active .distant-mountain-silhouettes {
+    animation: paintingFadeRise 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.1s both;
+}
+
+.painting-reveal-active .celestial-clouds-atmosphere {
+    animation: paintingCloudUnveil 1.3s cubic-bezier(0.25, 1, 0.5, 1) 0.35s both;
+}
+
+.painting-reveal-active .traditional-moon-ring {
+    animation: paintingRingExpand 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s both;
+}
+
+.painting-reveal-active .luminous-moon {
+    animation: paintingMoonBloom 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s both;
+}
+
+.painting-reveal-active .ambient-sky-lantern {
+    animation: paintingLanternFloat 1.2s ease-out 0.95s both;
+}
+
+.painting-reveal-active .rabbit-branch-container {
+    animation: paintingRabbitSlide 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 1.15s both;
+}
+
+.painting-reveal-active .mystic-moonlit-lake {
+    animation: paintingLakeRise 1.3s cubic-bezier(0.25, 1, 0.5, 1) 1.35s both;
+}
+
+.painting-reveal-active .hold-action-area {
+    animation: paintingPromptPop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 1.6s both;
+}
+
+.painting-reveal-active .app-header {
+    animation: paintingHeaderFade 0.8s ease-out 1.8s both;
+}
+
+@keyframes paintingFadeRise {
+    0%   { opacity: 0; transform: translateY(35px) scale(0.97); filter: blur(8px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingCloudUnveil {
+    0%   { opacity: 0; transform: translateY(-20px) scale(0.92); filter: blur(6px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingRingExpand {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(-45deg); filter: blur(10px); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); filter: blur(0); }
+}
+
+@keyframes paintingMoonBloom {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); filter: brightness(2) blur(15px); }
+    50%  { opacity: 0.9; transform: translate(-50%, -50%) scale(1.12); filter: brightness(1.4) blur(4px); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: brightness(1) blur(0); }
+}
+
+@keyframes paintingLanternFloat {
+    0%   { opacity: 0; transform: translateY(40px) scale(0.7); filter: blur(5px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingRabbitSlide {
+    0%   { opacity: 0; transform: translate(45px, 35px) scale(0.85); filter: blur(6px); }
+    100% { opacity: 1; transform: translate(0, 0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingLakeRise {
+    0%   { opacity: 0; transform: translateY(50px); filter: blur(10px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes paintingPromptPop {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.85); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+@keyframes paintingHeaderFade {
+    0%   { opacity: 0; transform: translateY(-15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ==============================================
+   3D MORPH TRANSFORM (MẶT TRĂNG ➔ ẢNH BẠN GÁI)
+   ============================================== */
+.moon-sphere-container {
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.6s ease;
+}
+
+.moon-sphere-container.morphing {
+    transform: rotateY(180deg) scale(1.1);
+}
+
+.moon-sphere-container.transformed-gf {
+    background: #000000;
+    box-shadow: 
+        0 0 0 3px rgba(255, 235, 170, 0.95),
+        0 0 35px rgba(255, 180, 100, 0.95),
+        0 0 75px rgba(255, 118, 117, 0.75),
+        inset 0 0 20px rgba(255, 255, 240, 0.8);
+    animation: gfPortraitPulse 4s ease-in-out infinite alternate;
+}
+
+.moon-sphere-container.transformed-gf .moon-specular-glow {
+    opacity: 0.15;
+}
+
+@keyframes gfPortraitPulse {
+    0%   { box-shadow: 0 0 0 3px rgba(255, 235, 170, 0.95), 0 0 35px rgba(255, 180, 100, 0.85), 0 0 65px rgba(255, 118, 117, 0.6); }
+    100% { box-shadow: 0 0 0 4px rgba(255, 245, 190, 1), 0 0 48px rgba(255, 200, 120, 1), 0 0 90px rgba(255, 130, 130, 0.85); }
+}
+
+.moon-gf-badge {
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(20, 15, 35, 0.92) 0%, rgba(45, 25, 55, 0.92) 100%);
+    border: 1.5px solid rgba(255, 215, 120, 0.85);
+    color: #ffd56b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 215, 120, 0.6);
+    z-index: 15;
+    animation: gfBadgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes gfBadgePop {
+    0%   { transform: translateX(-50%) scale(0); opacity: 0; }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+
+
+

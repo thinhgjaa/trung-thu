@@ -18,9 +18,50 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=24">
+    <link rel="stylesheet" href="style.css?v=39">
+
+
+
+
+
+
+
 </head>
 <body>
+    <!-- Royal Mid-Autumn Preloader & Welcome Screen -->
+    <div id="appPreloader" class="app-preloader">
+        <div class="preloader-backdrop"></div>
+        <div class="preloader-content">
+            <div class="preloader-moon-wrapper">
+                <div class="preloader-moon-ring"></div>
+                <div class="preloader-moon-glow"></div>
+                <div class="preloader-moon-icon">🌕</div>
+            </div>
+
+            <h1 class="preloader-title">Trung Thu Yêu Thương</h1>
+            <p class="preloader-subtitle">Gửi tặng em bé - Ngôi sao sáng nhất trong lòng anh 💖</p>
+
+            <!-- Loading Progress Indicator (0 - 100%) -->
+            <div class="preloader-status-container" id="preloaderStatusArea">
+                <div class="preloader-bar-bg">
+                    <div class="preloader-bar-fill" id="preloaderBarFill"></div>
+                </div>
+                <div class="preloader-status-text" id="preloaderStatusText">
+                    Đang nạp ánh trăng rằm... <span id="preloaderPercentText">0%</span>
+                </div>
+            </div>
+
+            <!-- Start / Enter Button (Revealed after assets are preloaded) -->
+            <div class="preloader-enter-container" id="preloaderEnterArea" style="display: none;">
+                <button id="btnEnterApp" class="btn-primary btn-enter-app">
+                    <span class="btn-sparkle">✨</span>
+                    <span>Bước Vào Đêm Rằm Yêu Thương</span>
+                    <span class="btn-arrow">🌕 ➔</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Background Canvas Layers -->
     <canvas id="star-canvas"></canvas>
     <canvas id="firework-canvas"></canvas>
@@ -170,13 +211,6 @@
             </div>
         </header>
 
-        <!-- Story Progress Bar (4 Chương Tình Yêu) -->
-        <div class="story-progress-bar" id="storyProgress">
-            <div class="progress-step active" data-step="1" title="Đêm Rằm"></div>
-            <div class="progress-step" data-step="2" title="Thư Tình"></div>
-            <div class="progress-step" data-step="3" title="Ước Nguyện"></div>
-            <div class="progress-step" data-step="4" title="Vũ Trụ Yêu"></div>
-        </div>
 
         <!-- ==============================================
              CHƯƠNG 1: ĐÊM RẰM HUYỀN ẢO (MẪU ẢNH THỰC TẾ)
@@ -250,37 +284,40 @@
                 </div>
             </div>
 
-            <!-- Centerpiece: Realistic Moon, Traditional Ring, Rabbit & Branch (Tách nền sống động) -->
+            <!-- Centerpiece: Realistic Luminous Super Moon, Celestial Orbit Halo, Rabbit & Branch -->
             <div class="moon-stage-container">
-                <!-- Ornamental Vietnamese/East Asian Red & Gold Moon Ring -->
+                <!-- Celestial Gold & Vermilion Orbit Ring (Centered around Moon) -->
                 <div class="traditional-moon-ring">
                     <svg class="ring-svg" viewBox="0 0 300 300">
-                        <circle cx="150" cy="150" r="138" class="ring-outer" />
-                        <circle cx="150" cy="150" r="124" class="ring-middle" />
-                        <circle cx="150" cy="150" r="114" class="ring-inner" />
+                        <circle cx="150" cy="150" r="142" class="ring-outer" />
+                        <circle cx="150" cy="150" r="128" class="ring-middle" />
+                        <circle cx="150" cy="150" r="118" class="ring-inner" />
                         <!-- Stylized golden cloud accents -->
                         <path d="M 28,150 C 28,138 48,134 60,146 C 72,134 88,142 84,154 C 72,162 40,162 28,150 Z" class="ring-cloud left" />
                         <path d="M 272,150 C 272,138 252,134 240,146 C 228,134 212,142 216,154 C 228,162 260,162 272,150 Z" class="ring-cloud right" />
                     </svg>
                 </div>
 
-
                 <!-- Luminous Full Moon (Hold Target) -->
-                <div class="luminous-moon" id="luminousMoon">
+                <div class="luminous-moon" id="luminousMoon" role="button" aria-label="Ấn giữ vào mặt trăng" title="Ấn giữ vào mặt trăng">
                     <!-- Rotating Moonlight Beams & Radiance -->
                     <div class="moon-radial-beams" id="moonRadialBeams"></div>
                     <div class="moon-glow-aura"></div>
-                    <div class="moon-texture"></div>
-
-                    <!-- Subtle Glowing Moon Aura (no external image needed) -->
-                    <div class="moon-folklore-palace">
+                    <div class="moon-glow-halo-far"></div>
+                    
+                    <!-- High-Definition Realistic Luminous Super Moon Sphere -->
+                    <div class="moon-sphere-container" id="moonSphereContainer">
+                        <img src="assets/images/luminous_super_moon.jpg" alt="Mặt Trăng Rằm Yêu Thương" class="moon-sphere-img" id="moonSphereImg">
+                        <div class="moon-specular-glow"></div>
+                        <div class="moon-lunar-edge-highlight"></div>
+                        <div class="moon-gf-badge" id="moonGfBadge" style="display: none;">💖 Nàng Thơ Của Anh 💖</div>
                     </div>
                     
                     <!-- Orbiting Celestial Stardust Ring -->
                     <div class="moon-orbit-particles" id="moonOrbitParticles"></div>
 
                     <!-- SVG Circular Progress Indicator during Hold -->
-                    <svg class="hold-progress-svg" viewBox="0 0 145 145">
+                    <svg class="hold-progress-svg" viewBox="0 0 156 156">
                         <defs>
                             <linearGradient id="holdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="#ffd56b" />
@@ -288,8 +325,8 @@
                                 <stop offset="100%" stop-color="#ee5253" />
                             </linearGradient>
                         </defs>
-                        <circle class="hold-progress-bg" cx="72.5" cy="72.5" r="67" />
-                        <circle class="hold-progress-bar" id="holdProgressBar" cx="72.5" cy="72.5" r="67" />
+                        <circle class="hold-progress-bg" cx="78" cy="78" r="67" />
+                        <circle class="hold-progress-bar" id="holdProgressBar" cx="78" cy="78" r="67" />
                     </svg>
 
                     <!-- Ripple Waves when holding -->
@@ -401,104 +438,121 @@
         </section>
 
         <!-- ==============================================
-             CHƯƠNG 2: BỨC THƯ TÌNH CUNG TRĂNG (ROYAL LOVE SCROLL)
+             CHƯƠNG 2: VŨ TRỤ TÌNH YÊU (3D LOVE GALAXY)
              ============================================== -->
-        <section id="scene-2" class="story-scene scene-hidden">
-            <div class="scene-header">
-                <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
-                    <span class="back-arrow">‹</span> Quay lại
-                </button>
-                <span class="chapter-badge">Chương II</span>
-                <h2 class="scene-title" id="ch2Title">Thư Tình Cung Trăng</h2>
-                <p class="scene-subtitle" id="ch2Subtitle">Những lời chân thành từ tận đáy lòng gửi trao em</p>
-            </div>
+        <section id="scene-2" class="story-scene scene-hidden scene-galaxy-universe">
+            <div class="galaxy-universe-wrapper" id="galaxyUniverseWrapper">
+                <!-- 3D Canvas rendering stars, floating neon love texts, glowing red hearts, neon moon/star/mooncake icons -->
+                <canvas id="galaxyCanvas" class="galaxy-canvas"></canvas>
 
-            <!-- Royal Ancient Silk Scroll directly inside Scene 2 -->
-            <div class="scene-scroll-stage">
-                <div class="royal-scroll-wrapper" id="royalScrollWrapper">
-                    <!-- Top Scroll Wooden Rod with Gold Finials -->
-                    <div class="scroll-wooden-rod rod-top">
-                        <span class="rod-knob knob-left"></span>
-                        <span class="rod-shaft"></span>
-                        <span class="rod-knob knob-right"></span>
-                    </div>
+                <!-- Floating Lyrical Banner -->
+                <div class="galaxy-lyric-hud" id="galaxyLyricHud">
+                    <div class="galaxy-lyric-banner" id="galaxyLyricBanner">THẤY EM ĐI LẠC TRONG KHU RỪNG NHỎ</div>
+                </div>
 
-                    <!-- Silk Parchment Main Body -->
-                    <div class="royal-scroll-parchment">
-                        <!-- Vintage Gold Border & Corner Filigree -->
-                        <div class="parchment-corner corner-tl">❖</div>
-                        <div class="parchment-corner corner-tr">❖</div>
-                        <div class="parchment-corner corner-bl">❖</div>
-                        <div class="parchment-corner corner-br">❖</div>
+                <!-- Back button -->
+                <div class="galaxy-hud-controls">
+                    <button class="btn-scene-back galaxy-back-btn" id="btnGalaxyBack" aria-label="Quay lại">
+                        <span class="back-arrow">‹</span> Quay lại
+                    </button>
+                </div>
 
-                        <div class="letter-scroll-header">
-                            <div class="scroll-crest">🌕 ❖ 🏮</div>
-                            <h3 class="letter-heading" id="letterTitleText">Bức Thư Tình Dưới Ánh Trăng</h3>
-                            <div class="scroll-header-rule"></div>
+                <!-- Floating Royal Love Letter Scroll inside Galaxy -->
+                <div class="galaxy-letter-modal" id="galaxyLetterModal" aria-hidden="true">
+                    <div class="galaxy-letter-backdrop" id="galaxyLetterBackdrop"></div>
+                    <div class="galaxy-scroll-content">
+                        <!-- Top Scroll Wooden Rod -->
+                        <div class="scroll-wooden-rod rod-top">
+                            <span class="rod-knob knob-left"></span>
+                            <span class="rod-shaft"></span>
+                            <span class="rod-knob knob-right"></span>
                         </div>
 
-                        <!-- Chú Cuội ngồi gốc Cây Đa ngắm Cung Trăng Artwork Frame -->
-                        <div class="scroll-folklore-frame">
-                            <div class="folklore-painting-wrapper">
-                                <img src="assets/images/anime_cuoi_cay_da.jpg" alt="Chú Cuội & Cung Trăng" class="folklore-painting-img">
-                                <div class="folklore-painting-glow"></div>
+                        <!-- Silk Parchment Main Body -->
+                        <div class="royal-scroll-parchment galaxy-parchment">
+                            <button class="btn-close-galaxy-letter" id="btnCloseGalaxyLetter" aria-label="Đóng thư">✕</button>
+
+                            <div class="parchment-corner corner-tl">❖</div>
+                            <div class="parchment-corner corner-tr">❖</div>
+                            <div class="parchment-corner corner-bl">❖</div>
+                            <div class="parchment-corner corner-br">❖</div>
+
+                            <div class="letter-scroll-header">
+                                <div class="scroll-crest">🌕 ❖ 🏮</div>
+                                <h3 class="letter-heading" id="galaxyLetterTitleText">Bức Thư Tình Dưới Ánh Trăng</h3>
+                                <div class="scroll-header-rule"></div>
                             </div>
-                            <div class="folklore-painting-caption">
-                                <span>✨ Chú Cuội ngồi gốc cây đa • Nhớ thương em bé nhất trần gian ✨</span>
-                            </div>
-                        </div>
 
-                        <div class="letter-fast-hint" id="letterFastHint">
-                            <span>⚡ Chạm để đọc nhanh toàn bộ thư</span>
-                        </div>
-
-                        <div class="letter-content-body" id="letterContentBody">
-                            <!-- Typewriter paragraphs formatted properly with elegant typography -->
-                        </div>
-
-                        <div class="letter-signature-container">
-                            <div class="letter-signature-content">
-                                <p class="sig-from">Mãi mãi yêu em,</p>
-                                <p class="sig-name" id="letterSenderText">Chàng Chú Cuội ngốc nghếch yêu em nhất đời 💖</p>
-                            </div>
-                            <!-- Traditional Red Imperial Seal of True Love -->
-                            <div class="imperial-red-seal" title="Dấu ấn tình yêu trọn vẹn">
-                                <div class="seal-inner-frame">
-                                    <span class="seal-char-top">TÌNH</span>
-                                    <span class="seal-char-bot">NỒNG</span>
+                            <!-- Chú Cuội Cây Đa & Girlfriend Portrait Painting -->
+                            <div class="scroll-folklore-frame scroll-gf-frame">
+                                <div class="folklore-painting-wrapper gf-painting-wrapper">
+                                    <img src="assets/images/tvy.jpg" alt="Nàng Thơ Của Anh" class="folklore-painting-img gf-painting-img">
+                                    <div class="folklore-painting-glow gf-painting-glow"></div>
+                                    <div class="gf-heart-tag">👑 Nàng Thơ Của Anh 💖</div>
+                                </div>
+                                <div class="folklore-painting-caption">
+                                    <span>✨ Nguyện cùng em ngắm ánh trăng Rằm • Trọn đời trọn kiếp yêu thương ✨</span>
                                 </div>
                             </div>
+
+                            <div class="letter-fast-hint" id="galaxyLetterFastHint">
+                                <span>⚡ Chạm để đọc nhanh toàn bộ thư</span>
+                            </div>
+
+                            <div class="letter-content-body" id="galaxyLetterBody">
+                                <!-- Typewriter paragraphs injected by JS -->
+                            </div>
+
+                            <div class="letter-signature-container">
+                                <div class="letter-signature-content">
+                                    <p class="sig-from">Mãi mãi yêu em,</p>
+                                    <p class="sig-name" id="galaxyLetterSenderText">Chàng Chú Cuội ngốc nghếch yêu em nhất đời 💖</p>
+                                </div>
+                                <div class="imperial-red-seal" title="Dấu ấn tình yêu trọn vẹn">
+                                    <div class="seal-inner-frame">
+                                        <span class="seal-char-top">TÌNH</span>
+                                        <span class="seal-char-bot">NỒNG</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="letter-actions galaxy-letter-actions">
+                                <button class="btn-secondary btn-close-letter-action" id="btnLetterExploreGalaxy">
+                                    <span>Ngắm Vũ Trụ ✨</span>
+                                </button>
+                                <button class="btn-primary btn-scroll-action" id="btnGalaxyGoToCh3">
+                                    <span>Thả Đèn Trời</span>
+                                    <span class="btn-arrow">🏮✨ ➔</span>
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="letter-actions">
-                            <button class="btn-primary btn-scroll-action" id="btnGoToCh3">
-                                <span>Thả Đèn Trời Nguyện Ước</span>
-                                <span class="btn-arrow">🏮✨ ➔</span>
-                            </button>
+                        <!-- Bottom Scroll Wooden Rod -->
+                        <div class="scroll-wooden-rod rod-bottom">
+                            <span class="rod-knob knob-left"></span>
+                            <span class="rod-shaft"></span>
+                            <span class="rod-knob knob-right"></span>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Bottom Scroll Wooden Rod with Gold Finials -->
-                    <div class="scroll-wooden-rod rod-bottom">
-                        <span class="rod-knob knob-left"></span>
-                        <span class="rod-shaft"></span>
-                        <span class="rod-knob knob-right"></span>
-                    </div>
+                <div class="galaxy-touch-hint">
+                    <span>✨ Vuốt để xoay vũ trụ • Chạm vào lá thư tình 💌 để mở</span>
                 </div>
             </div>
         </section>
 
         <!-- ==============================================
-             CHƯƠNG 3: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
+             CHƯƠNG 3: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH - GRAND FINALE)
              ============================================== -->
         <section id="scene-3" class="story-scene scene-hidden">
             <div class="scene-header">
                 <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
                     <span class="back-arrow">‹</span> Quay lại
                 </button>
-                <span class="chapter-badge">Chương III</span>
-                <h2 class="scene-title" id="ch3Title">Thả Đèn Trời Nguyện Ước</h2>
-                <p class="scene-subtitle" id="ch3Subtitle">Gửi gắm ước mơ của em tới ngàn vì sao</p>
+                <span class="chapter-badge">Chương III (Vĩ Thanh)</span>
+                <h2 class="scene-title" id="ch2Title">Thả Đèn Trời Nguyện Ước</h2>
+                <p class="scene-subtitle" id="ch2Subtitle">Gửi gắm ước mơ của em tới ngàn vì sao</p>
             </div>
 
             <!-- Wish Lantern Interactive Center -->
@@ -567,48 +621,46 @@
             </div>
         </section>
 
-        <!-- ==============================================
-             CHƯƠNG 4: VŨ TRỤ TÌNH YÊU (3D LOVE GALAXY - TREND TIKTOK)
-             ============================================== -->
-        <section id="scene-4" class="story-scene scene-hidden scene-galaxy-universe">
-            <div class="galaxy-universe-wrapper" id="galaxyUniverseWrapper">
-                <!-- 3D Canvas rendering stars, floating neon love texts, glowing red hearts, neon moon/star/mooncake icons -->
-                <canvas id="galaxyCanvas" class="galaxy-canvas"></canvas>
-
-                <!-- Center Floating Lyrical Banner & Sticker Card matching the image -->
-                <div class="galaxy-center-hud" id="galaxyCenterHud">
-                    <div class="galaxy-lyric-banner" id="galaxyLyricBanner">THẤY EM ĐI LẠC TRONG KHU RỪNG NHỎ</div>
-                    <div class="galaxy-sticker-card" id="galaxyStickerCard">
-                        <div class="sticker-line top" id="stickerTopText">Quà trung thu bất ngờ</div>
-                        <div class="sticker-line bot" id="stickerBotText">của ảnh 🌸</div>
-                    </div>
-                </div>
-
-                <!-- Back button & floating heart trigger -->
-                <div class="galaxy-hud-controls">
-                    <button class="btn-scene-back galaxy-back-btn" id="btnGalaxyBack" aria-label="Quay lại">
-                        <span class="back-arrow">‹</span> Quay lại
-                    </button>
-                    <button class="btn-galaxy-add-heart" id="btnGalaxyAddHeart" aria-label="Thả tim" title="Bắn tim vào vũ trụ">
-                        ❤️
-                    </button>
-                </div>
-
-                <!-- Interactive hint -->
-                <div class="galaxy-touch-hint" id="galaxyTouchHint">
-                    <span>✨ Vuốt để xoay vũ trụ • Chạm bất kỳ đâu để thả tim 💖</span>
-                </div>
-            </div>
-        </section>
-
 
         <!-- Hidden Audio Element -->
         <audio id="bgAudio" preload="auto" loop></audio>
 
     </div>
 
+    <!-- Romantic Girlfriend Photo Cameo Modal ("Góc Nhỏ Nàng Thơ ✨") -->
+    <div class="gf-photo-modal" id="gfPhotoModal" aria-hidden="true">
+        <div class="gf-modal-backdrop" id="gfModalBackdrop"></div>
+        <div class="gf-modal-card">
+            <button class="gf-modal-close" id="gfModalClose" aria-label="Đóng xem ảnh">✕</button>
+            <div class="gf-card-header">
+                <div class="gf-crown-badge">👑 Nàng Thơ Của Anh 👑</div>
+                <h3 class="gf-card-title">Ngôi Sao Sáng Nhất Bầu Trời</h3>
+                <div class="gf-title-divider"><span>✨ 🌕 ✨</span></div>
+            </div>
+            <div class="gf-photo-frame-container">
+                <div class="gf-photo-glow-ring"></div>
+                <img src="assets/images/tvy.jpg" alt="Nụ cười xinh của em" class="gf-portrait-photo">
+                <div class="gf-photo-shine"></div>
+                <div class="gf-corner-sparkle sp-1">✦</div>
+                <div class="gf-corner-sparkle sp-2">✦</div>
+                <div class="gf-corner-sparkle sp-3">✦</div>
+                <div class="gf-corner-sparkle sp-4">✦</div>
+            </div>
+            <div class="gf-quote-container">
+                <p class="gf-quote-text">"Dẫu cho vạn vì sao trên dải ngân hà lấp lánh, em vẫn luôn là ánh trăng dịu dàng và tuyệt đẹp nhất trong tim anh..."</p>
+                <div class="gf-heart-seal">💖 Trọn Vẹn Yêu Thương 💖</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="config.js?v=12"></script>
-    <script src="script.js?v=22"></script>
+    <script src="script.js?v=33"></script>
+
+
+
+
+
+
 </body>
 </html>
