@@ -1580,6 +1580,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (wishReleaseContainer) {
                 wishReleaseContainer.classList.add('sky-illuminated');
             }
+            const scene3El = document.getElementById('scene-3');
+            if (scene3El) {
+                scene3El.classList.add('sky-illuminated');
+            }
 
             // Thắp sáng ngọn lửa tâm nguyện bên trong đèn
             if (giantWishLantern) {
@@ -1643,6 +1647,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const wishReleaseContainer = document.getElementById('wishReleaseContainer');
             if (wishReleaseContainer) wishReleaseContainer.classList.remove('sky-illuminated');
+            const scene3El = document.getElementById('scene-3');
+            if (scene3El) scene3El.classList.remove('sky-illuminated');
 
             const fleetContainer = document.getElementById('lanternFleetContainer');
             if (fleetContainer) fleetContainer.innerHTML = '';

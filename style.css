@@ -2934,12 +2934,9 @@ html, body {
     padding-top: 14px;
 }
 
-/* ==============================================
-   CHƯƠNG 3: BỨC THƯ CUỘN LỤA HOÀNG GIA (ROYAL LOVE SCROLL)
-   ============================================== */
 #scene-3 {
-    justify-content: flex-start;
-    padding-bottom: 12px;
+    justify-content: space-between;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     overflow: hidden;
 }
 
@@ -3272,20 +3269,25 @@ html, body {
 .wish-release-container {
     position: relative;
     width: 100%;
-    height: 240px;
-    margin: 8px 0;
+    flex: 1;
+    min-height: 240px;
+    margin: 4px 0 14px 0;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
+    padding-bottom: 16px;
     transition: height 0.3s ease, margin 0.3s ease;
 }
 
 /* Sky Ambient Warmth Glow during release */
+#scene-3.sky-illuminated::before,
 .wish-release-container.sky-illuminated::before {
     content: '';
     position: absolute;
-    inset: -60px;
-    background: radial-gradient(circle at 50% 65%, rgba(255, 140, 30, 0.35) 0%, rgba(255, 90, 20, 0.15) 45%, transparent 75%);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 140, 30, 0.35) 0%, rgba(255, 90, 20, 0.15) 50%, transparent 80%);
     filter: blur(28px);
     pointer-events: none;
     animation: skyWarmthPulse 13s ease-in-out forwards;
@@ -3293,10 +3295,10 @@ html, body {
 }
 
 @keyframes skyWarmthPulse {
-    0% { opacity: 0; transform: scale(0.8); }
-    15% { opacity: 1; transform: scale(1.2); }
-    75% { opacity: 0.85; transform: scale(1.4); }
-    100% { opacity: 0.55; transform: scale(1.5); }
+    0% { opacity: 0; transform: scale(0.9); }
+    15% { opacity: 1; transform: scale(1.1); }
+    75% { opacity: 0.85; transform: scale(1.25); }
+    100% { opacity: 0.55; transform: scale(1.35); }
 }
 
 /* ==============================================
@@ -3304,7 +3306,9 @@ html, body {
    ============================================== */
 .lantern-fleet-container {
     position: absolute;
-    inset: -40px;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     overflow: hidden;
     z-index: 3;
@@ -3312,7 +3316,7 @@ html, body {
 
 .fleet-lantern {
     position: absolute;
-    bottom: -80px;
+    bottom: -60px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3349,20 +3353,20 @@ html, body {
     }
     6% {
         opacity: var(--opacity, 0.85);
-        transform: translateY(-40px) translateX(calc(var(--drift-x, 25px) * 0.1)) scale(var(--scale, 0.5)) rotate(-1.5deg);
+        transform: translateY(-50px) translateX(calc(var(--drift-x, 25px) * 0.1)) scale(var(--scale, 0.5)) rotate(-1.5deg);
     }
     30% {
-        transform: translateY(-230px) translateX(calc(var(--drift-x, 25px) * 0.45)) scale(calc(var(--scale, 0.5) * 0.9)) rotate(2deg);
+        transform: translateY(-300px) translateX(calc(var(--drift-x, 25px) * 0.45)) scale(calc(var(--scale, 0.5) * 0.9)) rotate(2deg);
     }
     60% {
-        transform: translateY(-490px) translateX(calc(var(--drift-x, 25px) * 0.75)) scale(calc(var(--scale, 0.5) * 0.75)) rotate(-1.5deg);
+        transform: translateY(-600px) translateX(calc(var(--drift-x, 25px) * 0.75)) scale(calc(var(--scale, 0.5) * 0.75)) rotate(-1.5deg);
     }
     85% {
         opacity: var(--opacity, 0.85);
-        transform: translateY(-730px) translateX(var(--drift-x, 25px)) scale(calc(var(--scale, 0.5) * 0.6)) rotate(1.2deg);
+        transform: translateY(-900px) translateX(var(--drift-x, 25px)) scale(calc(var(--scale, 0.5) * 0.6)) rotate(1.2deg);
     }
     100% {
-        transform: translateY(-930px) translateX(calc(var(--drift-x, 25px) * 1.25)) scale(calc(var(--scale, 0.5) * 0.45));
+        transform: translateY(-1150px) translateX(calc(var(--drift-x, 25px) * 1.25)) scale(calc(var(--scale, 0.5) * 0.45));
         opacity: 0;
     }
 }
@@ -3429,6 +3433,7 @@ html, body {
     justify-content: center;
     z-index: 8;
     mix-blend-mode: screen;
+    margin-bottom: 8px;
     transition: transform 3.5s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 3.5s ease;
 }
 
@@ -3487,38 +3492,38 @@ html, body {
     }
     8% {
         /* Nhấc bổng êm ái khỏi tay, ngập ngừng nâng khí nóng */
-        transform: translateY(-22px) translateX(-5px) scale(0.99) rotate(-1.6deg);
+        transform: translateY(-30px) translateX(-5px) scale(0.99) rotate(-1.6deg);
         opacity: 1;
     }
     20% {
         /* Chầm chậm bay lên, nghiêng nhẹ theo làn gió đêm */
-        transform: translateY(-85px) translateX(12px) scale(0.95) rotate(2deg);
+        transform: translateY(-115px) translateX(12px) scale(0.95) rotate(2deg);
         opacity: 1;
     }
     35% {
         /* Trôi bồng bềnh êm ái ngang tầm mắt */
-        transform: translateY(-180px) translateX(-6px) scale(0.88) rotate(-1.8deg);
+        transform: translateY(-240px) translateX(-6px) scale(0.88) rotate(-1.8deg);
         opacity: 0.98;
     }
     52% {
         /* Lên cao vào tầng mây dịu nhẹ */
-        transform: translateY(-310px) translateX(16px) scale(0.76) rotate(1.5deg);
+        transform: translateY(-400px) translateX(16px) scale(0.76) rotate(1.5deg);
         opacity: 0.96;
     }
     70% {
         /* Hòa vào không gian ngàn vì sao */
-        transform: translateY(-470px) translateX(-8px) scale(0.62) rotate(-1.2deg);
+        transform: translateY(-580px) translateX(-8px) scale(0.62) rotate(-1.2deg);
         opacity: 0.92;
     }
     86% {
         /* Nhỏ dần thành ngôi sao ước nguyện lung linh */
-        transform: translateY(-620px) translateX(14px) scale(0.48) rotate(1deg);
+        transform: translateY(-750px) translateX(14px) scale(0.48) rotate(1deg);
         opacity: 0.85;
     }
     100% {
         /* Tỏa sáng vĩnh cửu trên cung trăng */
-        transform: translateY(-760px) translateX(22px) scale(0.35) rotate(-0.5deg);
-        opacity: 0.65;
+        transform: translateY(-940px) translateX(22px) scale(0.32) rotate(-0.5deg);
+        opacity: 0.55;
         filter: drop-shadow(0 0 35px rgba(255, 200, 70, 1)) drop-shadow(0 0 70px rgba(255, 120, 30, 0.9));
     }
 }
@@ -3540,25 +3545,7 @@ html, body {
 }
 
 .wish-preview-overlay {
-    position: absolute;
-    top: 36%;
-    left: 12%;
-    right: 12%;
-    text-align: center;
-    pointer-events: none;
-    z-index: 3;
-}
-
-.wish-preview-text {
-    font-family: var(--font-script);
-    font-size: 1.15rem;
-    line-height: 1.35;
-    color: #4b1408;
-    font-weight: 700;
-    text-shadow: 0 0 8px rgba(255, 230, 160, 0.9);
-    max-height: 80px;
-    overflow: hidden;
-    transition: all 0.5s ease;
+    display: none !important;
 }
 
 @keyframes lanternPulseGlow {
