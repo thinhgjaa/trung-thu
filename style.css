@@ -4507,7 +4507,7 @@ body.in-galaxy {
 }
 
 /* ==============================================
-   ROYAL MID-AUTUMN PRELOADER & WELCOME SCREEN
+   CLEAN & ROBUST MID-AUTUMN PRELOADER
    ============================================== */
 .app-preloader {
     position: fixed;
@@ -4516,119 +4516,66 @@ body.in-galaxy {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at center, #18122b 0%, #070412 100%);
+    background: radial-gradient(circle at center, #151a33 0%, #080c1b 100%);
     padding: 20px;
     opacity: 1;
-    transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .app-preloader.loaded-fade-out {
     opacity: 0;
-    transform: scale(1.06);
-    filter: blur(10px);
-    pointer-events: none;
-}
-
-.preloader-backdrop {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 35%, rgba(255, 215, 120, 0.15) 0%, transparent 70%);
+    visibility: hidden;
     pointer-events: none;
 }
 
 .preloader-content {
     position: relative;
-    max-width: 400px;
+    max-width: 320px;
     width: 100%;
     text-align: center;
-    z-index: 2;
-}
-
-.preloader-moon-wrapper {
-    position: relative;
-    width: 110px;
-    height: 110px;
-    margin: 0 auto 24px auto;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
 
-.preloader-moon-ring {
-    position: absolute;
-    inset: -12px;
-    border-radius: 50%;
-    border: 2px dashed rgba(255, 215, 120, 0.6);
-    animation: preloaderRingRotate 20s linear infinite;
+.preloader-lantern-icon {
+    font-size: 3.2rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 16px rgba(255, 175, 50, 0.8));
+    animation: preloaderLanternBounce 2.2s ease-in-out infinite;
 }
 
-@keyframes preloaderRingRotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.preloader-moon-glow {
-    position: absolute;
-    inset: -20px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 220, 100, 0.45) 0%, transparent 75%);
-    filter: blur(14px);
-    animation: preloaderGlowPulse 3s ease-in-out infinite alternate;
-}
-
-@keyframes preloaderGlowPulse {
-    0% { transform: scale(0.9); opacity: 0.5; }
-    100% { transform: scale(1.15); opacity: 1; }
-}
-
-.preloader-moon-icon {
-    font-size: 4rem;
-    position: relative;
-    z-index: 3;
-    filter: drop-shadow(0 0 20px rgba(255, 215, 120, 0.8));
-    animation: preloaderMoonFloat 4s ease-in-out infinite alternate;
-}
-
-@keyframes preloaderMoonFloat {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-8px); }
+@keyframes preloaderLanternBounce {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-8px) rotate(3deg); }
 }
 
 .preloader-title {
-    font-family: 'Dancing Script', 'Playfair Display', cursive;
-    font-size: 2.2rem;
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
     font-weight: 700;
-    color: #fff;
-    margin: 0 0 8px 0;
-    text-shadow: 0 0 16px rgba(255, 215, 120, 0.85);
+    color: #ffd56b;
+    margin: 0 0 16px 0;
+    text-shadow: 0 0 14px rgba(255, 213, 107, 0.5);
+    letter-spacing: 0.5px;
 }
 
-.preloader-subtitle {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 0.92rem;
-    color: #ffe6ed;
-    margin: 0 0 28px 0;
-    opacity: 0.9;
-    letter-spacing: 0.3px;
-}
-
-/* Preloader Progress Bar */
 .preloader-status-container {
+    width: 100%;
     background: rgba(255, 215, 120, 0.08);
     border: 1px solid rgba(255, 215, 120, 0.25);
-    backdrop-filter: blur(12px);
     border-radius: 20px;
-    padding: 14px 18px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    padding: 12px 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .preloader-bar-bg {
     width: 100%;
-    height: 8px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
+    border-radius: 6px;
     overflow: hidden;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border: 1px solid rgba(255, 215, 120, 0.2);
 }
 
@@ -4636,48 +4583,44 @@ body.in-galaxy {
     width: 0%;
     height: 100%;
     background: linear-gradient(90deg, #ffd56b 0%, #ff9f43 50%, #ee5253 100%);
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(255, 215, 120, 0.8);
-    transition: width 0.3s ease;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(255, 215, 120, 0.8);
+    transition: width 0.25s ease;
 }
 
 .preloader-status-text {
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     color: #ffd56b;
     font-weight: 600;
 }
 
-/* Enter Button (Appears after 100% loaded) */
 .preloader-enter-container {
-    animation: preloaderPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 100%;
+    animation: preloaderPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes preloaderPopIn {
-    0% { transform: scale(0.8); opacity: 0; }
+    0% { transform: scale(0.85); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
 
 .btn-enter-app {
     width: 100%;
-    padding: 14px 24px;
-    font-size: 1rem;
+    padding: 12px 24px;
+    font-size: 0.98rem;
     font-weight: 700;
-    border-radius: 30px;
+    border-radius: 25px;
     background: linear-gradient(135deg, #ffd56b 0%, #ff9f43 50%, #ee5253 100%);
-    color: #fff;
+    color: #2c0e0e;
     border: none;
     cursor: pointer;
-    box-shadow: 
-        0 8px 25px rgba(255, 159, 67, 0.5),
-        0 0 25px rgba(255, 215, 120, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 18px rgba(238, 82, 83, 0.45), 0 0 14px rgba(255, 213, 107, 0.6);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.btn-enter-app:hover {
+.btn-enter-app:active {
+    transform: scale(0.96);
+}
     transform: translateY(-3px) scale(1.03);
     box-shadow: 
         0 12px 35px rgba(255, 159, 67, 0.7),

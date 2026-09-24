@@ -1951,10 +1951,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const r = 240 + Math.random() * 600;
             const theta = Math.random() * Math.PI * 2;
             const phi = (Math.random() - 0.5) * Math.PI;
+            const baseX = r * Math.cos(theta) * Math.cos(phi);
+            const baseY = r * Math.sin(phi);
+            const baseZ = r * Math.sin(theta) * Math.cos(phi);
+
+            const tunnelAngle = Math.random() * Math.PI * 2;
+            const tunnelR = 30 + Math.random() * 480;
+
             gStars.push({
-                x: r * Math.cos(theta) * Math.cos(phi),
-                y: r * Math.sin(phi),
-                z: r * Math.sin(theta) * Math.cos(phi),
+                baseX: baseX,
+                baseY: baseY,
+                baseZ: baseZ,
+                tunnelX: tunnelR * Math.cos(tunnelAngle),
+                tunnelY: tunnelR * Math.sin(tunnelAngle),
+                tunnelZ: -100 - Math.random() * 2600,
+                x: baseX,
+                y: baseY,
+                z: baseZ,
                 size: Math.random() * 1.6 + 0.6,
                 color: Math.random() > 0.35 ? '#ffffff' : (Math.random() > 0.5 ? '#ffb8e6' : '#ffd56b'),
                 twinklePhase: Math.random() * Math.PI * 2,
@@ -1990,11 +2003,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const sprite = getCachedWordSprite(text, style);
 
+            const baseX = radius * Math.cos(theta) * Math.cos(phi);
+            const baseY = radius * Math.sin(phi) + (Math.random() - 0.5) * 70;
+            const baseZ = radius * Math.sin(theta) * Math.cos(phi);
+
+            // Hyperspace Fly-Through Stream Coordinates (Phóng thẳng qua mắt người xem)
+            const tunnelAngle = (i * 0.75) + (Math.random() - 0.5) * 0.4;
+            const tunnelRadius = 40 + Math.random() * 180;
+            const tunnelX = tunnelRadius * Math.cos(tunnelAngle);
+            const tunnelY = tunnelRadius * Math.sin(tunnelAngle);
+            const tunnelZ = -150 - (i * 110) - Math.random() * 180;
+
             gWords.push({
                 sprite: sprite,
-                x: radius * Math.cos(theta) * Math.cos(phi),
-                y: radius * Math.sin(phi) + (Math.random() - 0.5) * 70,
-                z: radius * Math.sin(theta) * Math.cos(phi),
+                baseX: baseX,
+                baseY: baseY,
+                baseZ: baseZ,
+                tunnelX: tunnelX,
+                tunnelY: tunnelY,
+                tunnelZ: tunnelZ,
+                x: tunnelX,
+                y: tunnelY,
+                z: tunnelZ,
                 floatPhase: Math.random() * Math.PI * 2,
                 floatSpeed: 0.012 + Math.random() * 0.018
             });
@@ -2009,11 +2039,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const style = { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 24, bold: true };
             const sprite = getCachedWordSprite(icon, style);
 
+            const baseX = radius * Math.cos(theta) * Math.cos(phi);
+            const baseY = radius * Math.sin(phi);
+            const baseZ = radius * Math.sin(theta) * Math.cos(phi);
+
+            const tunnelAngle = Math.random() * Math.PI * 2;
+            const tunnelRadius = 30 + Math.random() * 200;
+            const tunnelX = tunnelRadius * Math.cos(tunnelAngle);
+            const tunnelY = tunnelRadius * Math.sin(tunnelAngle);
+            const tunnelZ = -200 - (i * 140) - Math.random() * 200;
+
             gWords.push({
                 sprite: sprite,
-                x: radius * Math.cos(theta) * Math.cos(phi),
-                y: radius * Math.sin(phi),
-                z: radius * Math.sin(theta) * Math.cos(phi),
+                baseX: baseX,
+                baseY: baseY,
+                baseZ: baseZ,
+                tunnelX: tunnelX,
+                tunnelY: tunnelY,
+                tunnelZ: tunnelZ,
+                x: tunnelX,
+                y: tunnelY,
+                z: tunnelZ,
                 floatPhase: Math.random() * Math.PI * 2,
                 floatSpeed: 0.015 + Math.random() * 0.02
             });
@@ -2034,12 +2080,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         specialLetterConfigs.forEach(sCfg => {
             const sprite = getOrCreateSpecialLetterSprite(sCfg.title, sCfg.badge);
+            const baseX = sCfg.radius * Math.cos(sCfg.theta) * Math.cos(sCfg.phi);
+            const baseY = sCfg.y;
+            const baseZ = sCfg.radius * Math.sin(sCfg.theta) * Math.cos(sCfg.phi);
+
             const letterObj = {
                 sprite: sprite,
                 isSpecialLetter: true,
-                x: sCfg.radius * Math.cos(sCfg.theta) * Math.cos(sCfg.phi),
-                y: sCfg.y,
-                z: sCfg.radius * Math.sin(sCfg.theta) * Math.cos(sCfg.phi),
+                baseX: baseX,
+                baseY: baseY,
+                baseZ: baseZ,
+                tunnelX: 0,
+                tunnelY: -30,
+                tunnelZ: -900,
+                x: baseX,
+                y: baseY,
+                z: baseZ,
                 floatPhase: Math.random() * Math.PI * 2,
                 floatSpeed: 0.014
             };
@@ -2103,16 +2159,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         galaxyCtx.clearRect(0, 0, w, h);
 
-        // 1. Hyperspace Warp Speed Intro Calculation (Phóng cực nhanh lúc mới vào, chậm dần sau 3.8s)
-        let cameraZOffset = 0;
+        // 1. Hyperspace Warp Speed Intro Calculation (Phóng cực nhanh lúc mới vào, chậm dần sau 4.2s)
         let warpFactor = 0;
         if (galaxyWarpStartTime > 0) {
             const elapsed = Date.now() - galaxyWarpStartTime;
             if (elapsed < galaxyWarpDuration) {
                 const progress = elapsed / galaxyWarpDuration;
                 // Exponential decay: Starts at 1.0, plunges fast, smoothly eases down to 0
-                warpFactor = Math.pow(1 - progress, 3);
-                cameraZOffset = warpFactor * 1600; // Fly-in from 1600px back in space
+                warpFactor = Math.pow(1 - progress, 2.5);
             } else {
                 galaxyWarpStartTime = 0;
             }
@@ -2120,9 +2174,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1.1 Quán tính & tự động xoay vũ trụ mượt mà
         if (!isGalaxyDragging) {
-            const warpSpin = warpFactor * 0.036; // Hyperspace rotation speed up to 0.036 rad/frame
+            const warpSpin = warpFactor * 0.045; // Hyperspace rotation speed
             galaxyRotY += galaxyVelRotY + warpSpin;
-            galaxyRotX += galaxyVelRotX + (warpSpin * 0.25);
+            galaxyRotX += galaxyVelRotX + (warpSpin * 0.2);
             galaxyVelRotY = galaxyVelRotY * 0.96 + 0.0018 * 0.04;
             galaxyVelRotX *= 0.94;
         }
@@ -2137,27 +2191,40 @@ document.addEventListener('DOMContentLoaded', () => {
             s.twinklePhase += s.twinkleSpeed;
             const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(s.twinklePhase));
 
-            const x1 = s.x * cosY - s.z * sinY;
-            const z1 = s.x * sinY + s.z * cosY;
-            const y1 = s.y * cosX - z1 * sinX;
-            const z2 = s.y * sinX + z1 * cosX;
+            let sx, sy, sz;
+            if (warpFactor > 0.005) {
+                s.tunnelZ += (75 * warpFactor + 10);
+                if (s.tunnelZ > 200) s.tunnelZ = -2600;
+                const blend = 1 - warpFactor;
+                sx = s.tunnelX * warpFactor + s.baseX * blend;
+                sy = s.tunnelY * warpFactor + s.baseY * blend;
+                sz = s.tunnelZ * warpFactor + s.baseZ * blend;
+            } else {
+                sx = s.baseX;
+                sy = s.baseY;
+                sz = s.baseZ;
+            }
 
-            const zView = z2 + 650 + cameraZOffset;
-            if (zView > 60) {
+            const x1 = sx * cosY - sz * sinY;
+            const z1 = sx * sinY + sz * cosY;
+            const y1 = sy * cosX - z1 * sinX;
+            const z2 = sy * sinX + z1 * cosX;
+
+            const zView = z2 + 650;
+            if (zView > 50) {
                 const scale = galaxyFov / zView;
                 const px = cx + x1 * scale;
                 const py = cy + y1 * scale;
                 const alpha = Math.min(1, Math.max(0.15, (scale * 1.1) * twinkle));
 
-                if (warpFactor > 0.06) {
-                    // Streaking star tails radiating from hyperspace fly-in
-                    const streakScale = galaxyFov / (zView + warpFactor * 260);
+                if (warpFactor > 0.08) {
+                    const streakScale = galaxyFov / (zView + warpFactor * 320);
                     const prevPx = cx + x1 * streakScale;
                     const prevPy = cy + y1 * streakScale;
 
                     galaxyCtx.strokeStyle = s.color;
-                    galaxyCtx.globalAlpha = alpha * 0.85;
-                    galaxyCtx.lineWidth = Math.max(1, s.size * scale * (1 + warpFactor * 2.2));
+                    galaxyCtx.globalAlpha = alpha * 0.9;
+                    galaxyCtx.lineWidth = Math.max(1, s.size * scale * (1 + warpFactor * 2.5));
                     galaxyCtx.beginPath();
                     galaxyCtx.moveTo(prevPx, prevPy);
                     galaxyCtx.lineTo(px, py);
@@ -2182,13 +2249,28 @@ document.addEventListener('DOMContentLoaded', () => {
             wObj.floatPhase += wObj.floatSpeed;
             const floatY = Math.sin(wObj.floatPhase) * 8;
 
-            const x1 = wObj.x * cosY - wObj.z * sinY;
-            const z1 = wObj.x * sinY + wObj.z * cosY;
-            const y1 = (wObj.y + floatY) * cosX - z1 * sinX;
-            const z2 = (wObj.y + floatY) * sinX + z1 * cosX;
+            let wx, wy, wz;
+            if (warpFactor > 0.005) {
+                // Rushing forward through the screen at high speed!
+                wObj.tunnelZ += (65 * warpFactor + 14);
+                if (wObj.tunnelZ > 380) wObj.tunnelZ = -2800;
+                const blend = 1 - warpFactor;
+                wx = wObj.tunnelX * warpFactor + wObj.baseX * blend;
+                wy = wObj.tunnelY * warpFactor + (wObj.baseY + floatY) * blend;
+                wz = wObj.tunnelZ * warpFactor + wObj.baseZ * blend;
+            } else {
+                wx = wObj.baseX;
+                wy = wObj.baseY + floatY;
+                wz = wObj.baseZ;
+            }
 
-            const zView = z2 + 650 + cameraZOffset;
-            if (zView > 80) {
+            const x1 = wx * cosY - wz * sinY;
+            const z1 = wx * sinY + wz * cosY;
+            const y1 = wy * cosX - z1 * sinX;
+            const z2 = wy * sinX + z1 * cosX;
+
+            const zView = z2 + 650;
+            if (zView > 70) {
                 renderQueue.push({
                     type: 'word',
                     data: wObj,
@@ -2657,7 +2739,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gfModalBackdrop) gfModalBackdrop.addEventListener('click', closeGfModal);
 
     // ----------------------------------------------------
-    // PRELOADER & WELCOME SCREEN LOGIC
+    // CLEAN & ROBUST RESOURCE PRELOADER
     // ----------------------------------------------------
     const appPreloader = document.getElementById('appPreloader');
     const preloaderBarFill = document.getElementById('preloaderBarFill');
@@ -2666,25 +2748,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const preloaderEnterArea = document.getElementById('preloaderEnterArea');
     const btnEnterApp = document.getElementById('btnEnterApp');
 
-    const assetsToPreload = [
+    const essentialAssets = [
         'assets/images/luminous_super_moon.jpg',
         'assets/images/tvy.jpg',
         'assets/images/sky_lantern_screen_transparent.png',
         'assets/images/lotus_pure.png',
-        'assets/images/rabbit_branch_transparent.png',
-        'assets/images/anime_cuoi_cay_da.jpg'
+        'assets/images/rabbit_branch_transparent.png'
     ];
 
     let loadedCount = 0;
-    const totalAssets = assetsToPreload.length;
+    const totalAssets = essentialAssets.length;
     let isPreloadDone = false;
 
-    function updatePreloaderProgress(percent) {
-        if (preloaderBarFill) preloaderBarFill.style.width = `${percent}%`;
-        if (preloaderPercentText) preloaderPercentText.textContent = `${percent}%`;
+    function updatePreloaderProgress(pct) {
+        if (preloaderBarFill) preloaderBarFill.style.width = `${pct}%`;
+        if (preloaderPercentText) preloaderPercentText.textContent = `${pct}%`;
     }
 
-    function revealEnterButton() {
+    function onPreloadComplete() {
         if (isPreloadDone) return;
         isPreloadDone = true;
         updatePreloaderProgress(100);
@@ -2692,50 +2773,39 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             if (preloaderStatusArea) preloaderStatusArea.style.display = 'none';
             if (preloaderEnterArea) preloaderEnterArea.style.display = 'block';
-        }, 350);
+        }, 200);
     }
 
-    if (totalAssets > 0) {
-        assetsToPreload.forEach(src => {
-            const img = new Image();
-            img.onload = img.onerror = () => {
-                loadedCount++;
-                const pct = Math.round((loadedCount / totalAssets) * 100);
-                updatePreloaderProgress(pct);
-                if (loadedCount >= totalAssets) {
-                    revealEnterButton();
-                }
-            };
-            img.src = src;
-        });
+    essentialAssets.forEach(src => {
+        const img = new Image();
+        img.onload = img.onerror = () => {
+            loadedCount++;
+            const pct = Math.round((loadedCount / totalAssets) * 100);
+            updatePreloaderProgress(pct);
+            if (loadedCount >= totalAssets) {
+                onPreloadComplete();
+            }
+        };
+        img.src = src;
+    });
 
-        // Safety fallback timer (max 2.8s) in case network delays
-        setTimeout(revealEnterButton, 2800);
-    } else {
-        revealEnterButton();
-    }
+    // Safety timeout (max 1.6s) so it never gets stuck
+    setTimeout(onPreloadComplete, 1600);
 
     if (btnEnterApp) {
         btnEnterApp.addEventListener('click', () => {
             initAudioContext();
             toggleMusic(true);
             playChime(700, 0.6);
-            if (navigator.vibrate) navigator.vibrate([30, 50]);
+            if (navigator.vibrate) navigator.vibrate([30, 40]);
 
-            // Kích hoạt chuỗi hiệu ứng xuất hiện từ từ từng thành phần của bức tranh tiên cảnh
             document.body.classList.add('painting-reveal-active');
-
-            // Đồng bộ tiếng chuông tinh tú ngân vang theo từng tầng của bức tranh
-            setTimeout(() => playChime(520, 0.45, 'sine'), 400);  // Vòng tường vân & mây
-            setTimeout(() => playChime(680, 0.55, 'sine'), 750);  // Siêu mặt trăng tỏa sáng
-            setTimeout(() => playChime(850, 0.60, 'sine'), 1150); // Thỏ ngọc bên cành hoa quế
-            setTimeout(() => playChime(1020, 0.50, 'sine'), 1500); // Mặt hồ soi trăng & hoa sen
 
             if (appPreloader) {
                 appPreloader.classList.add('loaded-fade-out');
                 setTimeout(() => {
                     appPreloader.style.display = 'none';
-                }, 850);
+                }, 500);
             }
         });
     }
