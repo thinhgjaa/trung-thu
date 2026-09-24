@@ -10,27 +10,153 @@
     <meta name="format-detection" content="telephone=no">
     <title>Trung Thu Yêu Thương 🌕 Trọn Vẹn Tình Anh</title>
     <meta name="description" content="Món quà Trung Thu lãng mạn và ý nghĩa dành tặng người con gái anh yêu nhất trần đời.">
+    <!-- Favicon Trung Thu: Trăng Rằm + Thỏ Ngọc + Đèn Lồng -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="shortcut icon" href="favicon.svg">
     <!-- Google Fonts: Be Vietnam Pro & Dancing Script / Playfair for romantic calligraphy -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
     <!-- Background Canvas Layers -->
     <canvas id="star-canvas"></canvas>
     <canvas id="firework-canvas"></canvas>
 
+    <!-- Full-Screen Celestial Backdrop: Ethereal Depth, Mountain Silhouettes, Lunar Halos & Fireflies -->
+    <div id="celestial-backdrop" class="celestial-backdrop" aria-hidden="true">
+        <!-- Vầng hào quang đại trăng & Tinh vân huyền ảo -->
+        <div class="backdrop-grand-moon-halo"></div>
+        <div class="backdrop-nebula nebula-left"></div>
+        <div class="backdrop-nebula nebula-right"></div>
+        <div class="backdrop-nebula nebula-top"></div>
+
+        <!-- Dải cực quang mềm mại (Celestial Auroras) -->
+        <div class="backdrop-aurora aurora-1"></div>
+        <div class="backdrop-aurora aurora-2"></div>
+
+        <!-- Dãy núi mờ sương 3 tầng chiều sâu tiên cảnh -->
+        <div class="backdrop-mountain-layer mountain-layer-far">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none" class="mountain-svg">
+                <defs>
+                    <linearGradient id="mountGradFar" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#232954" stop-opacity="0.75" />
+                        <stop offset="60%" stop-color="#121634" stop-opacity="0.9" />
+                        <stop offset="100%" stop-color="#070a18" stop-opacity="1" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#mountGradFar)" d="M0,150 C130,95 240,185 390,120 C540,55 670,165 810,110 C950,55 1080,175 1220,115 C1340,75 1400,135 1440,105 L1440,320 L0,320 Z"></path>
+            </svg>
+        </div>
+        <div class="backdrop-mountain-layer mountain-layer-mid">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none" class="mountain-svg">
+                <defs>
+                    <linearGradient id="mountGradMid" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#181c42" stop-opacity="0.88" />
+                        <stop offset="70%" stop-color="#0c0f24" stop-opacity="0.96" />
+                        <stop offset="100%" stop-color="#040611" stop-opacity="1" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#mountGradMid)" d="M0,200 C150,150 270,230 430,180 C570,130 710,220 850,170 C990,120 1150,210 1290,160 C1370,130 1415,180 1440,160 L1440,320 L0,320 Z"></path>
+            </svg>
+        </div>
+        <div class="backdrop-mountain-layer mountain-layer-near">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none" class="mountain-svg">
+                <defs>
+                    <linearGradient id="mountGradNear" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#0e112b" stop-opacity="0.95" />
+                        <stop offset="100%" stop-color="#03040c" stop-opacity="1" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#mountGradNear)" d="M0,250 C190,210 330,270 510,230 C690,190 830,260 1010,220 C1170,180 1330,250 1440,230 L1440,320 L0,320 Z"></path>
+            </svg>
+        </div>
+
+        <!-- Lớp sương lam cuộn trôi thung lũng -->
+        <div class="backdrop-valley-mist mist-1"></div>
+        <div class="backdrop-valley-mist mist-2"></div>
+
+        <!-- Đèn trời lơ lửng 2 bên cánh gà với hiệu ứng DOF (Depth of Field Blur) -->
+        <div class="backdrop-lanterns-cluster" id="backdropLanterns">
+            <div class="backdrop-lantern bl-1"></div>
+            <div class="backdrop-lantern bl-2"></div>
+            <div class="backdrop-lantern bl-3"></div>
+            <div class="backdrop-lantern bl-4"></div>
+            <div class="backdrop-lantern bl-5"></div>
+            <div class="backdrop-lantern bl-6"></div>
+            <div class="backdrop-lantern bl-7"></div>
+            <div class="backdrop-lantern bl-8"></div>
+        </div>
+
+        <!-- Bụi tiên & Đom đóm dạ quang bay lơ lửng -->
+        <div class="backdrop-fireflies-cluster" id="backdropFireflies">
+            <div class="firefly-orb ff-1"></div>
+            <div class="firefly-orb ff-2"></div>
+            <div class="firefly-orb ff-3"></div>
+            <div class="firefly-orb ff-4"></div>
+            <div class="firefly-orb ff-5"></div>
+            <div class="firefly-orb ff-6"></div>
+            <div class="firefly-orb ff-7"></div>
+            <div class="firefly-orb ff-8"></div>
+        </div>
+
+        <!-- Cành hoa quế/liễu mờ ảo ở 2 góc trên màn hình -->
+        <div class="backdrop-corner-branch branch-top-left">
+            <svg viewBox="0 0 350 250" class="branch-svg">
+                <path d="M-20,-10 C80,30 150,105 210,115 C175,125 115,140 85,170 M125,80 C165,115 220,130 260,125 M180,105 C200,150 240,180 270,195" stroke="rgba(24, 30, 62, 0.48)" stroke-width="4.5" stroke-linecap="round" fill="none"></path>
+                <circle cx="212" cy="115" r="5" fill="rgba(255, 215, 120, 0.4)"/>
+                <circle cx="262" cy="125" r="4" fill="rgba(255, 215, 120, 0.35)"/>
+                <circle cx="272" cy="195" r="6" fill="rgba(255, 215, 120, 0.35)"/>
+                <circle cx="88" cy="170" r="5" fill="rgba(255, 215, 120, 0.35)"/>
+            </svg>
+        </div>
+        <div class="backdrop-corner-branch branch-top-right">
+            <svg viewBox="0 0 350 250" class="branch-svg">
+                <path d="M370,-10 C270,30 200,105 140,115 C175,125 235,140 265,170 M225,80 C185,115 130,130 90,125 M170,105 C150,150 110,180 80,195" stroke="rgba(24, 30, 62, 0.48)" stroke-width="4.5" stroke-linecap="round" fill="none"></path>
+                <circle cx="138" cy="115" r="5" fill="rgba(255, 215, 120, 0.4)"/>
+                <circle cx="88" cy="125" r="4" fill="rgba(255, 215, 120, 0.35)"/>
+                <circle cx="78" cy="195" r="6" fill="rgba(255, 215, 120, 0.35)"/>
+                <circle cx="262" cy="170" r="5" fill="rgba(255, 215, 120, 0.35)"/>
+            </svg>
+        </div>
+
+        <!-- Huyền tích Cây Đa Chú Cuội & Cung Trăng (Desktop Backdrop Parallax) -->
+        <div class="backdrop-folklore-cluster" id="backdropFolklore">
+            <div class="backdrop-folklore-item item-cuoi" title="Cây Đa Chú Cuội bên mây gió">
+                <img src="assets/images/silhouette_cay_da_cuoi.jpg" alt="Cây Đa Chú Cuội" class="folklore-silhouette-img">
+                <span class="folklore-badge-tag">Cây Đa Chú Cuội</span>
+            </div>
+            <div class="backdrop-folklore-item item-palace" title="Cung Trăng Cung Hằng">
+                <img src="assets/images/silhouette_cung_trang.jpg" alt="Cung Trăng Cung Hằng" class="folklore-silhouette-img">
+                <span class="folklore-badge-tag">Cung Trăng Huyền Ảo</span>
+            </div>
+        </div>
+
+        <!-- Cinematic Vignette Frame (Làm dịu 4 góc màn hình tạo độ sâu) -->
+        <div class="backdrop-cinematic-vignette"></div>
+    </div>
+
     <!-- Main App Container (Mobile-first viewport framing) -->
     <div id="app" class="app-container">
         
+        <!-- Deep Depth Atmosphere: Bokeh Orbs, Distant Blurred Lanterns & Mist (Tạo chiều sâu điện ảnh đa tầng) -->
+        <div class="deep-depth-atmosphere" aria-hidden="true">
+            <div class="bokeh-orb b-1"></div>
+            <div class="bokeh-orb b-2"></div>
+            <div class="bokeh-orb b-3"></div>
+            <div class="bokeh-orb b-4"></div>
+            <div class="bokeh-orb b-5"></div>
+            <div class="bokeh-distant-lantern dl-1"></div>
+            <div class="bokeh-distant-lantern dl-2"></div>
+            <div class="bokeh-distant-lantern dl-3"></div>
+            <div class="atmospheric-fog-layer fog-top"></div>
+            <div class="atmospheric-fog-layer fog-mid"></div>
+        </div>
+        
         <!-- Top Navigation & Controls Bar -->
         <header class="app-header">
-            <div class="chat-bubble-quote" id="headerQuoteContainer">
-                <span class="avatar-icon">👱‍♂️</span>
-                <span class="quote-text" id="headerQuoteText">em sẽ mãi là em bé của đời anh 💕</span>
-            </div>
-            
             <div class="header-actions">
                 <!-- Music Control Button with spinning disc animation -->
                 <button id="musicToggleBtn" class="btn-music" aria-label="Bật/Tắt nhạc" title="Âm nhạc">
@@ -44,12 +170,11 @@
             </div>
         </header>
 
-        <!-- Story Progress Bar (4 Chương Tình Yêu) -->
+        <!-- Story Progress Bar (3 Chương Tình Yêu) -->
         <div class="story-progress-bar" id="storyProgress">
             <div class="progress-step active" data-step="1" title="Đêm Rằm"></div>
-            <div class="progress-step" data-step="2" title="Hoa Đăng"></div>
-            <div class="progress-step" data-step="3" title="Hộp Bánh & Thư"></div>
-            <div class="progress-step" data-step="4" title="Ước Nguyện"></div>
+            <div class="progress-step" data-step="2" title="Thư Tình"></div>
+            <div class="progress-step" data-step="3" title="Ước Nguyện"></div>
         </div>
 
         <!-- ==============================================
@@ -74,6 +199,56 @@
                 </svg>
             </div>
 
+            <!-- Celestial Auspicious Clouds (Mây Tường Vân & Mây Lụa Ánh Trăng Tiên Cảnh) -->
+            <div class="celestial-clouds-atmosphere" aria-hidden="true">
+                <!-- Mây lụa trôi chậm vắt ngang bầu trời sao -->
+                <div class="flowing-cloud cloud-wispy-drift">
+                    <svg viewBox="0 0 320 60" class="cloud-svg">
+                        <defs>
+                            <linearGradient id="cloudSilkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#fff4cc" stop-opacity="0.65" />
+                                <stop offset="35%" stop-color="#ffd56b" stop-opacity="0.45" />
+                                <stop offset="70%" stop-color="#ff9f43" stop-opacity="0.2" />
+                                <stop offset="100%" stop-color="#74b9ff" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M 5,35 Q 60,10 130,28 T 260,20 Q 305,35 285,45 Q 210,55 120,40 Q 50,50 5,35 Z" fill="url(#cloudSilkGrad)" />
+                    </svg>
+                </div>
+
+                <!-- Mây Tường Vân cổ phong uốn lượn góc trên bên trái -->
+                <div class="flowing-cloud cloud-auspicious-left">
+                    <svg viewBox="0 0 160 90" class="cloud-svg">
+                        <path d="M 15,65 C 15,50 35,40 50,52 C 60,35 85,38 95,50 C 110,38 135,42 140,58 C 150,72 135,82 110,82 C 75,82 40,80 20,78 Z" fill="url(#cloudSilkGrad)" />
+                        <path d="M 45,62 C 40,56 42,48 48,46 C 55,44 60,50 56,56 C 53,60 48,58 48,54" fill="none" stroke="#ffd56b" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
+                        <circle cx="95" cy="46" r="2.5" fill="#ffeaa7" />
+                    </svg>
+                </div>
+
+                <!-- Mây Tường Vân cổ phong góc phải vắt qua cành hoa quế -->
+                <div class="flowing-cloud cloud-auspicious-right">
+                    <svg viewBox="0 0 180 90" class="cloud-svg">
+                        <path d="M 165,65 C 165,50 145,40 130,52 C 120,35 95,38 85,50 C 70,38 45,42 40,58 C 30,72 45,82 70,82 C 105,82 140,80 160,78 Z" fill="url(#cloudSilkGrad)" />
+                        <path d="M 135,62 C 140,56 138,48 132,46 C 125,44 120,50 124,56 C 127,60 132,58 132,54" fill="none" stroke="#ffd56b" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
+                        <circle cx="85" cy="46" r="2.5" fill="#ffeaa7" />
+                    </svg>
+                </div>
+
+                <!-- Dải mây bồng bềnh lướt nhẹ dưới chân vầng trăng -->
+                <div class="flowing-cloud cloud-moon-whisper">
+                    <svg viewBox="0 0 280 80" class="cloud-svg">
+                        <path d="M 10,50 Q 40,20 80,35 Q 120,5 170,25 Q 220,10 250,38 Q 275,55 240,65 Q 190,75 140,60 Q 80,72 30,62 Z" fill="url(#cloudSilkGrad)" />
+                    </svg>
+                </div>
+
+                <!-- Dải mây sương mờ bồng bềnh phía chân trời mặt hồ -->
+                <div class="flowing-cloud cloud-horizon-mist">
+                    <svg viewBox="0 0 380 70" class="cloud-svg">
+                        <path d="M 0,35 Q 70,15 150,30 T 300,22 Q 355,38 380,48 Q 300,60 190,45 Q 90,55 0,35 Z" fill="url(#cloudSilkGrad)" />
+                    </svg>
+                </div>
+            </div>
+
             <!-- Centerpiece: Realistic Moon, Traditional Ring, Rabbit & Branch (Tách nền sống động) -->
             <div class="moon-stage-container">
                 <!-- Ornamental Vietnamese/East Asian Red & Gold Moon Ring -->
@@ -88,12 +263,17 @@
                     </svg>
                 </div>
 
+
                 <!-- Luminous Full Moon (Hold Target) -->
                 <div class="luminous-moon" id="luminousMoon">
                     <!-- Rotating Moonlight Beams & Radiance -->
                     <div class="moon-radial-beams" id="moonRadialBeams"></div>
                     <div class="moon-glow-aura"></div>
                     <div class="moon-texture"></div>
+
+                    <!-- Subtle Glowing Moon Aura (no external image needed) -->
+                    <div class="moon-folklore-palace">
+                    </div>
                     
                     <!-- Orbiting Celestial Stardust Ring -->
                     <div class="moon-orbit-particles" id="moonOrbitParticles"></div>
@@ -220,7 +400,7 @@
         </section>
 
         <!-- ==============================================
-             CHƯƠNG 2: KHAI TRĂNG & HỘI HOA ĐĂNG (BÙNG NỔ KỲ DIỆU)
+             CHƯƠNG 2: BỨC THƯ TÌNH CUNG TRĂNG (ROYAL LOVE SCROLL)
              ============================================== -->
         <section id="scene-2" class="story-scene scene-hidden">
             <div class="scene-header">
@@ -228,43 +408,87 @@
                     <span class="back-arrow">‹</span> Quay lại
                 </button>
                 <span class="chapter-badge">Chương II</span>
-                <h2 class="scene-title" id="ch2Title">Hội Hoa Đăng Khai Mở</h2>
-                <p class="scene-subtitle" id="ch2Subtitle">Ngàn ngọn đèn trời thắp sáng tình yêu đôi ta</p>
-                <div class="lantern-counter-badge" id="lanternCounterBadge">
-                    <span class="counter-sparkle">✨</span>
-                    <span id="lanternCountText">Chạm vào đèn trời để mở điều ước (0/7)</span>
-                </div>
+                <h2 class="scene-title" id="ch2Title">Thư Tình Cung Trăng</h2>
+                <p class="scene-subtitle" id="ch2Subtitle">Những lời chân thành từ tận đáy lòng gửi trao em</p>
             </div>
 
-            <!-- Sky Lanterns Interactive Display -->
-            <div class="interactive-sky-scene">
-                <div class="floating-lantern-wishes" id="lanternWishesList">
-                    <!-- Dynamically rendered floating wish lanterns -->
-                </div>
-            </div>
+            <!-- Royal Ancient Silk Scroll directly inside Scene 2 -->
+            <div class="scene-scroll-stage">
+                <div class="royal-scroll-wrapper" id="royalScrollWrapper">
+                    <!-- Top Scroll Wooden Rod with Gold Finials -->
+                    <div class="scroll-wooden-rod rod-top">
+                        <span class="rod-knob knob-left"></span>
+                        <span class="rod-shaft"></span>
+                        <span class="rod-knob knob-right"></span>
+                    </div>
 
-            <!-- Sweet Mid-Autumn Wishes Floating Card -->
-            <div class="wish-reveal-card glass-panel">
-                <div class="card-ornament-row">
-                    <img src="assets/images/real_star_lantern.jpg" alt="Đèn ông sao" class="mini-decor-thumb">
-                    <img src="assets/images/real_sky_lantern.jpg" alt="Đèn trời" class="mini-decor-thumb">
-                    <img src="assets/images/real_carp_lantern.jpg" alt="Đèn cá chép" class="mini-decor-thumb">
-                    <img src="assets/images/real_lotus_lantern.jpg" alt="Đèn hoa đăng" class="mini-decor-thumb">
+                    <!-- Silk Parchment Main Body -->
+                    <div class="royal-scroll-parchment">
+                        <!-- Vintage Gold Border & Corner Filigree -->
+                        <div class="parchment-corner corner-tl">❖</div>
+                        <div class="parchment-corner corner-tr">❖</div>
+                        <div class="parchment-corner corner-bl">❖</div>
+                        <div class="parchment-corner corner-br">❖</div>
+
+                        <div class="letter-scroll-header">
+                            <div class="scroll-crest">🌕 ❖ 🏮</div>
+                            <h3 class="letter-heading" id="letterTitleText">Bức Thư Tình Dưới Ánh Trăng</h3>
+                            <div class="scroll-header-rule"></div>
+                        </div>
+
+                        <!-- Chú Cuội ngồi gốc Cây Đa ngắm Cung Trăng Artwork Frame -->
+                        <div class="scroll-folklore-frame">
+                            <div class="folklore-painting-wrapper">
+                                <img src="assets/images/cuoi_cay_da_cung_trang.jpg" alt="Chú Cuội & Cung Trăng" class="folklore-painting-img">
+                                <div class="folklore-painting-glow"></div>
+                            </div>
+                            <div class="folklore-painting-caption">
+                                <span>✨ Chú Cuội ngồi gốc cây đa • Nhớ thương em bé nhất trần gian ✨</span>
+                            </div>
+                        </div>
+
+                        <div class="letter-fast-hint" id="letterFastHint">
+                            <span>⚡ Chạm để đọc nhanh toàn bộ thư</span>
+                        </div>
+
+                        <div class="letter-content-body" id="letterContentBody">
+                            <!-- Typewriter paragraphs formatted properly with elegant typography -->
+                        </div>
+
+                        <div class="letter-signature-container">
+                            <div class="letter-signature-content">
+                                <p class="sig-from">Mãi mãi yêu em,</p>
+                                <p class="sig-name" id="letterSenderText">Chàng Chú Cuội ngốc nghếch yêu em nhất đời 💖</p>
+                            </div>
+                            <!-- Traditional Red Imperial Seal of True Love -->
+                            <div class="imperial-red-seal" title="Dấu ấn tình yêu trọn vẹn">
+                                <div class="seal-inner-frame">
+                                    <span class="seal-char-top">TÌNH</span>
+                                    <span class="seal-char-bot">NỒNG</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="letter-actions">
+                            <button class="btn-primary btn-scroll-action" id="btnGoToCh3">
+                                <span>Thả Đèn Trời Nguyện Ước</span>
+                                <span class="btn-arrow">🏮✨ ➔</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Scroll Wooden Rod with Gold Finials -->
+                    <div class="scroll-wooden-rod rod-bottom">
+                        <span class="rod-knob knob-left"></span>
+                        <span class="rod-shaft"></span>
+                        <span class="rod-knob knob-right"></span>
+                    </div>
                 </div>
-                <h3 class="glow-text">Hội Hoa Đăng Sáng Rực Cung Trăng</h3>
-                <p class="wish-quote" id="ch2DynamicWish">
-                    "Chúc em bé một mùa Trung Thu ngập tràn hạnh phúc và tiếng cười!"
-                </p>
-                <div class="tap-lanterns-hint">✨ Chạm vào các chiếc đèn trời bay lên để xem lời nhắn yêu thương ✨</div>
-                <button class="btn-primary" id="btnGoToCh3">
-                    <span>Mở Hộp Bánh Trung Thu & Thư Tình</span>
-                    <span class="btn-arrow">🥮 ➔</span>
-                </button>
             </div>
         </section>
 
         <!-- ==============================================
-             CHƯƠNG 3: HỘP BÁNH NGỌT NGÀO & BỨC THƯ TÌNH
+             CHƯƠNG 3: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
              ============================================== -->
         <section id="scene-3" class="story-scene scene-hidden">
             <div class="scene-header">
@@ -272,68 +496,8 @@
                     <span class="back-arrow">‹</span> Quay lại
                 </button>
                 <span class="chapter-badge">Chương III</span>
-                <h2 class="scene-title" id="ch3Title">Hộp Bánh Ngọt Ngào</h2>
-                <p class="scene-subtitle" id="ch3Subtitle">Món quà chứa đựng trọn vẹn yêu thương gửi đến em</p>
-            </div>
-
-            <!-- Interactive Mooncake Box (Click to open) -->
-            <div class="cake-box-interactive" id="cakeBoxTrigger">
-                <div class="cake-box-visual" id="cakeBoxVisual">
-                    <img src="assets/images/mooncake_box.jpg" alt="Hộp bánh trung thu" class="cake-box-img">
-                    <div class="cake-open-badge">
-                        <span class="sparkle-icon">✨</span>
-                        <span id="boxPromptText">Chạm vào hộp bánh để mở quà bí mật 🥮</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Love Letter Scroll / Modal (Opens upon clicking cake box) -->
-            <div class="love-letter-modal" id="loveLetterModal">
-                <div class="letter-scroll-inner glass-panel">
-                    <button class="btn-close-letter" id="btnCloseLetter" aria-label="Đóng thư">✕</button>
-                    
-                    <div class="letter-decoration-top">
-                        <span class="lotus-icon">🌸</span>
-                        <span class="moon-icon">🌕</span>
-                        <span class="lotus-icon">🌸</span>
-                    </div>
-
-                    <h3 class="letter-heading" id="letterTitleText">Bức Thư Tình Dưới Ánh Trăng</h3>
-
-                    <div class="letter-fast-hint" id="letterFastHint">
-                        <span>⚡ Chạm vào đây để hiện nhanh toàn bộ thư</span>
-                    </div>
-
-                    <div class="letter-content-body" id="letterContentBody">
-                        <!-- Typewriter text inserted here dynamically -->
-                    </div>
-
-                    <div class="letter-signature">
-                        <p class="sig-from">Mãi mãi yêu em,</p>
-                        <p class="sig-name" id="letterSenderText">Chàng Chú Cuội ngốc nghếch yêu em nhất đời 💖</p>
-                    </div>
-
-                    <div class="letter-actions">
-                        <button class="btn-primary" id="btnGoToCh4">
-                            <span>Thả Đèn Trời Nguyện Ước</span>
-                            <span class="btn-arrow">🏮✨ ➔</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==============================================
-             CHƯƠNG 4: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
-             ============================================== -->
-        <section id="scene-4" class="story-scene scene-hidden">
-            <div class="scene-header">
-                <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
-                    <span class="back-arrow">‹</span> Quay lại
-                </button>
-                <span class="chapter-badge">Chương IV</span>
-                <h2 class="scene-title" id="ch4Title">Thả Đèn Trời Nguyện Ước</h2>
-                <p class="scene-subtitle" id="ch4Subtitle">Gửi gắm ước mơ của em tới ngàn vì sao</p>
+                <h2 class="scene-title" id="ch3Title">Thả Đèn Trời Nguyện Ước</h2>
+                <p class="scene-subtitle" id="ch3Subtitle">Gửi gắm ước mơ của em tới ngàn vì sao</p>
             </div>
 
             <!-- Wish Lantern Interactive Center -->
@@ -404,7 +568,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="config.js?v=8"></script>
-    <script src="script.js?v=8"></script>
+    <script src="config.js?v=12"></script>
+    <script src="script.js?v=21"></script>
 </body>
 </html>

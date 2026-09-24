@@ -25,38 +25,24 @@ const TRUNG_THU_CONFIG = {
         moonHoldDurationMs: 1300 // Thời gian ấn giữ nhạy hơn (1.3 giây)
     },
 
-    // 4. Chương 2: Hội Hoa Đăng Lung Linh
+    // 4. Chương 2: Thư Tình Cung Trăng
     chapter2: {
-        title: "Hội Hoa Đăng Khai Mở",
-        subtitle: "Ngàn ngọn đèn trời thắp sáng cung trăng, mang theo tình yêu của anh đến bên em",
-        lanternWishes: [
-            "Chúc em bé của anh một mùa Trung Thu ngập tràn hạnh phúc 🌕",
-            "Nụ cười của em là ánh sáng rạng rỡ nhất trần gian ✨",
-            "Mỗi mùa Trung Thu sau này, đều mong có em cùng ngắm trăng 🏮",
-            "Yêu em nhiều hơn cả triệu vì sao trên dải ngân hà 💕",
-            "Em mãi là công chúa nhỏ đáng yêu nhất trong lòng anh 🐰",
-            "Chúc cho tình yêu đôi ta luôn tròn đầy như ánh trăng rằm 🌸"
-        ]
-    },
-
-    // 5. Chương 3: Hộp Bánh Ngọt Ngào & Thư Tình
-    chapter3: {
-        title: "Hộp Bánh Ngọt Ngào",
-        boxPrompt: "Chạm vào chiếc hộp Trung Thu để mở phong thư bí mật 🥮💌",
+        title: "Thư Tình Cung Trăng",
+        subtitle: "Những lời chân thành từ tận đáy lòng gửi trao em",
         letterTitle: "Bức Thư Tình Gửi Em Bé Dưới Ánh Trăng",
         letterSender: "Chàng Chú Cuội ngốc nghếch yêu em nhất đời 💖",
         letterParagraphs: [
             "Gửi em bé yêu dấu của anh,",
             "Đêm nay trăng rằm tháng Tám sáng tỏ khắp nhân gian, người người rộn rã rước đèn ngắm trăng...",
             "Nhưng với anh, cảnh sắc đẹp nhất và lung linh nhất chính là được nhìn thấy nụ cười của em.",
-            "Bánh trung thu có ngọt ngào đến mấy cũng không bằng sự ngọt ngào khi ở cạnh em. Vầng trăng trên cao có tròn đầy đến đâu cũng chẳng thể sánh bằng tình cảm chân thành anh dành trao cho em.",
+            "Trăng rằm có sáng tỏ đến đâu cũng không bằng ánh mắt rạng ngời của em. Giữa vạn người tưng bừng hội ngộ, điều may mắn nhất của anh chính là có em kề bên.",
             "Cảm ơn em vì đã là một điều thật kỳ diệu và ngọt ngào trong cuộc sống của anh. Mong rằng mọi mùa Trung Thu và những ngày tháng sau này, người luôn ở bên chăm sóc, cưng chiều em sẽ là anh.",
             "Chúc em bé một mùa Trung Thu thật ấm áp, rạng rỡ và luôn luôn là cô gái hạnh phúc nhất thế gian nhé! 💕🌕✨"
         ]
     },
 
-    // 6. Chương 4: Thả Đèn Trời Nguyện Ước
-    chapter4: {
+    // 5. Chương 3: Thả Đèn Trời Nguyện Ước
+    chapter3: {
         title: "Thả Đèn Trời Nguyện Ước",
         prompt: "Hãy nhắm mắt lại, nghĩ về tương lai của hai đứa và viết điều ước của em gửi lên cung trăng nhé... ✨",
         placeholder: "Ví dụ: Mong cho hai đứa mình mãi luôn hạnh phúc bên nhau...",

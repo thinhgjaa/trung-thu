@@ -66,6 +66,678 @@ html, body {
 }
 
 /* ==============================================
+   FULL-SCREEN CELESTIAL BACKDROP & CINEMATIC DEPTH (MỜ ẢO TOÀN CẢNH)
+   ============================================== */
+.celestial-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+/* Vầng hào quang đại trăng bao trùm toàn vũ trụ */
+.backdrop-grand-moon-halo {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 950px;
+    height: 950px;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(255, 235, 160, 0.28) 0%, 
+        rgba(255, 185, 70, 0.16) 35%, 
+        rgba(108, 92, 231, 0.08) 60%, 
+        transparent 75%
+    );
+    filter: blur(75px);
+    pointer-events: none;
+    animation: moonHaloBreathe 18s ease-in-out infinite alternate;
+}
+
+@keyframes moonHaloBreathe {
+    0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.75; }
+    50% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.95; }
+    100% { transform: translate(-50%, -50%) scale(0.98); opacity: 0.8; }
+}
+
+/* Các luồng tinh vân mờ ảo đa sắc */
+.backdrop-nebula {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(100px);
+    transition: opacity 1.5s ease;
+}
+
+.backdrop-nebula.nebula-left {
+    top: 20%;
+    left: -12%;
+    width: 650px;
+    height: 650px;
+    background: radial-gradient(circle, rgba(108, 92, 231, 0.38) 0%, rgba(9, 132, 227, 0.22) 50%, transparent 75%);
+    animation: nebulaDriftLeft 24s ease-in-out infinite alternate;
+}
+
+.backdrop-nebula.nebula-right {
+    bottom: 15%;
+    right: -10%;
+    width: 680px;
+    height: 680px;
+    background: radial-gradient(circle, rgba(255, 160, 50, 0.35) 0%, rgba(235, 77, 75, 0.18) 50%, transparent 75%);
+    animation: nebulaDriftRight 26s 2s ease-in-out infinite alternate;
+}
+
+.backdrop-nebula.nebula-top {
+    top: -15%;
+    left: 40%;
+    width: 600px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(72, 52, 212, 0.28) 0%, rgba(130, 204, 221, 0.15) 55%, transparent 75%);
+    animation: nebulaDriftTop 28s 4s ease-in-out infinite alternate;
+}
+
+@keyframes nebulaDriftLeft {
+    0% { transform: translateY(0) scale(1); opacity: 0.35; }
+    50% { transform: translateY(-40px) scale(1.15); opacity: 0.52; }
+    100% { transform: translateY(25px) scale(0.95); opacity: 0.38; }
+}
+
+@keyframes nebulaDriftRight {
+    0% { transform: translateY(0) scale(1); opacity: 0.32; }
+    50% { transform: translateY(35px) scale(1.18); opacity: 0.5; }
+    100% { transform: translateY(-30px) scale(0.92); opacity: 0.36; }
+}
+
+@keyframes nebulaDriftTop {
+    0% { transform: translateX(0) scale(1); opacity: 0.25; }
+    50% { transform: translateX(45px) scale(1.12); opacity: 0.42; }
+    100% { transform: translateX(-35px) scale(0.95); opacity: 0.28; }
+}
+
+/* Dải cực quang mờ lướt chậm */
+.backdrop-aurora {
+    position: absolute;
+    width: 140%;
+    left: -20%;
+    height: 180px;
+    filter: blur(40px);
+    pointer-events: none;
+    opacity: 0.22;
+}
+
+.aurora-1 {
+    top: 18%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(108, 92, 231, 0.25) 25%, 
+        rgba(130, 204, 221, 0.35) 50%, 
+        rgba(255, 215, 107, 0.2) 75%, 
+        transparent 100%
+    );
+    transform: rotate(-3deg);
+    animation: auroraWave1 22s ease-in-out infinite alternate;
+}
+
+.aurora-2 {
+    bottom: 25%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 159, 67, 0.2) 30%, 
+        rgba(108, 92, 231, 0.28) 60%, 
+        transparent 100%
+    );
+    transform: rotate(2deg);
+    animation: auroraWave2 26s 3s ease-in-out infinite alternate;
+}
+
+@keyframes auroraWave1 {
+    0% { transform: rotate(-3deg) translateX(-40px); opacity: 0.18; }
+    50% { transform: rotate(-1deg) translateX(40px); opacity: 0.3; }
+    100% { transform: rotate(-4deg) translateX(0); opacity: 0.2; }
+}
+
+@keyframes auroraWave2 {
+    0% { transform: rotate(2deg) translateX(30px); opacity: 0.15; }
+    50% { transform: rotate(4deg) translateX(-40px); opacity: 0.28; }
+    100% { transform: rotate(1deg) translateX(10px); opacity: 0.18; }
+}
+
+/* Dãy núi mờ sương 3 tầng chiều sâu tiên cảnh */
+.backdrop-mountain-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.mountain-layer-far {
+    height: 38vh;
+    min-height: 260px;
+    z-index: 3;
+    opacity: 0.68;
+    filter: blur(5px);
+}
+
+.mountain-layer-mid {
+    height: 29vh;
+    min-height: 200px;
+    z-index: 4;
+    opacity: 0.85;
+    filter: blur(2.5px);
+}
+
+.mountain-layer-near {
+    height: 20vh;
+    min-height: 140px;
+    z-index: 5;
+    opacity: 0.95;
+    filter: blur(1.2px);
+}
+
+.mountain-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Sương lam cuộn trôi thung lũng */
+.backdrop-valley-mist {
+    position: absolute;
+    bottom: 4%;
+    left: -15%;
+    width: 130%;
+    height: 140px;
+    background: linear-gradient(180deg, 
+        transparent 0%, 
+        rgba(130, 204, 221, 0.16) 40%, 
+        rgba(255, 225, 140, 0.2) 75%, 
+        transparent 100%
+    );
+    filter: blur(32px);
+    pointer-events: none;
+    z-index: 6;
+    opacity: 0.45;
+}
+
+.mist-1 {
+    animation: valleyMistDrift1 30s ease-in-out infinite alternate;
+}
+
+.mist-2 {
+    bottom: 12%;
+    height: 100px;
+    opacity: 0.35;
+    background: linear-gradient(180deg, transparent 0%, rgba(108, 92, 231, 0.14) 50%, transparent 100%);
+    animation: valleyMistDrift2 36s 4s ease-in-out infinite alternate;
+}
+
+@keyframes valleyMistDrift1 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(60px); }
+}
+
+@keyframes valleyMistDrift2 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-70px); }
+}
+
+/* Đèn trời bay lơ lửng ở 2 bên cánh gà ngoài app-container (Cinematic DOF Bokeh) */
+.backdrop-lanterns-cluster {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    will-change: transform;
+}
+
+.backdrop-lantern {
+    position: absolute;
+    background: radial-gradient(circle at 50% 65%, #ffffff 0%, #ffd56b 40%, #ff7a18 80%, #d63031 100%);
+    border-radius: 5px 5px 8px 8px;
+    box-shadow: 0 0 16px #ffd56b, 0 0 30px #ff7a18;
+    pointer-events: none;
+    animation: backdropLanternFloat linear infinite;
+}
+
+/* Chiếc 1: Bên trái gần (rực rỡ, mờ nhẹ) */
+.backdrop-lantern.bl-1 {
+    left: 8%;
+    bottom: -40px;
+    width: 22px;
+    height: 30px;
+    filter: blur(1.8px);
+    opacity: 0.85;
+    animation-duration: 22s;
+    animation-delay: -2s;
+}
+
+/* Chiếc 2: Bên trái trung cảnh */
+.backdrop-lantern.bl-2 {
+    left: 18%;
+    bottom: -40px;
+    width: 15px;
+    height: 22px;
+    filter: blur(3.8px);
+    opacity: 0.65;
+    animation-duration: 27s;
+    animation-delay: -11s;
+}
+
+/* Chiếc 3: Bên trái xa mờ */
+.backdrop-lantern.bl-3 {
+    left: 4%;
+    bottom: -40px;
+    width: 11px;
+    height: 16px;
+    filter: blur(5.5px);
+    opacity: 0.45;
+    animation-duration: 33s;
+    animation-delay: -19s;
+}
+
+/* Chiếc 4: Bên trái sát app */
+.backdrop-lantern.bl-4 {
+    left: 27%;
+    bottom: -40px;
+    width: 13px;
+    height: 19px;
+    filter: blur(3px);
+    opacity: 0.6;
+    animation-duration: 25s;
+    animation-delay: -7s;
+}
+
+/* Chiếc 5: Bên phải gần */
+.backdrop-lantern.bl-5 {
+    right: 9%;
+    bottom: -40px;
+    width: 20px;
+    height: 28px;
+    filter: blur(2px);
+    opacity: 0.85;
+    animation-duration: 21s;
+    animation-delay: -5s;
+}
+
+/* Chiếc 6: Bên phải trung cảnh */
+.backdrop-lantern.bl-6 {
+    right: 19%;
+    bottom: -40px;
+    width: 16px;
+    height: 23px;
+    filter: blur(4px);
+    opacity: 0.68;
+    animation-duration: 28s;
+    animation-delay: -14s;
+}
+
+/* Chiếc 7: Bên phải xa mờ */
+.backdrop-lantern.bl-7 {
+    right: 5%;
+    bottom: -40px;
+    width: 10px;
+    height: 15px;
+    filter: blur(6px);
+    opacity: 0.42;
+    animation-duration: 35s;
+    animation-delay: -23s;
+}
+
+/* Chiếc 8: Bên phải sát app */
+.backdrop-lantern.bl-8 {
+    right: 28%;
+    bottom: -40px;
+    width: 14px;
+    height: 20px;
+    filter: blur(2.8px);
+    opacity: 0.62;
+    animation-duration: 24s;
+    animation-delay: -16s;
+}
+
+@keyframes backdropLanternFloat {
+    0% {
+        transform: translateY(0) translateX(0) scale(0.85);
+        opacity: 0;
+    }
+    12% {
+        opacity: 0.85;
+    }
+    45% {
+        transform: translateY(-45vh) translateX(25px) scale(0.95);
+    }
+    85% {
+        opacity: 0.75;
+    }
+    100% {
+        transform: translateY(-105vh) translateX(45px) scale(0.7);
+        opacity: 0;
+    }
+}
+
+/* Đom đóm & Bụi tiên dạ quang lượn lờ */
+.backdrop-fireflies-cluster {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 7;
+}
+
+.firefly-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff9d2;
+    box-shadow: 0 0 10px #ffeaa7, 0 0 20px #ffd56b, 0 0 35px #ff9f43;
+    pointer-events: none;
+    animation: fireflyGlow linear infinite alternate;
+}
+
+.firefly-orb.ff-1 { top: 22%; left: 14%; width: 5px; height: 5px; animation-duration: 4s; }
+.firefly-orb.ff-2 { top: 48%; left: 8%; width: 6px; height: 6px; animation-duration: 6s; animation-delay: -2s; }
+.firefly-orb.ff-3 { top: 72%; left: 22%; width: 4px; height: 4px; animation-duration: 5s; animation-delay: -1s; }
+.firefly-orb.ff-4 { top: 35%; right: 12%; width: 6px; height: 6px; animation-duration: 5.5s; animation-delay: -3s; }
+.firefly-orb.ff-5 { top: 60%; right: 17%; width: 5px; height: 5px; animation-duration: 4.5s; animation-delay: -1.5s; }
+.firefly-orb.ff-6 { top: 82%; right: 9%; width: 4px; height: 4px; animation-duration: 6.5s; animation-delay: -4s; }
+.firefly-orb.ff-7 { top: 15%; right: 24%; width: 5px; height: 5px; animation-duration: 5s; animation-delay: -2.5s; }
+.firefly-orb.ff-8 { top: 78%; left: 32%; width: 4px; height: 4px; animation-duration: 7s; animation-delay: -3.5s; }
+
+@keyframes fireflyGlow {
+    0% {
+        transform: translate(0, 0) scale(0.6);
+        opacity: 0.2;
+    }
+    50% {
+        transform: translate(15px, -20px) scale(1.2);
+        opacity: 0.95;
+    }
+    100% {
+        transform: translate(-15px, -35px) scale(0.7);
+        opacity: 0.3;
+    }
+}
+
+/* Cành trúc / cành liễu mờ ảo ở 2 góc trên */
+.backdrop-corner-branch {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.38;
+    filter: blur(2.5px);
+}
+
+.branch-top-left {
+    left: 0;
+    width: 320px;
+    height: 220px;
+}
+
+.branch-top-right {
+    right: 0;
+    width: 320px;
+    height: 220px;
+}
+
+.branch-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ==============================================
+   HUYỀN TÍCH CÂY ĐA CHÚ CUỘI & CUNG TRĂNG BACKDROP
+   ============================================== */
+.backdrop-folklore-cluster {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    will-change: transform;
+}
+
+.backdrop-folklore-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    animation: folkloreBackdropFloat 14s ease-in-out infinite alternate;
+}
+
+.backdrop-folklore-item .folklore-silhouette-img {
+    width: 240px;
+    height: 240px;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 16px rgba(255, 215, 107, 0.6)) drop-shadow(0 0 35px rgba(255, 160, 50, 0.35));
+    opacity: 0.85;
+}
+
+.backdrop-folklore-item .folklore-badge-tag {
+    font-family: var(--font-serif);
+    font-size: 0.82rem;
+    color: var(--gold-bright);
+    letter-spacing: 1px;
+    padding: 3px 12px;
+    border-radius: 12px;
+    background: rgba(15, 20, 40, 0.65);
+    border: 1px solid rgba(255, 215, 107, 0.35);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(255, 215, 107, 0.2);
+    opacity: 0.9;
+}
+
+.backdrop-folklore-item.item-cuoi {
+    top: 15%;
+    left: 4%;
+    animation-duration: 15s;
+}
+
+.backdrop-folklore-item.item-palace {
+    top: 13%;
+    right: 4%;
+    animation-duration: 17s;
+    animation-delay: -3s;
+}
+
+@keyframes folkloreBackdropFloat {
+    0% { transform: translateY(0) scale(0.98); }
+    50% { transform: translateY(-16px) scale(1.04); }
+    100% { transform: translateY(10px) scale(0.96); }
+}
+
+@media (max-width: 992px) {
+    .backdrop-folklore-cluster {
+        display: none;
+    }
+}
+
+/* Cinematic Vignette bo nhẹ 4 góc */
+.backdrop-cinematic-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 8;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(4, 6, 16, 0.45) 80%, rgba(2, 3, 9, 0.78) 100%);
+}
+
+/* ==============================================
+   DEEP DEPTH ATMOSPHERE (BOKEH ORBS, DOF LANTERNS & MIST)
+   ============================================== */
+.deep-depth-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.bokeh-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(14px);
+    pointer-events: none;
+    animation: bokehFloat 14s ease-in-out infinite alternate;
+}
+
+.bokeh-orb.b-1 {
+    top: 10%;
+    left: 6%;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(255, 215, 107, 0.5) 0%, rgba(255, 159, 67, 0.15) 60%, transparent 100%);
+    animation-duration: 13s;
+}
+
+.bokeh-orb.b-2 {
+    top: 26%;
+    right: 8%;
+    width: 110px;
+    height: 110px;
+    background: radial-gradient(circle, rgba(255, 235, 160, 0.4) 0%, rgba(108, 92, 231, 0.18) 60%, transparent 100%);
+    animation-duration: 18s;
+    animation-delay: -3s;
+}
+
+.bokeh-orb.b-3 {
+    top: 50%;
+    left: 12%;
+    width: 65px;
+    height: 65px;
+    background: radial-gradient(circle, rgba(255, 175, 50, 0.35) 0%, transparent 70%);
+    animation-duration: 15s;
+    animation-delay: -6s;
+}
+
+.bokeh-orb.b-4 {
+    bottom: 24%;
+    right: 12%;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, rgba(130, 204, 221, 0.35) 0%, transparent 70%);
+    animation-duration: 17s;
+    animation-delay: -4s;
+}
+
+.bokeh-orb.b-5 {
+    top: 5%;
+    right: 22%;
+    width: 55px;
+    height: 55px;
+    background: radial-gradient(circle, rgba(255, 245, 190, 0.45) 0%, transparent 70%);
+    animation-duration: 12s;
+    animation-delay: -2s;
+}
+
+@keyframes bokehFloat {
+    0% { transform: translateY(0) scale(1); opacity: 0.6; }
+    50% { transform: translateY(-20px) scale(1.15); opacity: 0.85; }
+    100% { transform: translateY(15px) scale(0.95); opacity: 0.55; }
+}
+
+/* Đèn trời xa xăm mờ ảo DOF blur (Depth of Field) */
+.bokeh-distant-lantern {
+    position: absolute;
+    width: 14px;
+    height: 20px;
+    background: radial-gradient(circle at 50% 60%, #ffffff 0%, #ffd56b 40%, #ff7a18 80%);
+    border-radius: 4px 4px 6px 6px;
+    box-shadow: 0 0 14px #ffd56b, 0 0 24px #ff7a18;
+    filter: blur(3.5px);
+    opacity: 0.65;
+    animation: distantLanternAscend 20s linear infinite;
+    pointer-events: none;
+}
+
+.bokeh-distant-lantern.dl-1 {
+    left: 20%;
+    bottom: -30px;
+    animation-duration: 22s;
+    animation-delay: -5s;
+}
+
+.bokeh-distant-lantern.dl-2 {
+    right: 24%;
+    bottom: -30px;
+    width: 10px;
+    height: 15px;
+    filter: blur(4.5px);
+    opacity: 0.5;
+    animation-duration: 27s;
+    animation-delay: -14s;
+}
+
+.bokeh-distant-lantern.dl-3 {
+    left: 58%;
+    bottom: -30px;
+    width: 18px;
+    height: 24px;
+    filter: blur(3px);
+    opacity: 0.7;
+    animation-duration: 19s;
+    animation-delay: -18s;
+}
+
+@keyframes distantLanternAscend {
+    0% {
+        transform: translateY(0) translateX(0) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-920px) translateX(30px) scale(0.6);
+        opacity: 0;
+    }
+}
+
+/* Lớp sương lam huyền ảo trôi chậm */
+.atmospheric-fog-layer {
+    position: absolute;
+    left: -20%;
+    width: 140%;
+    pointer-events: none;
+    filter: blur(25px);
+    opacity: 0.38;
+}
+
+.fog-top {
+    top: 14%;
+    height: 130px;
+    background: linear-gradient(90deg, transparent 0%, rgba(130, 204, 221, 0.15) 30%, rgba(255, 215, 107, 0.18) 70%, transparent 100%);
+    animation: fogDriftTop 28s ease-in-out infinite alternate;
+}
+
+.fog-mid {
+    top: 45%;
+    height: 150px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 175, 50, 0.12) 40%, rgba(108, 92, 231, 0.15) 80%, transparent 100%);
+    animation: fogDriftMid 34s ease-in-out infinite alternate;
+}
+
+@keyframes fogDriftTop {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(45px); }
+}
+
+@keyframes fogDriftMid {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50px); }
+}
+
+/* ==============================================
    APP CONTAINER (MOBILE-FIRST FRAMING)
    ============================================== */
 .app-container {
@@ -89,13 +761,27 @@ html, body {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: radial-gradient(circle at center, #13172e 0%, #060914 100%);
+        background: radial-gradient(circle at center, #111428 0%, #050711 100%);
     }
     .app-container {
-        height: 92vh;
-        max-height: 880px;
+        width: 540px;
+        max-width: 560px;
+        height: 94vh;
+        max-height: 920px;
         border-radius: 36px;
-        border: 1px solid rgba(255, 215, 120, 0.22);
+        border: 1px solid rgba(255, 215, 120, 0.32);
+        box-shadow: 
+            0 0 100px rgba(0, 0, 0, 0.95), 
+            0 0 55px rgba(255, 185, 70, 0.22),
+            inset 0 0 35px rgba(255, 215, 120, 0.08);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        background: radial-gradient(circle at 50% 25%, rgba(20, 24, 52, 0.88) 0%, rgba(10, 13, 30, 0.94) 50%, rgba(4, 6, 15, 0.98) 100%);
+    }
+    .moon-stage-container {
+        transform: scale(1.42) !important;
+        transform-origin: center 25% !important;
+        margin-top: 32px !important;
     }
 }
 
@@ -367,9 +1053,12 @@ html, body {
 
 .moon-stage-container {
     position: relative;
-    width: 320px;
-    height: 380px;
-    margin: 10px auto 0;
+    width: 350px;
+    height: 410px;
+    margin: 8px auto 0;
+    transform: scale(1.18);
+    transform-origin: center 22%;
+    transition: transform 0.4s ease;
 }
 
 /* Traditional Ornamental Red & Gold Moon Ring */
@@ -813,6 +1502,81 @@ html, body {
     transition: stroke-dashoffset 0.05s linear;
 }
 
+/* Miniature Folklore Cuội on Moon Stage */
+.stage-folklore-cuoi {
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    width: 82px;
+    height: 82px;
+    z-index: 22;
+    pointer-events: none;
+    animation: floatGentle 5s ease-in-out infinite alternate;
+}
+
+.stage-folklore-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 107, 0.8));
+    opacity: 0.85;
+}
+
+/* Watermark inside luminous moon */
+/* Inner Moon Palace Glow Effect (CSS-only, no external image) */
+.moon-folklore-palace {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Decorative inner radial halo ring (Cung Trăng silhouette bằng CSS) */
+.moon-folklore-palace::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 55%;
+    height: 55%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 250, 200, 0.22);
+    box-shadow:
+        0 0 12px 4px rgba(255, 240, 160, 0.12),
+        inset 0 0 18px rgba(255, 235, 150, 0.08);
+    animation: moonPalaceGlow 5s ease-in-out infinite alternate;
+}
+
+.moon-folklore-palace::after {
+    content: '宮';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    color: rgba(255, 248, 210, 0.18);
+    font-family: var(--font-serif);
+    letter-spacing: 2px;
+    text-shadow: 0 0 14px rgba(255, 230, 120, 0.35);
+    animation: moonPalaceGlow 5s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes moonPalaceGlow {
+    0%   { opacity: 0.55; transform: translate(-50%, -50%) scale(0.95); }
+    100% { opacity: 1;    transform: translate(-50%, -50%) scale(1.08); }
+}
+
+.luminous-moon.holding .moon-folklore-palace::before,
+.luminous-moon.holding .moon-folklore-palace::after {
+    opacity: 0;
+}
+
+
 /* Ripples when pressed */
 .hold-ripples {
     position: absolute;
@@ -1073,6 +1837,108 @@ html, body {
 @keyframes mountainMistBreathe {
     0% { opacity: 0.75; transform: scaleY(1); }
     100% { opacity: 0.95; transform: scaleY(1.03); }
+}
+
+/* ==============================================
+   MÂY TƯỜNG VÂN & MÂY LỤA BỒNG BỀNH TIÊN CẢNH (CELESTIAL CLOUDS)
+   ============================================== */
+.celestial-clouds-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    overflow: hidden;
+}
+
+.flowing-cloud {
+    position: absolute;
+    pointer-events: none;
+    filter: drop-shadow(0 0 16px rgba(255, 215, 107, 0.45));
+}
+
+.cloud-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Mây lụa vắt ngang bầu trời sao trôi chậm rãi */
+.cloud-wispy-drift {
+    top: 55px;
+    left: -40px;
+    width: 290px;
+    height: 55px;
+    opacity: 0.65;
+    animation: cloudDriftSlow 24s ease-in-out infinite alternate;
+}
+
+@keyframes cloudDriftSlow {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(50px) translateY(-8px); }
+    100% { transform: translateX(10px) translateY(4px); }
+}
+
+/* Mây Tường Vân cuộn góc trên bên trái */
+.cloud-auspicious-left {
+    top: 90px;
+    left: -15px;
+    width: 165px;
+    height: 95px;
+    opacity: 0.85;
+    animation: auspiciousFloatLeft 8s ease-in-out infinite alternate;
+}
+
+@keyframes auspiciousFloatLeft {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(-10px) rotate(2deg) scale(1.05); }
+}
+
+/* Mây Tường Vân cuộn góc phải vắt qua cành hoa quế */
+.cloud-auspicious-right {
+    top: 180px;
+    right: -20px;
+    width: 185px;
+    height: 95px;
+    opacity: 0.8;
+    animation: auspiciousFloatRight 9s 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes auspiciousFloatRight {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(12px) rotate(-2deg) scale(1.06); }
+}
+
+/* Dải mây bồng bềnh lướt nhẹ dưới chân vầng trăng */
+.cloud-moon-whisper {
+    top: 255px;
+    left: 20px;
+    width: 280px;
+    height: 75px;
+    opacity: 0.62;
+    z-index: 8;
+    animation: moonWhisperDrift 11s ease-in-out infinite alternate;
+}
+
+@keyframes moonWhisperDrift {
+    0% { transform: translateX(0) scale(1); opacity: 0.5; }
+    50% { transform: translateX(25px) scale(1.06); opacity: 0.72; }
+    100% { transform: translateX(-15px) scale(0.96); opacity: 0.55; }
+}
+
+/* Mây sương mờ bồng bềnh phía chân trời mặt hồ */
+.cloud-horizon-mist {
+    bottom: 165px;
+    left: -20px;
+    width: 380px;
+    height: 65px;
+    opacity: 0.55;
+    z-index: 8;
+    animation: horizonMistDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes horizonMistDrift {
+    0% { transform: translateX(0) scaleY(0.9); }
+    50% { transform: translateX(35px) scaleY(1.1); }
+    100% { transform: translateX(-15px) scaleY(0.95); }
 }
 
 /* ==============================================
@@ -1516,13 +2382,13 @@ html, body {
 
 .btn-primary {
     width: 100%;
-    padding: 13px 20px;
+    padding: 13px 18px;
     border: none;
     border-radius: 30px;
     background: linear-gradient(135deg, #ff9f43 0%, #ee5253 60%, #b33939 100%);
     color: #ffffff;
     font-family: var(--font-main);
-    font-size: 0.96rem;
+    font-size: clamp(0.86rem, 3.6vw, 0.96rem);
     font-weight: 700;
     letter-spacing: 0.5px;
     cursor: pointer;
@@ -1531,6 +2397,7 @@ html, body {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    white-space: nowrap;
     transition: transform 0.2s, box-shadow 0.2s;
     outline: none;
 }
@@ -1563,13 +2430,13 @@ html, body {
 }
 
 /* ==============================================
-   CHƯƠNG 2: HỘI HOA ĐĂNG & LỜI CHÚC
+   CHƯƠNG 2: HỘI THIÊN ĐĂNG & LỜI CHÚC TRỜI SAO
    ============================================== */
 .interactive-sky-scene {
     position: relative;
     flex: 1;
-    min-height: 260px;
-    margin: 10px 0;
+    min-height: 270px;
+    margin: 8px 0;
 }
 
 .floating-lantern-wishes {
@@ -1586,33 +2453,34 @@ html, body {
     flex-direction: column;
     align-items: center;
     animation: riseUp 12s linear infinite;
-    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     touch-action: manipulation;
-    padding: 8px;
+    padding: 6px;
     z-index: 5;
+    transform: scale(var(--scale, 1));
 }
 
 /* Vùng chạm mở rộng trên màn hình cảm ứng điện thoại */
 .sky-wish-lantern::before {
     content: '';
     position: absolute;
-    top: -12px;
-    bottom: -12px;
-    left: -12px;
-    right: -12px;
+    top: -14px;
+    bottom: -14px;
+    left: -14px;
+    right: -14px;
     border-radius: 50%;
 }
 
 .sky-wish-lantern:hover, .sky-wish-lantern:active {
-    transform: scale(1.22);
+    transform: scale(calc(var(--scale, 1) * 1.25));
+    z-index: 20;
 }
 
 .sky-wish-lantern .lantern-core-real {
-    width: 54px;
-    height: 54px;
+    position: relative;
+    width: 58px;
+    height: 62px;
     background: transparent;
-    border: none;
-    box-shadow: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1622,14 +2490,57 @@ html, body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 0 16px rgba(255, 175, 50, 0.95)) drop-shadow(0 0 28px rgba(255, 120, 20, 0.5));
+    filter: drop-shadow(0 0 16px rgba(255, 175, 50, 0.95)) drop-shadow(0 0 32px rgba(255, 110, 20, 0.6));
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.sky-wish-lantern.opened .lantern-core-real img,
+.sky-wish-lantern:hover .lantern-core-real img {
+    filter: drop-shadow(0 0 24px #ffd56b) drop-shadow(0 0 45px #ff7a18);
+}
+
+/* Ngọn nến bập bùng ấm áp trong tim đèn trời */
+.lantern-inner-flame {
+    position: absolute;
+    width: 14px;
+    height: 22px;
+    background: radial-gradient(circle at 50% 65%, #ffffff 0%, #ffd56b 40%, #ff7a18 80%, transparent 100%);
+    border-radius: 50% 50% 35% 35%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(1.5px);
+    animation: flameFlicker 1.2s ease-in-out infinite alternate;
+    z-index: 2;
+    pointer-events: none;
+}
+
+@keyframes flameFlicker {
+    0% { transform: translate(-50%, -50%) scale(0.88, 0.92); opacity: 0.85; }
+    50% { transform: translate(-52%, -51%) scale(1.06, 1.12); opacity: 1; }
+    100% { transform: translate(-48%, -49%) scale(0.94, 1.02); opacity: 0.9; }
+}
+
+.lantern-hover-hint {
+    position: absolute;
+    bottom: -16px;
+    font-size: 0.62rem;
+    color: #ffd56b;
+    background: rgba(12, 16, 32, 0.82);
+    padding: 2px 7px;
+    border-radius: 10px;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 215, 107, 0.4);
+    pointer-events: none;
+    opacity: 0.85;
+    animation: pulseGlow 2.5s infinite;
 }
 
 .sky-wish-lantern .lantern-tail-ribbon {
     width: 3px;
-    height: 22px;
+    height: 24px;
     background: linear-gradient(180deg, #ffd56b 0%, #ee5253 60%, transparent 100%);
-    margin-top: -2px;
+    margin-top: -3px;
     border-radius: 2px;
 }
 
@@ -1638,22 +2549,30 @@ html, body {
     margin-top: auto;
 }
 
-.card-ornament-row {
-    display: flex;
+.card-celestial-badge {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin: 0 auto 10px;
+    padding: 5px 14px;
+    background: linear-gradient(90deg, rgba(255, 215, 107, 0.08) 0%, rgba(255, 159, 67, 0.22) 50%, rgba(255, 215, 107, 0.08) 100%);
+    border: 1px solid rgba(255, 215, 107, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 0 16px rgba(255, 175, 50, 0.25);
 }
 
-.mini-decor-thumb {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1.5px solid var(--gold-bright);
-    object-fit: cover;
-    box-shadow: 0 0 12px rgba(255, 215, 107, 0.7);
-    animation: pulseGlow 2.5s infinite;
+.card-celestial-badge .badge-title {
+    font-family: var(--font-main);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+}
+
+.card-celestial-badge .badge-gem {
+    font-size: 0.85rem;
 }
 
 .glow-text {
@@ -1928,103 +2847,193 @@ html, body {
 }
 
 /* ==============================================
-   CHƯƠNG 4: HỘP BÁNH TRUNG THU & THƯ TÌNH
+   CHƯƠNG 3: BỨC THƯ CUỘN LỤA HOÀNG GIA (ROYAL LOVE SCROLL)
    ============================================== */
-.cake-box-interactive {
-    position: relative;
-    width: 250px;
-    height: 250px;
-    margin: 20px auto;
-    cursor: pointer;
-    transition: transform 0.3s;
+#scene-3 {
+    justify-content: flex-start;
+    padding-bottom: 12px;
+    overflow: hidden;
 }
 
-.cake-box-interactive:hover, .cake-box-interactive:active {
-    transform: scale(1.03);
-}
-
-.cake-box-visual {
+.scene-scroll-stage {
     position: relative;
     width: 100%;
-    height: 100%;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 159, 67, 0.3);
-    border: 2px solid rgba(255, 215, 120, 0.35);
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 6px 4px 10px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
 }
 
-.cake-box-img {
+.royal-scroll-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: scrollUnroll 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 25px rgba(255, 215, 107, 0.25));
+}
+
+@keyframes scrollUnroll {
+    0% { transform: scaleY(0.4) scaleX(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.scroll-wooden-rod {
+    position: relative;
+    width: 104%;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+.rod-top { margin-bottom: -5px; }
+.rod-bottom { margin-top: -5px; }
+
+.rod-shaft {
+    flex: 1;
+    height: 12px;
+    background: linear-gradient(180deg, #5c2c16 0%, #2b1208 50%, #5c2c16 100%);
+    border: 1px solid #d4af37;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.rod-knob {
+    width: 16px;
+    height: 20px;
+    background: radial-gradient(circle at 40% 40%, #ffeaa7 0%, #d4af37 60%, #8a6818 100%);
+    border-radius: 50%;
+    border: 1px solid #fff2a3;
+    box-shadow: 0 0 8px rgba(255, 215, 107, 0.6);
+}
+
+.royal-scroll-parchment {
+    position: relative;
+    width: 100%;
+    max-height: calc(88dvh - 36px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(180deg, #fffbf2 0%, #fdf5e4 30%, #f9edcf 100%);
+    border-left: 5px solid #d4af37;
+    border-right: 5px solid #d4af37;
+    border-top: 1px solid #e6c875;
+    border-bottom: 1px solid #e6c875;
+    padding: 26px 20px 22px;
+    box-shadow: inset 0 0 35px rgba(180, 130, 60, 0.18), inset 0 0 10px rgba(0, 0, 0, 0.08);
+}
+
+.parchment-corner {
+    position: absolute;
+    font-size: 1.1rem;
+    color: #c59b27;
+    opacity: 0.75;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.corner-tl { top: 8px; left: 8px; }
+.corner-tr { top: 8px; right: 8px; }
+.corner-bl { bottom: 8px; left: 8px; }
+.corner-br { bottom: 8px; right: 8px; }
+
+.letter-scroll-header {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.scroll-crest {
+    font-size: 1.05rem;
+    color: #c59b27;
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+}
+
+.royal-scroll-parchment .letter-heading {
+    font-family: var(--font-serif);
+    font-size: 1.32rem;
+    font-weight: 700;
+    color: #632212;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    border: none;
+    padding: 0;
+}
+
+.scroll-header-rule {
+    width: 60%;
+    height: 2px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, transparent 0%, #d4af37 50%, transparent 100%);
+}
+
+/* Folklore Painting Frame in Love Scroll */
+.scroll-folklore-frame {
+    margin: 10px auto 14px;
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.folklore-painting-wrapper {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid #d4af37;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 15px rgba(255, 215, 107, 0.3);
+}
+
+.folklore-painting-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 35%;
+    transition: transform 0.6s ease;
 }
 
-.cake-open-badge {
+.folklore-painting-wrapper:hover .folklore-painting-img {
+    transform: scale(1.04);
+}
+
+.folklore-painting-glow {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-    background: rgba(15, 20, 35, 0.85);
-    border: 1px solid var(--gold-glow);
-    border-radius: 20px;
-    padding: 8px 12px;
-    text-align: center;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #fff6d9;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    animation: pulseGlow 2.5s infinite;
-}
-
-/* Love Letter Scroll / Modal */
-.love-letter-modal {
-    position: fixed;
     inset: 0;
-    background: rgba(5, 7, 16, 0.85);
-    backdrop-filter: blur(14px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    box-shadow: inset 0 0 18px rgba(180, 130, 60, 0.35);
+    pointer-events: none;
 }
 
-.love-letter-modal.active {
-    display: flex;
-    opacity: 1;
+.folklore-painting-caption {
+    margin-top: 6px;
+    font-family: var(--font-script);
+    font-size: 1.05rem;
+    color: #632212;
+    text-align: center;
+    line-height: 1.35;
 }
 
-.letter-scroll-inner {
-    width: 100%;
-    max-width: 380px;
-    max-height: 85vh;
-    max-height: calc(100dvh - 36px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: linear-gradient(180deg, rgba(28, 22, 40, 0.94) 0%, rgba(18, 15, 28, 0.96) 100%);
-    border: 2px solid #ffd56b;
-    border-radius: 24px;
-    padding: 24px 20px 20px;
-    position: relative;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 213, 107, 0.25);
-    animation: modalSlideUp 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
-}
-
-/* Nút đóng thư trên điện thoại */
-.btn-close-letter {
+.royal-scroll-parchment .btn-close-letter {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 32px;
-    height: 32px;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 215, 120, 0.4);
-    color: #ffd56b;
-    font-size: 0.95rem;
+    background: rgba(99, 34, 18, 0.08);
+    border: 1px solid #d4af37;
+    color: #632212;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2034,82 +3043,139 @@ html, body {
     touch-action: manipulation;
 }
 
-.btn-close-letter:active {
+.royal-scroll-parchment .btn-close-letter:active {
     transform: scale(0.9);
-    background: rgba(255, 215, 120, 0.25);
+    background: rgba(197, 155, 39, 0.25);
 }
 
-.letter-decoration-top {
-    text-align: center;
-    font-size: 1.25rem;
-    margin-bottom: 6px;
-}
-
-.letter-heading {
-    font-family: var(--font-serif);
-    font-size: 1.22rem;
-    text-align: center;
-    color: var(--gold-bright);
-    margin-bottom: 10px;
-    border-bottom: 1px dashed rgba(255, 215, 120, 0.35);
-    padding-bottom: 8px;
-}
-
-/* Gợi ý đọc nhanh trên di động */
-.letter-fast-hint {
+.royal-scroll-parchment .letter-fast-hint {
     text-align: center;
     margin-bottom: 12px;
     cursor: pointer;
 }
 
-.letter-fast-hint span {
+.royal-scroll-parchment .letter-fast-hint span {
     display: inline-block;
     font-size: 0.72rem;
-    padding: 3px 10px;
+    padding: 3px 12px;
     border-radius: 12px;
-    background: rgba(255, 215, 107, 0.12);
-    border: 1px dashed rgba(255, 215, 107, 0.35);
-    color: #ffd56b;
+    background: rgba(197, 155, 39, 0.12);
+    border: 1px solid rgba(197, 155, 39, 0.35);
+    color: #834f12;
+    font-weight: 600;
     transition: background 0.2s;
 }
 
-.letter-fast-hint span:active {
-    background: rgba(255, 215, 107, 0.25);
+.royal-scroll-parchment .letter-fast-hint span:active {
+    background: rgba(197, 155, 39, 0.25);
 }
 
-.letter-content-body {
+.royal-scroll-parchment .letter-content-body {
     font-family: var(--font-main);
-    font-size: 0.92rem;
-    line-height: 1.7;
-    color: #f7eedc;
+    font-size: 0.94rem;
+    line-height: 1.85;
+    color: #3b2518;
     min-height: 160px;
 }
 
-.letter-content-body p {
+.royal-scroll-parchment .scroll-paragraph {
+    margin-bottom: 14px;
+    text-align: justify;
+    text-justify: inter-word;
+    letter-spacing: 0.1px;
+}
+
+.royal-scroll-parchment .scroll-paragraph.salutation {
+    font-family: var(--font-serif);
+    font-size: 1.06rem;
+    font-weight: 700;
+    color: #7b2915;
+    font-style: italic;
     margin-bottom: 12px;
 }
 
-.letter-signature {
-    text-align: right;
-    margin-top: 18px;
-    padding-top: 12px;
-    border-top: 1px dashed rgba(255, 215, 120, 0.3);
+.letter-signature-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(197, 155, 39, 0.28);
 }
 
-.sig-from {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.letter-signature-content {
+    text-align: left;
 }
 
-.sig-name {
+.letter-signature-content .sig-from {
+    font-size: 0.82rem;
+    color: #7d5e49;
+    font-style: italic;
+}
+
+.letter-signature-content .sig-name {
     font-family: var(--font-script);
-    font-size: 1.3rem;
-    color: #ff9f43;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #9c2710;
     margin-top: 2px;
 }
 
+.imperial-red-seal {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #d63031 0%, #b71540 100%);
+    border: 2.5px solid #a81c24;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(183, 21, 64, 0.4), inset 0 0 6px rgba(255, 255, 255, 0.35);
+    transform: rotate(-6deg);
+    cursor: pointer;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.imperial-red-seal:hover {
+    transform: rotate(0deg) scale(1.08);
+}
+
+.seal-inner-frame {
+    border: 1px solid rgba(255, 230, 180, 0.85);
+    border-radius: 4px;
+    padding: 2px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+}
+
+.seal-char-top, .seal-char-bot {
+    font-family: var(--font-serif);
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #ffeaa7;
+    letter-spacing: 1px;
+}
+
+.btn-scroll-action {
+    background: linear-gradient(135deg, #c59b27 0%, #a87915 50%, #7b550b 100%);
+    border: 1px solid #ffd56b;
+    box-shadow: 0 4px 16px rgba(168, 121, 21, 0.45);
+    color: #fffbf2;
+    margin-top: 14px;
+}
+
+.btn-scroll-action:hover, .btn-scroll-action:active {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+}
+
 .letter-actions {
-    margin-top: 20px;
+    margin-top: 16px;
+    text-align: center;
 }
 
 /* ==============================================
@@ -2486,25 +3552,90 @@ html, body {
 }
 
 /* Khi bàn phím ảo điện thoại xuất hiện */
+#scene-3.keyboard-focused .wish-release-container,
 #scene-4.keyboard-focused .wish-release-container,
 #scene-5.keyboard-focused .wish-release-container {
     height: 110px;
     margin: 0;
 }
 
+#scene-3.keyboard-focused .giant-wish-lantern,
 #scene-4.keyboard-focused .giant-wish-lantern,
 #scene-5.keyboard-focused .giant-wish-lantern {
     transform: scale(0.62);
 }
 
+#scene-3.keyboard-focused .scene-header,
 #scene-4.keyboard-focused .scene-header,
 #scene-5.keyboard-focused .scene-header {
     margin-bottom: 2px;
 }
 
+#scene-3.keyboard-focused .scene-subtitle,
 #scene-4.keyboard-focused .scene-subtitle,
 #scene-5.keyboard-focused .scene-subtitle {
     display: none;
+}
+
+/* ==============================================
+   CELEBRATION SUCCESS CARD (SCENE 4)
+   ============================================== */
+.wish-success-box {
+    display: none;
+    margin-top: auto;
+    text-align: center;
+    background: radial-gradient(circle at 50% 0%, rgba(35, 42, 75, 0.94) 0%, rgba(14, 18, 38, 0.98) 100%);
+    border: 2px solid #ffd56b;
+    border-radius: 28px;
+    padding: 24px 20px 20px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 213, 107, 0.35);
+    animation: modalSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative;
+    z-index: 25;
+}
+
+.wish-success-box.active {
+    display: block;
+}
+
+.wish-success-box .success-icon {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 12px #ffd56b);
+    animation: pulseGlow 2s infinite alternate;
+}
+
+.wish-success-box .success-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gold-bright);
+    margin-bottom: 10px;
+    text-shadow: 0 0 16px rgba(255, 215, 120, 0.6);
+}
+
+.wish-success-box .success-desc {
+    font-family: var(--font-main);
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #f7eedc;
+    margin-bottom: 16px;
+}
+
+.final-couple-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: linear-gradient(90deg, rgba(238, 82, 83, 0.25) 0%, rgba(255, 159, 67, 0.35) 50%, rgba(238, 82, 83, 0.25) 100%);
+    border: 1px solid rgba(255, 215, 120, 0.5);
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+
+.final-couple-badge .badge-text {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffd56b;
+    letter-spacing: 0.8px;
 }
 
 /* ==============================================
@@ -2512,8 +3643,8 @@ html, body {
    ============================================== */
 @media (max-height: 740px) {
     .moon-stage-container {
-        transform: scale(0.92);
-        transform-origin: top center;
+        transform: scale(1.08);
+        transform-origin: center 20%;
         margin: 0 auto;
     }
     .revolving-carousel {
@@ -2523,20 +3654,20 @@ html, body {
         height: 155px;
     }
     .cake-box-interactive {
-        width: 210px;
-        height: 210px;
-        margin: 10px auto;
+        width: 230px;
+        height: 230px;
+        margin: 15px auto;
     }
     .wish-release-container {
-        height: 200px;
+        height: 210px;
     }
 }
 
 @media (max-height: 680px) {
     .moon-stage-container {
-        transform: scale(0.82);
-        transform-origin: top center;
-        margin: -10px auto -20px;
+        transform: scale(0.98);
+        transform-origin: center 18%;
+        margin: 0 auto;
     }
     .revolving-carousel {
         height: 240px;
@@ -2545,15 +3676,15 @@ html, body {
         height: 135px;
     }
     .cake-box-interactive {
-        width: 175px;
-        height: 175px;
-        margin: 8px auto;
+        width: 200px;
+        height: 200px;
+        margin: 10px auto;
     }
     .giant-wish-lantern {
-        transform: scale(0.8);
+        transform: scale(0.85);
     }
     .wish-release-container {
-        height: 170px;
+        height: 180px;
     }
     .chat-bubble-quote {
         font-size: 0.74rem;
@@ -2563,8 +3694,8 @@ html, body {
 
 @media (max-width: 360px) {
     .moon-stage-container {
-        transform: scale(0.8);
-        transform-origin: top center;
+        transform: scale(0.98);
+        transform-origin: center 20%;
     }
     .traditional-moon-ring {
         width: 240px;

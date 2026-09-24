@@ -20,32 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
         holdInstructionText.textContent = cfg.holdInstruction;
     }
 
-    // Chapter 2 Config
+    // Chapter 2 Config (Thư Tình Cung Trăng)
     if (cfg.chapter2) {
         const ch2Title = document.getElementById('ch2Title');
         const ch2Subtitle = document.getElementById('ch2Subtitle');
+        const letterTitleText = document.getElementById('letterTitleText');
+        const letterSenderText = document.getElementById('letterSenderText');
         if (ch2Title && cfg.chapter2.title) ch2Title.textContent = cfg.chapter2.title;
         if (ch2Subtitle && cfg.chapter2.subtitle) ch2Subtitle.textContent = cfg.chapter2.subtitle;
+        if (letterTitleText && cfg.chapter2.letterTitle) letterTitleText.textContent = cfg.chapter2.letterTitle;
+        if (letterSenderText && cfg.chapter2.letterSender) letterSenderText.textContent = cfg.chapter2.letterSender;
     }
 
-    // Chapter 3 Config (Hộp Bánh & Thư Tình)
+    // Chapter 3 Config (Thả Đèn Trời Nguyện Ước)
     if (cfg.chapter3) {
         const ch3Title = document.getElementById('ch3Title');
         const ch3Subtitle = document.getElementById('ch3Subtitle');
-        const boxPromptText = document.getElementById('boxPromptText');
-        const letterTitleText = document.getElementById('letterTitleText');
-        const letterSenderText = document.getElementById('letterSenderText');
-        if (ch3Title && cfg.chapter3.title) ch3Title.textContent = cfg.chapter3.title;
-        if (ch3Subtitle && cfg.chapter3.subtitle) ch3Subtitle.textContent = cfg.chapter3.subtitle;
-        if (boxPromptText && cfg.chapter3.boxPrompt) boxPromptText.textContent = cfg.chapter3.boxPrompt;
-        if (letterTitleText && cfg.chapter3.letterTitle) letterTitleText.textContent = cfg.chapter3.letterTitle;
-        if (letterSenderText && cfg.chapter3.letterSender) letterSenderText.textContent = cfg.chapter3.letterSender;
-    }
-
-    // Chapter 4 Config (Thả Đèn Trời Nguyện Ước)
-    if (cfg.chapter4) {
-        const ch4Title = document.getElementById('ch4Title');
-        const ch4Subtitle = document.getElementById('ch4Subtitle');
         const wishPromptText = document.getElementById('wishPromptText');
         const wishInput = document.getElementById('wishInput');
         const btnReleaseText = document.getElementById('btnReleaseText');
@@ -53,14 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const successDescText = document.getElementById('successDescText');
         const btnReplayText = document.getElementById('btnReplayText');
         
-        if (ch4Title && cfg.chapter4.title) ch4Title.textContent = cfg.chapter4.title;
-        if (ch4Subtitle && cfg.chapter4.subtitle) ch4Subtitle.textContent = cfg.chapter4.subtitle;
-        if (wishPromptText && cfg.chapter4.prompt) wishPromptText.textContent = cfg.chapter4.prompt;
-        if (wishInput && cfg.chapter4.placeholder) wishInput.placeholder = cfg.chapter4.placeholder;
-        if (btnReleaseText && cfg.chapter4.sendButton) btnReleaseText.textContent = cfg.chapter4.sendButton;
-        if (successTitleText && cfg.chapter4.afterWishSuccessTitle) successTitleText.textContent = cfg.chapter4.afterWishSuccessTitle;
-        if (successDescText && cfg.chapter4.afterWishSuccessText) successDescText.textContent = cfg.chapter4.afterWishSuccessText;
-        if (btnReplayText && cfg.chapter4.replayButton) btnReplayText.textContent = cfg.chapter4.replayButton;
+        if (ch3Title && cfg.chapter3.title) ch3Title.textContent = cfg.chapter3.title;
+        if (ch3Subtitle && cfg.chapter3.subtitle) ch3Subtitle.textContent = cfg.chapter3.subtitle;
+        if (wishPromptText && cfg.chapter3.prompt) wishPromptText.textContent = cfg.chapter3.prompt;
+        if (wishInput && cfg.chapter3.placeholder) wishInput.placeholder = cfg.chapter3.placeholder;
+        if (btnReleaseText && cfg.chapter3.sendButton) btnReleaseText.textContent = cfg.chapter3.sendButton;
+        if (successTitleText && cfg.chapter3.afterWishSuccessTitle) successTitleText.textContent = cfg.chapter3.afterWishSuccessTitle;
+        if (successDescText && cfg.chapter3.afterWishSuccessText) successDescText.textContent = cfg.chapter3.afterWishSuccessText;
+        if (btnReplayText && cfg.chapter3.replayButton) btnReplayText.textContent = cfg.chapter3.replayButton;
     }
 
     // ----------------------------------------------------
@@ -269,10 +259,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!starCtx) return;
         starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
 
-        // Draw twinkling stars
+        // Draw twinkling stars with soft ethereal depth bloom
         for (let s of stars) {
             s.alpha += s.speed;
             const currentAlpha = 0.3 + Math.abs(Math.sin(s.alpha)) * 0.7;
+
+            // Halo bloom for larger stars
+            if (s.radius > 1.1) {
+                starCtx.beginPath();
+                starCtx.arc(s.x, s.y, s.radius * 3.8, 0, Math.PI * 2);
+                starCtx.fillStyle = s.color;
+                starCtx.globalAlpha = currentAlpha * 0.22;
+                starCtx.fill();
+            }
+
             starCtx.beginPath();
             starCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
             starCtx.fillStyle = s.color;
@@ -340,16 +340,111 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // REALISTIC FIREWORK AUDIO SYNTHESIZER
-    // Whistle launch + heavy bass boom + crackle sizzle
+    // FIREWORK AUDIO SYSTEM - Real MP3 Files + Fallback Synthesizer
+    // Sử dụng file âm thanh pháo hoa thực từ thư mục assets/audios/
     // ----------------------------------------------------
+
+    // Preload all 4 firework audio files
+    const fwAudioFiles = {
+        cluster:  'assets/audios/freesound_community-firework-cluster-90480.mp3',
+        blast:    'assets/audios/freesound_community-fireworkblast-106275.mp3',
+        single:   'assets/audios/freesound_community-single-firework-79814.mp3',
+        rocket:   'assets/audios/freesound_community-tiny_rocketwav-14647.mp3'
+    };
+
+    // Audio pool: mỗi loại có pool 3 instances để tránh cut-off khi nhiều pháo hoa nổ cùng lúc
+    const fwAudioPool = {};
+    const FW_POOL_SIZE = 3;
+
+    function buildAudioPool() {
+        Object.entries(fwAudioFiles).forEach(([key, src]) => {
+            fwAudioPool[key] = [];
+            for (let i = 0; i < FW_POOL_SIZE; i++) {
+                try {
+                    const audio = new Audio(src);
+                    audio.preload = 'auto';
+                    audio.volume = 0.72;
+                    fwAudioPool[key].push({ el: audio, busy: false });
+                } catch (e) { /* ignore */ }
+            }
+        });
+    }
+    buildAudioPool();
+
+    // Lấy instance rảnh trong pool, nếu không có thì dùng instance đầu tiên (giật sang)
+    function getPooledAudio(key) {
+        const pool = fwAudioPool[key];
+        if (!pool || pool.length === 0) return null;
+        const free = pool.find(a => !a.busy);
+        return free || pool[0];
+    }
+
+    function playPooledAudio(key, volume = 0.72) {
+        const item = getPooledAudio(key);
+        if (!item) return;
+        try {
+            item.el.volume = Math.min(1, Math.max(0, volume));
+            item.el.currentTime = 0;
+            item.busy = true;
+            const playPromise = item.el.play();
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        item.el.onended = () => { item.busy = false; };
+                    })
+                    .catch(() => { item.busy = false; });
+            }
+        } catch (e) {
+            item.busy = false;
+        }
+    }
+
+    // Map cường độ pháo hoa (intensity) sang loại âm thanh phù hợp
+    // intensity < 0.6  → single firework   (nhẹ, đơn giản)
+    // intensity 0.6-1  → blast / cluster    (trung bình)
+    // intensity > 1    → cluster + blast    (đại tiệc to)
     function playRealisticFireworkSound(intensity = 1) {
+        initAudioContext();
+
+        try {
+            if (intensity < 0.6) {
+                // Tiếng pháo đơn nhỏ nhẹ
+                playPooledAudio('single', intensity * 0.9);
+            } else if (intensity < 0.9) {
+                // Tiếng nổ vừa + hơi whistle rocket
+                const r = Math.random();
+                if (r < 0.4) {
+                    playPooledAudio('blast', intensity * 0.78);
+                } else if (r < 0.7) {
+                    playPooledAudio('single', intensity * 0.85);
+                    setTimeout(() => playPooledAudio('blast', intensity * 0.6), 180);
+                } else {
+                    playPooledAudio('blast', intensity * 0.82);
+                }
+            } else if (intensity < 1.2) {
+                // Tiếng nổ blast chính
+                playPooledAudio('blast', Math.min(1, intensity * 0.88));
+                // Kèm theo tiếng rocket nhỏ bay lên trước
+                setTimeout(() => playPooledAudio('rocket', 0.45), -50); // ngay lập tức
+            } else {
+                // Đại kết cục: cluster + blast kết hợp
+                playPooledAudio('cluster', Math.min(1, intensity * 0.78));
+                setTimeout(() => playPooledAudio('blast', 0.65), 220);
+                setTimeout(() => playPooledAudio('single', 0.5), 480);
+            }
+        } catch (e) {
+            // Fallback về Web Audio Synthesizer nếu file MP3 không load được
+            _fallbackSynthFirework(intensity);
+        }
+    }
+
+    // Fallback synthesizer (giữ nguyên phòng khi file không load hoặc browser block)
+    function _fallbackSynthFirework(intensity = 1) {
         try {
             initAudioContext();
             if (!audioContext) return;
             const now = audioContext.currentTime;
 
-            // 1. Sub-bass boom & low frequency rumble
             const boomOsc = audioContext.createOscillator();
             const boomGain = audioContext.createGain();
             boomOsc.type = 'triangle';
@@ -357,63 +452,35 @@ document.addEventListener('DOMContentLoaded', () => {
             boomOsc.frequency.exponentialRampToValueAtTime(28, now + 0.65);
             boomGain.gain.setValueAtTime(0.6 * intensity, now);
             boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-
             boomOsc.connect(boomGain);
             boomGain.connect(audioContext.destination);
             boomOsc.start(now);
             boomOsc.stop(now + 0.75);
 
-            // 2. White noise blast (the explosive crack & echo)
             const bufferSize = Math.floor(audioContext.sampleRate * 0.9);
             const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
             const output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                output[i] = Math.random() * 2 - 1;
-            }
-
+            for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
             const whiteNoise = audioContext.createBufferSource();
             whiteNoise.buffer = noiseBuffer;
-
             const filter = audioContext.createBiquadFilter();
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(1400, now);
             filter.frequency.exponentialRampToValueAtTime(180, now + 0.85);
-
             const noiseGain = audioContext.createGain();
             noiseGain.gain.setValueAtTime(0.65 * intensity, now);
             noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
-
             whiteNoise.connect(filter);
             filter.connect(noiseGain);
             noiseGain.connect(audioContext.destination);
-
             whiteNoise.start(now);
             whiteNoise.stop(now + 0.9);
+        } catch (e) { /* silent fail */ }
+    }
 
-            // 3. Embers crackle & sparkle pops
-            const crackleCount = Math.floor(Math.random() * 5) + 4;
-            for (let c = 0; c < crackleCount; c++) {
-                const crackleDelay = 0.18 + Math.random() * 0.65;
-                setTimeout(() => {
-                    if (!audioContext) return;
-                    const t = audioContext.currentTime;
-                    const popOsc = audioContext.createOscillator();
-                    const popGain = audioContext.createGain();
-                    popOsc.type = 'sawtooth';
-                    popOsc.frequency.setValueAtTime(1600 + Math.random() * 1400, t);
-                    popOsc.frequency.exponentialRampToValueAtTime(120, t + 0.035);
-                    popGain.gain.setValueAtTime(0.12 * intensity, t);
-                    popGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.035);
-
-                    popOsc.connect(popGain);
-                    popGain.connect(audioContext.destination);
-                    popOsc.start(t);
-                    popOsc.stop(t + 0.04);
-                }, crackleDelay * 1000);
-            }
-        } catch (e) {
-            // Audio context fallback
-        }
+    // Helper: phát tiếng rocket bay lên trước khi nổ (cho launchGrandLanternCelebration)
+    function playRocketLaunchSound(volume = 0.55) {
+        playPooledAudio('rocket', volume);
     }
 
     let isFireworkLoopRunning = false;
@@ -505,40 +572,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Đại tiệc pháo hoa đa tầng chúc mừng thả đèn trời (đồng bộ nhịp bay chậm rãi 12s)
     function launchGrandLanternCelebration() {
-        // Tầng 1: Đốm sáng bùng nổ êm ái chân lồng đèn
+        // Tầng 1: Rocket nhỏ bay lên → Đốm sáng bùng nổ êm ái chân lồng đèn
+        setTimeout(() => { playRocketLaunchSound(0.5); }, 400);
         setTimeout(() => {
             createFirework(window.innerWidth * 0.5, window.innerHeight * 0.45, 45);
             playRealisticFireworkSound(0.65);
         }, 800);
 
         // Tầng 2: Cặp pháo hoa Trái Tim đôi hai bên màn hình khi đèn lên tầng trung
+        setTimeout(() => { playRocketLaunchSound(0.55); }, 2100);
         setTimeout(() => {
             createHeartFirework(window.innerWidth * 0.26, window.innerHeight * 0.32, '#ff7675', 4.5);
             playRealisticFireworkSound(0.85);
         }, 2400);
 
+        setTimeout(() => { playRocketLaunchSound(0.5); }, 3900);
         setTimeout(() => {
             createHeartFirework(window.innerWidth * 0.74, window.innerHeight * 0.28, '#fd79a8', 4.5);
             playRealisticFireworkSound(0.85);
         }, 4200);
 
         // Tầng 3: Pháo hoa Liễu Rủ Hoàng Kim lộng lẫy chầm chậm buông rủ
+        setTimeout(() => { playRocketLaunchSound(0.62); }, 5650);
         setTimeout(() => {
             createSparkleWillowFirework(window.innerWidth * 0.42, window.innerHeight * 0.25, '#ffd56b');
             playRealisticFireworkSound(1.0);
         }, 6000);
 
+        setTimeout(() => { playRocketLaunchSound(0.58); }, 7050);
         setTimeout(() => {
             createSparkleWillowFirework(window.innerWidth * 0.68, window.innerHeight * 0.35, '#fff2a3');
             playRealisticFireworkSound(0.95);
         }, 7400);
 
-        // Tầng 4: Đại kết cục bừng sáng toàn bầu trời khi đèn ước nguyện lên cao
+        // Tầng 4: Đại kết cục bừng sáng toàn bầu trời - Cluster + Blast + Chord
+        setTimeout(() => { playRocketLaunchSound(0.72); }, 8700);
+        setTimeout(() => { playRocketLaunchSound(0.68); }, 8900);
         setTimeout(() => {
             createFirework(window.innerWidth * 0.32, window.innerHeight * 0.2, 70);
             createFirework(window.innerWidth * 0.52, window.innerHeight * 0.16, 75);
             createFirework(window.innerWidth * 0.76, window.innerHeight * 0.22, 70);
-            playRealisticFireworkSound(1.3);
+            playRealisticFireworkSound(1.3); // → cluster + blast (đại tiệc)
             playCelebrationChord();
         }, 9200);
     }
@@ -587,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. SCENE & STORY PROGRESSION CONTROLLER
     // ----------------------------------------------------
     let currentChapter = 1;
-    const totalChapters = 4;
+    const totalChapters = 3;
     const progressSteps = document.querySelectorAll('.progress-step');
 
     function updateProgressUI(chapterNum) {
@@ -648,12 +722,9 @@ document.addEventListener('DOMContentLoaded', () => {
         playChime(650, 0.4);
 
         if (chapterNum === 2) {
-            launchCelebrationFireworks();
-            initChapter2Lanterns();
+            startRoyalLoveLetter();
         } else if (chapterNum === 3) {
-            // Chapter 3: Hộp bánh Trung Thu & Bức thư tình - chờ người dùng chạm mở
-        } else if (chapterNum === 4) {
-            initChapter4Wish();
+            initChapter3Wish();
         }
     }
 
@@ -1141,99 +1212,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initFairytaleLakeScene();
 
     // ----------------------------------------------------
-    // 7. CHƯƠNG 2: HỘI HOA ĐĂNG & LỜI CHÚC TRÊN TRỜI SAO
+    // 7. CHƯƠNG 2: BỨC THƯ TÌNH CUNG TRĂNG (ROYAL SCROLL TYPEWRITER)
     // ----------------------------------------------------
-    const lanternWishesList = document.getElementById('lanternWishesList');
-    const ch2DynamicWish = document.getElementById('ch2DynamicWish');
-    const lanternCountText = document.getElementById('lanternCountText');
-    const btnGoToCh3 = document.getElementById('btnGoToCh3');
-    const openedLanternsSet = new Set();
-
-    const defaultWishes = [
-        "Chúc em bé một mùa Trung Thu ngập tràn hạnh phúc 🌕",
-        "Nụ cười của em là ánh sáng rạng rỡ nhất trần gian ✨",
-        "Mỗi mùa Trung Thu sau này, đều mong có em cùng ngắm trăng 🏮",
-        "Yêu em nhiều hơn cả triệu vì sao trên trời 💕",
-        "Em là công chúa nhỏ đáng yêu nhất trong lòng anh 🐰",
-        "Mong hai đứa mình mãi luôn bình yên và yêu thương đong đầy 🌸",
-        "Ánh trăng rằm sáng soi cho tình yêu đôi ta ngàn năm vĩnh cửu 💫"
-    ];
-
-    const wishesArray = (cfg.chapter2 && cfg.chapter2.lanternWishes) || defaultWishes;
-
-    function initChapter2Lanterns() {
-        if (!lanternWishesList) return;
-        lanternWishesList.innerHTML = '';
-        openedLanternsSet.clear();
-        if (lanternCountText) lanternCountText.textContent = "Chạm vào đèn trời để mở điều ước (0/7)";
-
-        const realLanternTypes = [
-            { img: 'assets/images/sky_lantern_screen_transparent.png', title: 'Đèn Trời Khổng Minh' },
-            { img: 'assets/images/star_lantern_transparent.png', title: 'Đèn Ông Sao 5 Cánh' },
-            { img: 'assets/images/carp_lantern_transparent.png', title: 'Đèn Cá Chép' },
-            { img: 'assets/images/lotus_lantern_transparent.png', title: 'Đèn Hoa Đăng Sen' }
-        ];
-
-        for (let i = 0; i < 7; i++) {
-            const lantern = document.createElement('div');
-            lantern.className = 'sky-wish-lantern';
-            const leftPos = 6 + (i * 13) + Math.random() * 4;
-            const animDuration = 9 + Math.random() * 6;
-            const animDelay = Math.random() * 4;
-
-            lantern.style.left = `${leftPos}%`;
-            lantern.style.animationDuration = `${animDuration}s`;
-            lantern.style.animationDelay = `${animDelay}s`;
-
-            const wishText = wishesArray[i % wishesArray.length];
-            const lanternData = realLanternTypes[i % realLanternTypes.length];
-
-            lantern.innerHTML = `
-                <div class="lantern-core-real" title="${lanternData.title}">
-                    <img src="${lanternData.img}" alt="${lanternData.title}">
-                </div>
-                <div class="lantern-tail-ribbon"></div>
-            `;
-
-            lantern.addEventListener('click', () => {
-                if (navigator.vibrate) navigator.vibrate(22);
-                playRealisticFireworkSound(0.75);
-
-                openedLanternsSet.add(i);
-                if (lanternCountText) {
-                    lanternCountText.textContent = `Đã mở: ${openedLanternsSet.size}/7 lời chúc ✨`;
-                }
-
-                if (ch2DynamicWish) {
-                    ch2DynamicWish.textContent = `"${wishText}"`;
-                    ch2DynamicWish.style.animation = 'none';
-                    ch2DynamicWish.offsetHeight;
-                    ch2DynamicWish.style.animation = 'pulseGlow 1s ease';
-                }
-                const rect = lantern.getBoundingClientRect();
-                createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 35);
-            });
-
-            lanternWishesList.appendChild(lantern);
-        }
-    }
-
-    if (btnGoToCh3) {
-        btnGoToCh3.addEventListener('click', () => {
-            if (navigator.vibrate) navigator.vibrate(15);
-            goToScene(3);
-        });
-    }
-
-    // ----------------------------------------------------
-    // 8. CHƯƠNG 3: HỘP BÁNH TRUNG THU & THƯ TÌNH (TYPEWRITER)
-    // ----------------------------------------------------
-    const cakeBoxTrigger = document.getElementById('cakeBoxTrigger');
-    const loveLetterModal = document.getElementById('loveLetterModal');
+    const royalScrollWrapper = document.getElementById('royalScrollWrapper');
     const letterContentBody = document.getElementById('letterContentBody');
-    const btnCloseLetter = document.getElementById('btnCloseLetter');
     const letterFastHint = document.getElementById('letterFastHint');
-    const btnGoToCh4 = document.getElementById('btnGoToCh4');
+    const btnGoToCh3 = document.getElementById('btnGoToCh3');
     let hasTypedLetter = false;
     let isTypingLetter = false;
     let typewriterTimer = null;
@@ -1242,40 +1226,41 @@ document.addEventListener('DOMContentLoaded', () => {
         "Gửi em bé yêu dấu của anh,",
         "Đêm nay trăng rằm tháng Tám sáng tỏ khắp nhân gian, người người rộn rã rước đèn ngắm trăng...",
         "Nhưng với anh, cảnh sắc đẹp nhất và lung linh nhất chính là được nhìn thấy nụ cười của em.",
-        "Bánh trung thu có ngọt ngào đến mấy cũng không bằng sự ngọt ngào khi ở cạnh em. Vầng trăng trên cao có tròn đầy đến đâu cũng chẳng thể sánh bằng tình cảm chân thành anh dành trao cho em.",
+        "Trăng rằm có sáng tỏ đến đâu cũng không bằng ánh mắt rạng ngời của em. Giữa vạn người tưng bừng hội ngộ, điều may mắn nhất của anh chính là có em kề bên.",
         "Cảm ơn em vì đã là một điều thật kỳ diệu và ngọt ngào trong cuộc sống của anh. Mong rằng mọi mùa Trung Thu và những ngày tháng sau này, người luôn ở bên chăm sóc, cưng chiều em sẽ là anh.",
         "Chúc em bé một mùa Trung Thu thật ấm áp, rạng rỡ và luôn luôn là cô gái hạnh phúc nhất thế gian nhé! 💕🌕✨"
     ];
 
-    const letterParagraphs = (cfg.chapter3 && cfg.chapter3.letterParagraphs) || defaultParagraphs;
+    const letterParagraphs = (cfg.chapter2 && cfg.chapter2.letterParagraphs) || defaultParagraphs;
 
-    function openCakeBoxAndLetter() {
-        if (!loveLetterModal) return;
-        if (navigator.vibrate) navigator.vibrate([40, 50, 90]);
-        playCelebrationChord();
-
-        if (cakeBoxTrigger) {
-            const rect = cakeBoxTrigger.getBoundingClientRect();
-            createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 40);
-        }
-
-        loveLetterModal.classList.add('active');
-
+    function startRoyalLoveLetter() {
         if (!hasTypedLetter) {
             hasTypedLetter = true;
-            typewriterLetter();
+            if (navigator.vibrate) navigator.vibrate([30, 40, 60]);
+            playCelebrationChord();
+
+            // Nhẹ nhàng bắn pháo hoa lấp lánh khi mở bức thư
+            setTimeout(() => {
+                createFirework(window.innerWidth * 0.5, window.innerHeight * 0.3, 35);
+            }, 300);
+
+            setTimeout(() => {
+                typewriterLetter();
+            }, 500);
         }
     }
 
-    // Tính năng đọc nhanh ngay lập tức khi chạm trên điện thoại
+    // Tính năng đọc nhanh ngay lập tức khi chạm trên màn hình
     function completeTypewriterImmediately() {
         if (!letterContentBody) return;
         if (typewriterTimer) clearTimeout(typewriterTimer);
         isTypingLetter = false;
 
         letterContentBody.innerHTML = '';
-        letterParagraphs.forEach(text => {
+        letterParagraphs.forEach((text, idx) => {
             const p = document.createElement('p');
+            p.className = 'scroll-paragraph';
+            if (idx === 0) p.classList.add('salutation');
             p.textContent = text;
             letterContentBody.appendChild(p);
         });
@@ -1295,8 +1280,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentParagraphIndex = 0;
         let currentCharIndex = 0;
 
-        const pEl = document.createElement('p');
-        letterContentBody.appendChild(pEl);
+        let activeP = document.createElement('p');
+        activeP.className = 'scroll-paragraph';
+        if (currentParagraphIndex === 0) activeP.classList.add('salutation');
+        letterContentBody.appendChild(activeP);
 
         function typeNext() {
             if (!isTypingLetter || currentParagraphIndex >= letterParagraphs.length) {
@@ -1308,18 +1295,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetText = letterParagraphs[currentParagraphIndex];
 
             if (currentCharIndex < targetText.length) {
-                pEl.textContent += targetText[currentCharIndex];
+                activeP.textContent += targetText[currentCharIndex];
                 currentCharIndex++;
                 typewriterTimer = setTimeout(typeNext, 20);
             } else {
                 currentParagraphIndex++;
                 currentCharIndex = 0;
                 if (currentParagraphIndex < letterParagraphs.length) {
-                    const nextP = document.createElement('p');
-                    letterContentBody.appendChild(nextP);
+                    activeP = document.createElement('p');
+                    activeP.className = 'scroll-paragraph';
+                    letterContentBody.appendChild(activeP);
                     typewriterTimer = setTimeout(() => {
                         typeNext();
-                    }, 120);
+                    }, 140);
                 } else {
                     isTypingLetter = false;
                     if (letterFastHint) letterFastHint.style.display = 'none';
@@ -1340,36 +1328,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (btnCloseLetter) {
-        btnCloseLetter.addEventListener('click', () => {
+    if (btnGoToCh3) {
+        btnGoToCh3.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate(15);
-            if (loveLetterModal) loveLetterModal.classList.remove('active');
-        });
-    }
-
-    if (loveLetterModal) {
-        loveLetterModal.addEventListener('click', (e) => {
-            if (e.target === loveLetterModal) {
-                loveLetterModal.classList.remove('active');
-            }
-        });
-    }
-
-    if (cakeBoxTrigger) {
-        cakeBoxTrigger.addEventListener('click', openCakeBoxAndLetter);
-        cakeBoxTrigger.addEventListener('contextmenu', (e) => e.preventDefault());
-    }
-
-    if (btnGoToCh4) {
-        btnGoToCh4.addEventListener('click', () => {
-            if (navigator.vibrate) navigator.vibrate(15);
-            if (loveLetterModal) loveLetterModal.classList.remove('active');
-            goToScene(4);
+            goToScene(3);
         });
     }
 
     // ----------------------------------------------------
-    // 9. CHƯƠNG 4: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
+    // 8. CHƯƠNG 3: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
     // ----------------------------------------------------
     const wishInput = document.getElementById('wishInput');
     const wishPreviewText = document.getElementById('wishPreviewText');
@@ -1378,11 +1345,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const wishInputCard = document.getElementById('wishInputCard');
     const wishSuccessBox = document.getElementById('wishSuccessBox');
     const btnReplayStory = document.getElementById('btnReplayStory');
-    const scene4El = document.getElementById('scene-4');
+    const scene3El = document.getElementById('scene-3');
 
-    function initChapter4Wish() {
-        if (wishPreviewText && cfg.chapter4 && cfg.chapter4.defaultWish) {
-            wishPreviewText.textContent = `"${cfg.chapter4.defaultWish}"`;
+    function initChapter3Wish() {
+        if (wishPreviewText && cfg.chapter3 && cfg.chapter3.defaultWish) {
+            wishPreviewText.textContent = `"${cfg.chapter3.defaultWish}"`;
         }
     }
 
@@ -1405,12 +1372,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Thích ứng thông minh khi bàn phím ảo điện thoại mở ra
-    if (wishInput && scene4El) {
+    if (wishInput && scene3El) {
         wishInput.addEventListener('focus', () => {
-            scene4El.classList.add('keyboard-focused');
+            scene3El.classList.add('keyboard-focused');
         });
         wishInput.addEventListener('blur', () => {
-            scene4El.classList.remove('keyboard-focused');
+            scene3El.classList.remove('keyboard-focused');
         });
     }
 
@@ -1595,4 +1562,52 @@ document.addEventListener('DOMContentLoaded', () => {
             goToScene(1);
         });
     }
+
+    // ----------------------------------------------------
+    // 13. CINEMATIC 3D PARALLAX DEPTH SYSTEM (MOUSE & GYRO)
+    // ----------------------------------------------------
+    let parallaxTargetX = 0, parallaxTargetY = 0;
+    let parallaxCurrentX = 0, parallaxCurrentY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+        parallaxTargetX = (e.clientX / window.innerWidth - 0.5) * 2;
+        parallaxTargetY = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
+
+    // Gyroscope tilt on mobile if available
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+        window.addEventListener('deviceorientation', (e) => {
+            if (e.gamma !== null && e.beta !== null) {
+                parallaxTargetX = Math.min(Math.max(e.gamma / 30, -1), 1);
+                parallaxTargetY = Math.min(Math.max((e.beta - 45) / 30, -1), 1);
+            }
+        }, { passive: true });
+    }
+
+    const farMount = document.querySelector('.mountain-layer-far');
+    const midMount = document.querySelector('.mountain-layer-mid');
+    const nearMount = document.querySelector('.mountain-layer-near');
+    const grandHalo = document.querySelector('.backdrop-grand-moon-halo');
+    const clusterLanterns = document.getElementById('backdropLanterns');
+    const clusterFireflies = document.getElementById('backdropFireflies');
+    const clusterFolklore = document.getElementById('backdropFolklore');
+
+    function renderParallax() {
+        parallaxCurrentX += (parallaxTargetX - parallaxCurrentX) * 0.045;
+        parallaxCurrentY += (parallaxTargetY - parallaxCurrentY) * 0.045;
+
+        const px = parallaxCurrentX;
+        const py = parallaxCurrentY;
+
+        if (farMount) farMount.style.transform = `translate3d(${px * 14}px, ${py * 7}px, 0)`;
+        if (midMount) midMount.style.transform = `translate3d(${px * 26}px, ${py * 13}px, 0)`;
+        if (nearMount) nearMount.style.transform = `translate3d(${px * 40}px, ${py * 18}px, 0)`;
+        if (grandHalo) grandHalo.style.transform = `translate(-50%, -50%) translate3d(${px * 16}px, ${py * 10}px, 0)`;
+        if (clusterLanterns) clusterLanterns.style.transform = `translate3d(${px * -22}px, ${py * -12}px, 0)`;
+        if (clusterFireflies) clusterFireflies.style.transform = `translate3d(${px * -32}px, ${py * -18}px, 0)`;
+        if (clusterFolklore) clusterFolklore.style.transform = `translate3d(${px * -18}px, ${py * -9}px, 0)`;
+
+        requestAnimationFrame(renderParallax);
+    }
+    requestAnimationFrame(renderParallax);
 });
