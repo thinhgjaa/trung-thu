@@ -9,7 +9,7 @@ const TRUNG_THU_CONFIG = {
     receiverName: "Em Bé",
     headerQuote: "👱‍♂️: em sẽ mãi là em bé của đời anh 💕",
     holdInstruction: "Ấn giữ vào mặt trăng",
-    
+
     // 2. Nhạc nền
     // Bạn có thể thay bằng file mp3 của bạn trong thư mục assets/audio/ (vd: "assets/audio/nhac_tinh_yeu.mp3")
     // Hoặc giữ link nhạc nền lofi du dương lãng mạn dưới đây:
@@ -58,24 +58,20 @@ const TRUNG_THU_CONFIG = {
         title: "Vũ Trụ Tình Yêu",
         centerStickerTop: "Quà trung thu bất ngờ",
         centerStickerBottom: "của ảnh 🌸",
-        lyricHighlight: "THẤY EM ĐI LẠC TRONG KHU RỪNG NHỎ",
         loveWords: [
             "Trung Thu vui vẻ bên anh",
             "Yêu em thật nhiều",
-            "LONG ANH ♡ HẠ PHƯƠNG",
-            "Chúc bé Lí trung Thu vui vẻ",
+            "Xuân Thịnh ♡ Thanh Vy",
+            "Chúc em iuu trung Thu vui vẻ",
             "Yêu em thật nhiều",
             "Trung Thu vui vẻ bên anh",
             "Bên anh thật lâu nhé",
             "Em là món quà tuyệt nhất",
-            "Cùng anh đón ngàn mùa trăng",
             "Thương em nhất trần đời 💕",
-            "Mãi yêu công chúa của anh",
-            "Nụ cười của em là ánh sáng đời anh",
-            "Harumi gift box",
-            "Em bé đáng yêu nhất quả đất",
-            "Yêu em 3000 ✨",
-            "Trung Thu ngọt ngào bên nhau"
+            "Mãi yêu epes của anh",
+            "Nụ cười của em là đẹp nhất",
+            "Em là ngừi dệ thưn nhất quả đất",
+            "Yêu em 3000 ✨"
         ]
     }
 };

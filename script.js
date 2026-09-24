@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const successTitleText = document.getElementById('successTitleText');
         const successDescText = document.getElementById('successDescText');
         const btnReplayText = document.getElementById('btnReplayText');
-        
+
         if (ch3Title && cfg.chapter3.title) ch3Title.textContent = cfg.chapter3.title;
         if (ch3Subtitle && cfg.chapter3.subtitle) ch3Subtitle.textContent = cfg.chapter3.subtitle;
         if (wishPromptText && cfg.chapter3.prompt) wishPromptText.textContent = cfg.chapter3.prompt;
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             [440, 554.37, 659.25, 880].forEach((f, i) => {
                 setTimeout(() => playChime(f, 0.9, 'sine'), i * 110 + 100);
             });
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // Play sparkling fairy stardust sound
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             [784, 987.77, 1174.66, 1318.51, 1567.98].forEach((freq, idx) => {
                 setTimeout(() => playChime(freq, 0.35, 'triangle'), idx * 55);
             });
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // Tiếng giọt nước pha lê rơi thánh thót trên mặt hồ tiên cảnh
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gain.connect(audioContext.destination);
             osc.start(now);
             osc.stop(now + 0.38);
-        } catch (e) {}
+        } catch (e) { }
     }
 
     function toggleMusic(forcePlay) {
@@ -230,21 +230,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function resizeStarCanvas() {
         if (!starCanvas) return;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        starCanvas.width = window.innerWidth * dpr;
-        starCanvas.height = window.innerHeight * dpr;
+        starCanvas.width = Math.floor(window.innerWidth * dpr);
+        starCanvas.height = Math.floor(window.innerHeight * dpr);
         starCanvas.style.width = `${window.innerWidth}px`;
         starCanvas.style.height = `${window.innerHeight}px`;
-        if (starCtx) starCtx.scale(dpr, dpr);
+        if (starCtx) starCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         initStars();
     }
 
     function initStars() {
         stars = [];
-        const count = Math.min(120, Math.floor((starCanvas.width * starCanvas.height) / 8000));
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const count = Math.min(120, Math.floor((w * h) / 4000));
         for (let i = 0; i < count; i++) {
             stars.push({
-                x: Math.random() * starCanvas.width,
-                y: Math.random() * starCanvas.height,
+                x: Math.random() * w,
+                y: Math.random() * h,
                 radius: Math.random() * 1.5 + 0.5,
                 alpha: Math.random(),
                 speed: Math.random() * 0.02 + 0.005,
@@ -346,11 +348,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function resizeFireworkCanvas() {
         if (!fireworkCanvas) return;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        fireworkCanvas.width = window.innerWidth * dpr;
-        fireworkCanvas.height = window.innerHeight * dpr;
+        fireworkCanvas.width = Math.floor(window.innerWidth * dpr);
+        fireworkCanvas.height = Math.floor(window.innerHeight * dpr);
         fireworkCanvas.style.width = `${window.innerWidth}px`;
         fireworkCanvas.style.height = `${window.innerHeight}px`;
-        if (fwCtx) fwCtx.scale(dpr, dpr);
+        if (fwCtx) fwCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     if (fireworkCanvas) {
         window.addEventListener('resize', resizeFireworkCanvas);
@@ -364,10 +366,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Preload all 4 firework audio files
     const fwAudioFiles = {
-        cluster:  'assets/audios/freesound_community-firework-cluster-90480.mp3',
-        blast:    'assets/audios/freesound_community-fireworkblast-106275.mp3',
-        single:   'assets/audios/freesound_community-single-firework-79814.mp3',
-        rocket:   'assets/audios/freesound_community-tiny_rocketwav-14647.mp3'
+        cluster: 'assets/audios/freesound_community-firework-cluster-90480.mp3',
+        blast: 'assets/audios/freesound_community-fireworkblast-106275.mp3',
+        single: 'assets/audios/freesound_community-single-firework-79814.mp3',
+        rocket: 'assets/audios/freesound_community-tiny_rocketwav-14647.mp3'
     };
 
     // Audio pool: mỗi loại có pool 3 instances để tránh cut-off khi nhiều pháo hoa nổ cùng lúc
@@ -788,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             initAudioContext();
-        } catch (err) {}
+        } catch (err) { }
 
         isHolding = true;
         holdStartTime = Date.now();
@@ -1924,12 +1926,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function resizeGalaxyCanvas() {
         if (!galaxyCanvas) return;
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        galaxyCanvas.width = window.innerWidth * dpr;
-        galaxyCanvas.height = window.innerHeight * dpr;
+        galaxyCanvas.width = Math.floor(window.innerWidth * dpr);
+        galaxyCanvas.height = Math.floor(window.innerHeight * dpr);
         galaxyCanvas.style.width = `${window.innerWidth}px`;
         galaxyCanvas.style.height = `${window.innerHeight}px`;
         if (galaxyCtx) {
-            galaxyCtx.scale(dpr, dpr);
+            galaxyCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
     }
 
@@ -2019,20 +2021,12 @@ document.addEventListener('DOMContentLoaded', () => {
         gSpecialLetters = [];
         const specialLetterConfigs = [
             {
-                title: "💌 Bức Thư Tình Của Anh 🌸",
-                badge: "✨ Chạm vào để mở thư ✨",
+                title: "💌 Có thư nèee 🌸",
+                badge: "✨ Chạm để mở ✨",
                 theta: -Math.PI / 2,
                 phi: 0,
                 radius: 200,
                 y: -18
-            },
-            {
-                title: "🌸 Quà Trung Thu Của Ảnh ✉️",
-                badge: "✨ Chạm vào để mở thư ✨",
-                theta: Math.PI / 2,
-                phi: 0,
-                radius: 210,
-                y: 20
             }
         ];
 
