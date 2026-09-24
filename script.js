@@ -1726,6 +1726,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let isGalaxyDragging = false;
     let galaxyLastX = 0, galaxyLastY = 0;
     const galaxyFov = 460;
+    let galaxyWarpStartTime = 0;
+    const galaxyWarpDuration = 3800; // 3.8 seconds cinematic hyperspace zoom intro
 
     // 3D Entities
     let gStars = [];
@@ -2101,10 +2103,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         galaxyCtx.clearRect(0, 0, w, h);
 
-        // 1. Quán tính & tự động xoay vũ trụ mượt mà
+        // 1. Hyperspace Warp Speed Intro Calculation (Phóng cực nhanh lúc mới vào, chậm dần sau 3.8s)
+        let cameraZOffset = 0;
+        let warpFactor = 0;
+        if (galaxyWarpStartTime > 0) {
+            const elapsed = Date.now() - galaxyWarpStartTime;
+            if (elapsed < galaxyWarpDuration) {
+                const progress = elapsed / galaxyWarpDuration;
+                // Exponential decay: Starts at 1.0, plunges fast, smoothly eases down to 0
+                warpFactor = Math.pow(1 - progress, 3);
+                cameraZOffset = warpFactor * 1600; // Fly-in from 1600px back in space
+            } else {
+                galaxyWarpStartTime = 0;
+            }
+        }
+
+        // 1.1 Quán tính & tự động xoay vũ trụ mượt mà
         if (!isGalaxyDragging) {
-            galaxyRotY += galaxyVelRotY;
-            galaxyRotX += galaxyVelRotX;
+            const warpSpin = warpFactor * 0.036; // Hyperspace rotation speed up to 0.036 rad/frame
+            galaxyRotY += galaxyVelRotY + warpSpin;
+            galaxyRotX += galaxyVelRotX + (warpSpin * 0.25);
             galaxyVelRotY = galaxyVelRotY * 0.96 + 0.0018 * 0.04;
             galaxyVelRotX *= 0.94;
         }
@@ -2112,7 +2130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cosY = Math.cos(galaxyRotY), sinY = Math.sin(galaxyRotY);
         const cosX = Math.cos(galaxyRotX), sinX = Math.sin(galaxyRotX);
 
-        // 2. Vẽ vì sao nền vũ trụ (Vẽ theo batch, siêu nhẹ)
+        // 2. Vẽ vì sao nền vũ trụ (Batch rendering + Hyperspace streak tails when zooming fast)
         galaxyCtx.save();
         for (let i = 0; i < gStars.length; i++) {
             const s = gStars[i];
@@ -2124,18 +2142,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const y1 = s.y * cosX - z1 * sinX;
             const z2 = s.y * sinX + z1 * cosX;
 
-            const zView = z2 + 650;
+            const zView = z2 + 650 + cameraZOffset;
             if (zView > 60) {
                 const scale = galaxyFov / zView;
                 const px = cx + x1 * scale;
                 const py = cy + y1 * scale;
                 const alpha = Math.min(1, Math.max(0.15, (scale * 1.1) * twinkle));
 
-                galaxyCtx.fillStyle = s.color;
-                galaxyCtx.globalAlpha = alpha;
-                galaxyCtx.beginPath();
-                galaxyCtx.arc(px, py, s.size * scale, 0, Math.PI * 2);
-                galaxyCtx.fill();
+                if (warpFactor > 0.06) {
+                    // Streaking star tails radiating from hyperspace fly-in
+                    const streakScale = galaxyFov / (zView + warpFactor * 260);
+                    const prevPx = cx + x1 * streakScale;
+                    const prevPy = cy + y1 * streakScale;
+
+                    galaxyCtx.strokeStyle = s.color;
+                    galaxyCtx.globalAlpha = alpha * 0.85;
+                    galaxyCtx.lineWidth = Math.max(1, s.size * scale * (1 + warpFactor * 2.2));
+                    galaxyCtx.beginPath();
+                    galaxyCtx.moveTo(prevPx, prevPy);
+                    galaxyCtx.lineTo(px, py);
+                    galaxyCtx.stroke();
+                } else {
+                    galaxyCtx.fillStyle = s.color;
+                    galaxyCtx.globalAlpha = alpha;
+                    galaxyCtx.beginPath();
+                    galaxyCtx.arc(px, py, s.size * scale, 0, Math.PI * 2);
+                    galaxyCtx.fill();
+                }
             }
         }
         galaxyCtx.restore();
@@ -2143,7 +2176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Thu thập các đối tượng cần sắp xếp thứ tự chiều sâu Z
         const renderQueue = [];
 
-        // 3.1 Chữ tình yêu (Sprites đã pre-render)
+        // 3.1 Chữ tình yêu & Icon Trung Thu & Thư 3D
         for (let i = 0; i < gWords.length; i++) {
             const wObj = gWords[i];
             wObj.floatPhase += wObj.floatSpeed;
@@ -2154,7 +2187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const y1 = (wObj.y + floatY) * cosX - z1 * sinX;
             const z2 = (wObj.y + floatY) * sinX + z1 * cosX;
 
-            const zView = z2 + 650;
+            const zView = z2 + 650 + cameraZOffset;
             if (zView > 80) {
                 renderQueue.push({
                     type: 'word',
@@ -2185,7 +2218,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const y1 = hObj.y * cosX - z1 * sinX;
             const z2 = hObj.y * sinX + z1 * cosX;
 
-            const zView = z2 + 650;
+            const zView = z2 + 650 + cameraZOffset;
             if (zView > 60) {
                 renderQueue.push({
                     type: 'heart',
@@ -2271,6 +2304,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function start3DLoveGalaxy() {
         if (isGalaxyRunning) return;
         isGalaxyRunning = true;
+        galaxyWarpStartTime = Date.now(); // Trigger 3.8s hyperspace warp zoom intro
         resizeGalaxyCanvas();
         init3DGalaxyEntities();
         galaxyAnimId = requestAnimationFrame(render3DLoveGalaxy);
