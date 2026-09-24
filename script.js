@@ -53,6 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnReplayText && cfg.chapter3.replayButton) btnReplayText.textContent = cfg.chapter3.replayButton;
     }
 
+    // Chapter 4 Config (Vũ Trụ Tình Yêu - Trend TikTok)
+    if (cfg.chapter4) {
+        const galaxyLyricBanner = document.getElementById('galaxyLyricBanner');
+        const stickerTopText = document.getElementById('stickerTopText');
+        const stickerBotText = document.getElementById('stickerBotText');
+        const btnGoToGalaxyText = document.getElementById('btnGoToGalaxyText');
+        if (galaxyLyricBanner && cfg.chapter4.lyricHighlight) galaxyLyricBanner.textContent = cfg.chapter4.lyricHighlight;
+        if (stickerTopText && cfg.chapter4.centerStickerTop) stickerTopText.textContent = cfg.chapter4.centerStickerTop;
+        if (stickerBotText && cfg.chapter4.centerStickerBottom) stickerBotText.textContent = cfg.chapter4.centerStickerBottom;
+        if (btnGoToGalaxyText && cfg.chapter3 && cfg.chapter3.goToGalaxyButton) btnGoToGalaxyText.textContent = cfg.chapter3.goToGalaxyButton;
+    }
+
     // ----------------------------------------------------
     // 2. AUDIO & CELESTIAL SOUND SYNTHESIZER
     // ----------------------------------------------------
@@ -661,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. SCENE & STORY PROGRESSION CONTROLLER
     // ----------------------------------------------------
     let currentChapter = 1;
-    const totalChapters = 3;
+    const totalChapters = 4;
     const progressSteps = document.querySelectorAll('.progress-step');
 
     function updateProgressUI(chapterNum) {
@@ -679,6 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const currentSceneEl = document.getElementById(`scene-${currentChapter}`);
         const nextSceneEl = document.getElementById(`scene-${chapterNum}`);
+
+        if (currentChapter === 4 && chapterNum !== 4) {
+            stop3DLoveGalaxy();
+        }
 
         if (currentSceneEl) {
             currentSceneEl.classList.remove('scene-active');
@@ -725,6 +741,8 @@ document.addEventListener('DOMContentLoaded', () => {
             startRoyalLoveLetter();
         } else if (chapterNum === 3) {
             initChapter3Wish();
+        } else if (chapterNum === 4) {
+            start3DLoveGalaxy();
         }
     }
 
@@ -1562,6 +1580,481 @@ document.addEventListener('DOMContentLoaded', () => {
             goToScene(1);
         });
     }
+
+    // Nút khám phá Vũ Trụ Tình Yêu (từ Chương 3)
+    const btnGoToGalaxy = document.getElementById('btnGoToGalaxy');
+    if (btnGoToGalaxy) {
+        btnGoToGalaxy.addEventListener('click', () => {
+            if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
+            playCelebrationChord();
+            goToScene(4);
+        });
+    }
+
+    const btnGalaxyBack = document.getElementById('btnGalaxyBack');
+    if (btnGalaxyBack) {
+        btnGalaxyBack.addEventListener('click', () => {
+            if (navigator.vibrate) navigator.vibrate(15);
+            goToScene(3);
+        });
+    }
+
+    const btnGalaxyAddHeart = document.getElementById('btnGalaxyAddHeart');
+    if (btnGalaxyAddHeart) {
+        btnGalaxyAddHeart.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (navigator.vibrate) navigator.vibrate([25, 45]);
+            burstGalaxyHearts(window.innerWidth / 2, window.innerHeight * 0.6, 12);
+            playMagicSparkleSound();
+        });
+    }
+
+    // ----------------------------------------------------
+    // 9. CHƯƠNG 4: 3D LOVE GALAXY ENGINE (TREND TIKTOK)
+    // ----------------------------------------------------
+    const galaxyCanvas = document.getElementById('galaxyCanvas');
+    let galaxyCtx = galaxyCanvas ? galaxyCanvas.getContext('2d') : null;
+    let isGalaxyRunning = false;
+    let galaxyAnimId = null;
+
+    // 3D Camera & Rotation Variables
+    let galaxyRotX = 0, galaxyRotY = 0;
+    let galaxyVelRotX = 0, galaxyVelRotY = 0.0022;
+    let isGalaxyDragging = false;
+    let galaxyLastX = 0, galaxyLastY = 0;
+    const galaxyFov = 460;
+
+    // 3D Entities
+    let gStars = [];
+    let gWords = [];
+    let gHearts = [];
+    let gBursts = [];
+
+    // Neon Styling Palettes
+    const neonStyles = [
+        { color: '#ffffff', glow: '#ff79c6', fontType: 'dancing', size: 23, bold: true },
+        { color: '#ffb8e6', glow: '#ff2a8d', fontType: 'dancing', size: 26, bold: true },
+        { color: '#ffffff', glow: '#ff4d94', fontType: 'quicksand', size: 17, bold: true },
+        { color: '#ffd56b', glow: '#ff9f43', fontType: 'quicksand', size: 16, bold: true },
+        { color: '#ffffff', glow: '#ffd56b', fontType: 'quicksand', size: 15, bold: false }
+    ];
+
+    const midAutumnDecorIcons = ['🌙', '⭐', '🥮', '🌸', '✨', '💖'];
+
+    function resizeGalaxyCanvas() {
+        if (!galaxyCanvas) return;
+        galaxyCanvas.width = window.innerWidth * (window.devicePixelRatio || 1);
+        galaxyCanvas.height = window.innerHeight * (window.devicePixelRatio || 1);
+        galaxyCanvas.style.width = `${window.innerWidth}px`;
+        galaxyCanvas.style.height = `${window.innerHeight}px`;
+        if (galaxyCtx) {
+            galaxyCtx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+        }
+    }
+
+    function init3DGalaxyEntities() {
+        gStars = [];
+        gWords = [];
+        gHearts = [];
+        gBursts = [];
+
+        // 1. Vũ trụ ngàn vì sao lấp lánh (220 vì sao)
+        const starCount = 220;
+        for (let i = 0; i < starCount; i++) {
+            const r = 250 + Math.random() * 650;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = (Math.random() - 0.5) * Math.PI;
+            gStars.push({
+                x: r * Math.cos(theta) * Math.cos(phi),
+                y: r * Math.sin(phi),
+                z: r * Math.sin(theta) * Math.cos(phi),
+                size: Math.random() * 1.8 + 0.6,
+                color: Math.random() > 0.3 ? '#ffffff' : (Math.random() > 0.5 ? '#ffb8e6' : '#ffd56b'),
+                twinklePhase: Math.random() * Math.PI * 2,
+                twinkleSpeed: 0.02 + Math.random() * 0.04
+            });
+        }
+
+        // 2. Chữ yêu thương neon 3D (Floating Love Words)
+        const wordsSource = (cfg.chapter4 && cfg.chapter4.loveWords && cfg.chapter4.loveWords.length > 0)
+            ? cfg.chapter4.loveWords
+            : [
+                "Trung Thu vui vẻ bên anh",
+                "Yêu em thật nhiều",
+                `${cfg.senderName || 'Anh'} ♡ ${cfg.receiverName || 'Em Bé'}`,
+                `Chúc ${cfg.receiverName || 'em bé'} Trung Thu vui vẻ`,
+                "Bên anh thật lâu nhé",
+                "Em là món quà tuyệt nhất",
+                "Cùng anh đón ngàn mùa trăng",
+                "Thương em nhất trần đời 💕",
+                "Mãi yêu công chúa của anh",
+                "Harumi gift box",
+                "Yêu em 3000 ✨",
+                "Trung Thu ngọt ngào bên nhau"
+            ];
+
+        const totalWordSlots = 38;
+        for (let i = 0; i < totalWordSlots; i++) {
+            const text = wordsSource[i % wordsSource.length];
+            const style = neonStyles[i % neonStyles.length];
+            const theta = (i / totalWordSlots) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+            const phi = ((i % 5) - 2) * 0.35 + (Math.random() - 0.5) * 0.2;
+            const radius = 240 + Math.random() * 260;
+
+            gWords.push({
+                text: text,
+                x: radius * Math.cos(theta) * Math.cos(phi),
+                y: radius * Math.sin(phi) + (Math.random() - 0.5) * 80,
+                z: radius * Math.sin(theta) * Math.cos(phi),
+                style: style,
+                isIcon: false,
+                floatPhase: Math.random() * Math.PI * 2,
+                floatSpeed: 0.015 + Math.random() * 0.02
+            });
+        }
+
+        // Xen kẽ các icon neon Trung Thu (Trăng khuyết, ngôi sao, bánh trung thu)
+        for (let i = 0; i < 18; i++) {
+            const icon = midAutumnDecorIcons[i % midAutumnDecorIcons.length];
+            const theta = Math.random() * Math.PI * 2;
+            const phi = (Math.random() - 0.5) * Math.PI * 0.8;
+            const radius = 220 + Math.random() * 280;
+
+            gWords.push({
+                text: icon,
+                x: radius * Math.cos(theta) * Math.cos(phi),
+                y: radius * Math.sin(phi),
+                z: radius * Math.sin(theta) * Math.cos(phi),
+                style: { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 24, bold: true },
+                isIcon: true,
+                floatPhase: Math.random() * Math.PI * 2,
+                floatSpeed: 0.02 + Math.random() * 0.025
+            });
+        }
+
+        // 3. Quả cầu tim 3D đỏ rực phát sáng (Floating Red Hearts)
+        const heartCount = 28;
+        for (let i = 0; i < heartCount; i++) {
+            spawnHeartObject(true);
+        }
+    }
+
+    function spawnHeartObject(initialRandomY = false) {
+        const theta = Math.random() * Math.PI * 2;
+        const radius = 160 + Math.random() * 280;
+        const y = initialRandomY ? (Math.random() * 700 - 350) : 380;
+
+        gHearts.push({
+            baseX: radius * Math.cos(theta),
+            y: y,
+            baseZ: radius * Math.sin(theta),
+            size: 20 + Math.random() * 18,
+            vy: -(0.7 + Math.random() * 0.9),
+            swayPhase: Math.random() * Math.PI * 2,
+            swaySpeed: 0.02 + Math.random() * 0.025,
+            swayAmp: 15 + Math.random() * 25,
+            rot: (Math.random() - 0.5) * 0.4
+        });
+    }
+
+    // Vẽ trái tim 3D đỏ rực phát sáng với ánh bóng nổi bật
+    function draw3DGlowingHeart(ctx, x, y, size, alpha, rot) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.scale(size / 30, size / 30);
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+
+        // Quầng hào quang đỏ rực
+        ctx.shadowColor = '#ff1744';
+        ctx.shadowBlur = 20;
+
+        // Gradient 3D bóng bẩy căng mọng
+        const grad = ctx.createRadialGradient(-3, -4, 2, 0, 3, 24);
+        grad.addColorStop(0, '#ff758c');
+        grad.addColorStop(0.3, '#ff1744');
+        grad.addColorStop(0.75, '#d50000');
+        grad.addColorStop(1, '#8b0000');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(0, 7);
+        ctx.bezierCurveTo(-14, -10, -26, 6, 0, 26);
+        ctx.bezierCurveTo(26, 6, 14, -10, 0, 7);
+        ctx.fill();
+
+        // Vệt sáng highlight thủy tinh 3D
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.beginPath();
+        ctx.ellipse(-6, 2, 5, 2.5, -Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    // Bắn chùm tim & bụi sao khi người dùng chạm vào màn hình
+    function burstGalaxyHearts(screenX, screenY, count = 8) {
+        const emojis = ['❤️', '💖', '✨', '🌸', '💕'];
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 2.5 + Math.random() * 4.5;
+            gBursts.push({
+                x: screenX,
+                y: screenY,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed - 1.5,
+                text: emojis[Math.floor(Math.random() * emojis.length)],
+                size: 16 + Math.random() * 14,
+                alpha: 1,
+                decay: 0.02 + Math.random() * 0.015,
+                rot: (Math.random() - 0.5) * 0.5,
+                rotSpeed: (Math.random() - 0.5) * 0.08
+            });
+        }
+    }
+
+    function render3DLoveGalaxy() {
+        if (!isGalaxyRunning || !galaxyCtx || !galaxyCanvas) return;
+
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const cx = w / 2;
+        const cy = h / 2;
+
+        galaxyCtx.clearRect(0, 0, w, h);
+
+        // 1. Quán tính & tự động xoay vũ trụ mượt mà
+        if (!isGalaxyDragging) {
+            galaxyRotY += galaxyVelRotY;
+            galaxyRotX += galaxyVelRotX;
+            galaxyVelRotY = galaxyVelRotY * 0.96 + 0.002 * 0.04;
+            galaxyVelRotX *= 0.94;
+        }
+
+        const cosY = Math.cos(galaxyRotY), sinY = Math.sin(galaxyRotY);
+        const cosX = Math.cos(galaxyRotX), sinX = Math.sin(galaxyRotX);
+
+        // 2. Vẽ vì sao nền vũ trụ
+        galaxyCtx.save();
+        for (let i = 0; i < gStars.length; i++) {
+            const s = gStars[i];
+            s.twinklePhase += s.twinkleSpeed;
+            const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(s.twinklePhase));
+
+            // Xoay 3D
+            const x1 = s.x * cosY - s.z * sinY;
+            const z1 = s.x * sinY + s.z * cosY;
+            const y1 = s.y * cosX - z1 * sinX;
+            const z2 = s.y * sinX + z1 * cosX;
+
+            const zView = z2 + 650;
+            if (zView > 60) {
+                const scale = galaxyFov / zView;
+                const px = cx + x1 * scale;
+                const py = cy + y1 * scale;
+                const alpha = Math.min(1, Math.max(0.15, (scale * 1.1) * twinkle));
+
+                galaxyCtx.fillStyle = s.color;
+                galaxyCtx.globalAlpha = alpha;
+                galaxyCtx.beginPath();
+                galaxyCtx.arc(px, py, s.size * scale, 0, Math.PI * 2);
+                galaxyCtx.fill();
+            }
+        }
+        galaxyCtx.restore();
+
+        // 3. Thu thập các đối tượng cần sắp xếp thứ tự chiều sâu Z (Z-sorting)
+        const renderQueue = [];
+
+        // 3.1 Chữ tình yêu & icon
+        for (let i = 0; i < gWords.length; i++) {
+            const wObj = gWords[i];
+            wObj.floatPhase += wObj.floatSpeed;
+            const floatY = Math.sin(wObj.floatPhase) * 10;
+
+            const x1 = wObj.x * cosY - wObj.z * sinY;
+            const z1 = wObj.x * sinY + wObj.z * cosY;
+            const y1 = (wObj.y + floatY) * cosX - z1 * sinX;
+            const z2 = (wObj.y + floatY) * sinX + z1 * cosX;
+
+            const zView = z2 + 650;
+            if (zView > 80) {
+                renderQueue.push({
+                    type: 'word',
+                    data: wObj,
+                    x: x1,
+                    y: y1,
+                    z: z2,
+                    zView: zView
+                });
+            }
+        }
+
+        // 3.2 Quả cầu tim 3D đỏ rực
+        for (let i = gHearts.length - 1; i >= 0; i--) {
+            const hObj = gHearts[i];
+            hObj.y += hObj.vy;
+            hObj.swayPhase += hObj.swaySpeed;
+            const swayX = Math.sin(hObj.swayPhase) * hObj.swayAmp;
+
+            if (hObj.y < -420) {
+                hObj.y = 420;
+            }
+
+            const currX = hObj.baseX + swayX;
+            const x1 = currX * cosY - hObj.baseZ * sinY;
+            const z1 = currX * sinY + hObj.baseZ * cosY;
+            const y1 = hObj.y * cosX - z1 * sinX;
+            const z2 = hObj.y * sinX + z1 * cosX;
+
+            const zView = z2 + 650;
+            if (zView > 60) {
+                renderQueue.push({
+                    type: 'heart',
+                    data: hObj,
+                    x: x1,
+                    y: y1,
+                    z: z2,
+                    zView: zView
+                });
+            }
+        }
+
+        // Sắp xếp đối tượng từ xa tới gần (Painters Algorithm)
+        renderQueue.sort((a, b) => b.z - a.z);
+
+        // 4. Render các đối tượng theo thứ tự chiều sâu
+        for (let i = 0; i < renderQueue.length; i++) {
+            const item = renderQueue[i];
+            const scale = galaxyFov / item.zView;
+            const px = cx + item.x * scale;
+            const py = cy + item.y * scale;
+
+            if (item.type === 'word') {
+                const wObj = item.data;
+                const alpha = Math.min(1, Math.max(0.2, (scale * 1.25)));
+
+                galaxyCtx.save();
+                galaxyCtx.translate(px, py);
+                galaxyCtx.scale(scale, scale);
+                galaxyCtx.globalAlpha = alpha;
+
+                const fontName = wObj.style.fontType === 'dancing' ? '"Dancing Script", cursive' : '"Quicksand", sans-serif';
+                const weight = wObj.style.bold ? '700' : '500';
+                galaxyCtx.font = `${weight} ${wObj.style.size}px ${fontName}`;
+                galaxyCtx.textAlign = 'center';
+                galaxyCtx.textBaseline = 'middle';
+
+                // Hào quang phát sáng neon đặc trưng của screenshot
+                galaxyCtx.shadowColor = wObj.style.glow;
+                galaxyCtx.shadowBlur = 18;
+                galaxyCtx.fillStyle = wObj.style.color;
+
+                galaxyCtx.fillText(wObj.text, 0, 0);
+
+                // Lặp lại nét vẽ để tăng độ rực neon
+                if (scale > 0.75) {
+                    galaxyCtx.shadowBlur = 26;
+                    galaxyCtx.fillText(wObj.text, 0, 0);
+                }
+
+                galaxyCtx.restore();
+            } else if (item.type === 'heart') {
+                const hObj = item.data;
+                const alpha = Math.min(1, Math.max(0.3, scale * 1.1));
+                draw3DGlowingHeart(galaxyCtx, px, py, hObj.size * scale, alpha, hObj.rot);
+            }
+        }
+
+        // 5. Render các hạt tim / bụi sao bùng nổ khi chạm màn hình
+        for (let i = gBursts.length - 1; i >= 0; i--) {
+            const b = gBursts[i];
+            b.x += b.vx;
+            b.y += b.vy;
+            b.vy += 0.08;
+            b.alpha -= b.decay;
+            b.rot += b.rotSpeed;
+
+            if (b.alpha <= 0) {
+                gBursts.splice(i, 1);
+                continue;
+            }
+
+            galaxyCtx.save();
+            galaxyCtx.translate(b.x, b.y);
+            galaxyCtx.rotate(b.rot);
+            galaxyCtx.globalAlpha = b.alpha;
+            galaxyCtx.font = `${b.size}px sans-serif`;
+            galaxyCtx.textAlign = 'center';
+            galaxyCtx.textBaseline = 'middle';
+            galaxyCtx.shadowColor = '#ff2a8d';
+            galaxyCtx.shadowBlur = 12;
+            galaxyCtx.fillText(b.text, 0, 0);
+            galaxyCtx.restore();
+        }
+
+        galaxyAnimId = requestAnimationFrame(render3DLoveGalaxy);
+    }
+
+    function start3DLoveGalaxy() {
+        if (isGalaxyRunning) return;
+        isGalaxyRunning = true;
+        resizeGalaxyCanvas();
+        init3DGalaxyEntities();
+        galaxyAnimId = requestAnimationFrame(render3DLoveGalaxy);
+
+        // Bắn tim chúc mừng khi lần đầu mở Vũ Trụ Yêu
+        setTimeout(() => {
+            burstGalaxyHearts(window.innerWidth / 2, window.innerHeight * 0.45, 10);
+            playMagicSparkleSound();
+        }, 500);
+    }
+
+    function stop3DLoveGalaxy() {
+        isGalaxyRunning = false;
+        if (galaxyAnimId) {
+            cancelAnimationFrame(galaxyAnimId);
+            galaxyAnimId = null;
+        }
+    }
+
+    // Tương tác chạm & vuốt xoay 3D Galaxy (Pointer / Touch events)
+    if (galaxyCanvas) {
+        galaxyCanvas.addEventListener('pointerdown', (e) => {
+            isGalaxyDragging = true;
+            galaxyLastX = e.clientX;
+            galaxyLastY = e.clientY;
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isGalaxyDragging || !isGalaxyRunning) return;
+            const dx = (e.clientX - galaxyLastX) * 0.0055;
+            const dy = (e.clientY - galaxyLastY) * 0.0055;
+            galaxyRotY += dx;
+            galaxyRotX -= dy;
+            galaxyVelRotY = dx * 0.6;
+            galaxyVelRotX = -dy * 0.6;
+            galaxyLastX = e.clientX;
+            galaxyLastY = e.clientY;
+        });
+
+        window.addEventListener('pointerup', () => {
+            isGalaxyDragging = false;
+        });
+
+        // Chạm vào màn hình để thả tim & tạo bụi sao
+        galaxyCanvas.addEventListener('click', (e) => {
+            if (navigator.vibrate) navigator.vibrate(18);
+            playChime(640, 0.25);
+            burstGalaxyHearts(e.clientX, e.clientY, 6);
+        });
+    }
+
+    window.addEventListener('resize', () => {
+        if (isGalaxyRunning) {
+            resizeGalaxyCanvas();
+        }
+    });
 
     // ----------------------------------------------------
     // 13. CINEMATIC 3D PARALLAX DEPTH SYSTEM (MOUSE & GYRO)

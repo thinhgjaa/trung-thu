@@ -170,11 +170,12 @@
             </div>
         </header>
 
-        <!-- Story Progress Bar (3 Chương Tình Yêu) -->
+        <!-- Story Progress Bar (4 Chương Tình Yêu) -->
         <div class="story-progress-bar" id="storyProgress">
             <div class="progress-step active" data-step="1" title="Đêm Rằm"></div>
             <div class="progress-step" data-step="2" title="Thư Tình"></div>
             <div class="progress-step" data-step="3" title="Ước Nguyện"></div>
+            <div class="progress-step" data-step="4" title="Vũ Trụ Yêu"></div>
         </div>
 
         <!-- ==============================================
@@ -555,10 +556,48 @@
                 <div class="final-couple-badge">
                     <span class="badge-text" id="finalCoupleText">Trung Thu Hạnh Phúc • Mãi Mãi Yêu Em</span>
                 </div>
+                <button class="btn-primary btn-galaxy-explore" id="btnGoToGalaxy">
+                    <span class="btn-icon">🌌</span>
+                    <span id="btnGoToGalaxyText">Khám Phá Vũ Trụ Yêu Thương 🌌✨</span>
+                </button>
                 <button class="btn-secondary" id="btnReplayStory">
                     <span class="btn-icon">🔄</span>
                     <span id="btnReplayText">Xem Lại Hành Trình Yêu Thương</span>
                 </button>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CHƯƠNG 4: VŨ TRỤ TÌNH YÊU (3D LOVE GALAXY - TREND TIKTOK)
+             ============================================== -->
+        <section id="scene-4" class="story-scene scene-hidden scene-galaxy-universe">
+            <div class="galaxy-universe-wrapper" id="galaxyUniverseWrapper">
+                <!-- 3D Canvas rendering stars, floating neon love texts, glowing red hearts, neon moon/star/mooncake icons -->
+                <canvas id="galaxyCanvas" class="galaxy-canvas"></canvas>
+
+                <!-- Center Floating Lyrical Banner & Sticker Card matching the image -->
+                <div class="galaxy-center-hud" id="galaxyCenterHud">
+                    <div class="galaxy-lyric-banner" id="galaxyLyricBanner">THẤY EM ĐI LẠC TRONG KHU RỪNG NHỎ</div>
+                    <div class="galaxy-sticker-card" id="galaxyStickerCard">
+                        <div class="sticker-line top" id="stickerTopText">Quà trung thu bất ngờ</div>
+                        <div class="sticker-line bot" id="stickerBotText">của ảnh 🌸</div>
+                    </div>
+                </div>
+
+                <!-- Back button & floating heart trigger -->
+                <div class="galaxy-hud-controls">
+                    <button class="btn-scene-back galaxy-back-btn" id="btnGalaxyBack" aria-label="Quay lại">
+                        <span class="back-arrow">‹</span> Quay lại
+                    </button>
+                    <button class="btn-galaxy-add-heart" id="btnGalaxyAddHeart" aria-label="Thả tim" title="Bắn tim vào vũ trụ">
+                        ❤️
+                    </button>
+                </div>
+
+                <!-- Interactive hint -->
+                <div class="galaxy-touch-hint" id="galaxyTouchHint">
+                    <span>✨ Vuốt để xoay vũ trụ • Chạm bất kỳ đâu để thả tim 💖</span>
+                </div>
             </div>
         </section>
 

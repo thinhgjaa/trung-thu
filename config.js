@@ -49,6 +49,33 @@ const TRUNG_THU_CONFIG = {
         sendButton: "Thả Đèn Lên Cung Trăng 🏮✨",
         afterWishSuccessTitle: "Chiếc Đèn Của Em Đã Chạm Tới Cung Trăng 🌕💫",
         afterWishSuccessText: "Nguyện ước của em đã được gửi gắm vào ngàn vì sao. Anh hứa sẽ luôn ở bên, che chở và cùng em biến mọi ước mơ thành hiện thực!",
-        replayButton: "Xem Lại Hành Trình Yêu Thương 🔄"
+        replayButton: "Xem Lại Hành Trình Yêu Thương 🔄",
+        goToGalaxyButton: "Khám Phá Vũ Trụ Yêu Thương 🌌✨"
+    },
+
+    // 6. Chương 4: Vũ Trụ Tình Yêu (3D Love Galaxy - Trend TikTok Siêu Lãng Mạn)
+    chapter4: {
+        title: "Vũ Trụ Tình Yêu",
+        centerStickerTop: "Quà trung thu bất ngờ",
+        centerStickerBottom: "của ảnh 🌸",
+        lyricHighlight: "THẤY EM ĐI LẠC TRONG KHU RỪNG NHỎ",
+        loveWords: [
+            "Trung Thu vui vẻ bên anh",
+            "Yêu em thật nhiều",
+            "LONG ANH ♡ HẠ PHƯƠNG",
+            "Chúc bé Lí trung Thu vui vẻ",
+            "Yêu em thật nhiều",
+            "Trung Thu vui vẻ bên anh",
+            "Bên anh thật lâu nhé",
+            "Em là món quà tuyệt nhất",
+            "Cùng anh đón ngàn mùa trăng",
+            "Thương em nhất trần đời 💕",
+            "Mãi yêu công chúa của anh",
+            "Nụ cười của em là ánh sáng đời anh",
+            "Harumi gift box",
+            "Em bé đáng yêu nhất quả đất",
+            "Yêu em 3000 ✨",
+            "Trung Thu ngọt ngào bên nhau"
+        ]
     }
 };
