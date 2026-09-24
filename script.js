@@ -2409,7 +2409,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!hasGalaxyLetterTypedOnce) {
             hasGalaxyLetterTypedOnce = true;
+            galaxyLetterModal.classList.remove('letter-finished');
+            const parchment = document.querySelector('.galaxy-parchment');
+            if (parchment) parchment.classList.remove('letter-finished');
             typewriterGalaxyLetter();
+        } else {
+            galaxyLetterModal.classList.add('letter-finished');
+            const parchment = document.querySelector('.galaxy-parchment');
+            if (parchment) parchment.classList.add('letter-finished');
         }
     }
 
@@ -2428,10 +2435,31 @@ document.addEventListener('DOMContentLoaded', () => {
         playChime(540, 0.25);
     }
 
+    function onGalaxyLetterFinish() {
+        isGalaxyLetterTyping = false;
+        if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'none';
+        if (galaxyLetterModal) galaxyLetterModal.classList.add('letter-finished');
+        const parchment = document.querySelector('.galaxy-parchment');
+        if (parchment) {
+            parchment.classList.add('letter-finished');
+            setTimeout(() => {
+                parchment.scrollTo({
+                    top: parchment.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 180);
+        }
+        burstGalaxyHearts(window.innerWidth / 2, window.innerHeight * 0.7, 8);
+        playMagicSparkleSound();
+    }
+
     function typewriterGalaxyLetter() {
         if (!galaxyLetterBody) return;
         galaxyLetterBody.innerHTML = '';
         isGalaxyLetterTyping = true;
+        if (galaxyLetterModal) galaxyLetterModal.classList.remove('letter-finished');
+        const parchment = document.querySelector('.galaxy-parchment');
+        if (parchment) parchment.classList.remove('letter-finished');
         if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'block';
 
         let pIdx = 0;
@@ -2442,8 +2470,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function typeNext() {
             if (!isGalaxyLetterTyping || pIdx >= letterParagraphs.length) {
-                isGalaxyLetterTyping = false;
-                if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'none';
+                onGalaxyLetterFinish();
                 return;
             }
 
@@ -2461,8 +2488,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     galaxyLetterBody.appendChild(activeP);
                     galaxyTypewriterTimer = setTimeout(typeNext, 130);
                 } else {
-                    isGalaxyLetterTyping = false;
-                    if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'none';
+                    onGalaxyLetterFinish();
                 }
             }
         }
@@ -2473,7 +2499,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function completeGalaxyTypewriterImmediately() {
         if (!galaxyLetterBody) return;
         if (galaxyTypewriterTimer) clearTimeout(galaxyTypewriterTimer);
-        isGalaxyLetterTyping = false;
 
         galaxyLetterBody.innerHTML = '';
         letterParagraphs.forEach((text, idx) => {
@@ -2484,15 +2509,17 @@ document.addEventListener('DOMContentLoaded', () => {
             galaxyLetterBody.appendChild(p);
         });
 
-        if (galaxyLetterFastHint) galaxyLetterFastHint.style.display = 'none';
+        onGalaxyLetterFinish();
         if (navigator.vibrate) navigator.vibrate(15);
     }
 
     if (galaxyLetterFastHint) {
         galaxyLetterFastHint.addEventListener('click', completeGalaxyTypewriterImmediately);
     }
-    if (galaxyLetterBody) {
-        galaxyLetterBody.addEventListener('click', () => {
+    const galaxyParchment = document.querySelector('.galaxy-parchment');
+    if (galaxyParchment) {
+        galaxyParchment.addEventListener('click', (e) => {
+            if (e.target.closest('#btnCloseGalaxyLetter') || e.target.closest('.galaxy-letter-actions')) return;
             if (isGalaxyLetterTyping) completeGalaxyTypewriterImmediately();
         });
     }
