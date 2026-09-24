@@ -930,7 +930,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 moonGfBadge.style.display = 'block';
             }
 
+            document.body.classList.add('gf-moon-active');
             if (luminousMoon) {
+                luminousMoon.classList.add('transformed-active');
                 const rect = luminousMoon.getBoundingClientRect();
                 burstGalaxyHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
                 createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
@@ -985,18 +987,40 @@ document.addEventListener('DOMContentLoaded', () => {
         // Chống menu chuột phải / menu giữ ảnh
         target.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // Hỗ trợ chạm 2 lần liên tiếp để mở ngay nếu người dùng không giữ đủ lâu
+        // Hỗ trợ bấm/chạm vào Mặt Trăng để bắn pháo hoa rực rỡ & giữ để nạp năng lượng
         target.addEventListener('click', (e) => {
-            quickTapCount++;
-            if (quickTapResetTimer) clearTimeout(quickTapResetTimer);
-            quickTapResetTimer = setTimeout(() => { quickTapCount = 0; }, 700);
+            if (currentChapter === 1) {
+                const rect = luminousMoon ? luminousMoon.getBoundingClientRect() : target.getBoundingClientRect();
+                const clickX = (e.clientX && e.clientX > 0) ? e.clientX : (rect.left + rect.width / 2);
+                const clickY = (e.clientY && e.clientY > 0) ? e.clientY : (rect.top + rect.height / 2);
 
-            if (quickTapCount >= 2 && currentChapter === 1) {
-                completeHoldSuccess();
-            } else if (currentChapter === 1) {
+                // Bắn pháo hoa rực rỡ & pháo hoa trái tim ngay tại vị trí bấm vào Mặt Trăng
+                createFirework(clickX, clickY, 42);
+                if (Math.random() > 0.35) {
+                    createHeartFirework(clickX, clickY, '#ff7675', 3.8);
+                } else {
+                    createSparkleWillowFirework(clickX, clickY, '#ffd56b');
+                }
+
+                playRealisticFireworkSound(0.75);
+                if (navigator.vibrate) navigator.vibrate(25);
                 createRipple();
-                playChime(520, 0.2);
-                if (holdHintText) holdHintText.textContent = "Hãy ấn và GIỮ ngón tay khoảng 1 giây để đón bất ngờ nhé! 🌕";
+
+                quickTapCount++;
+                if (quickTapResetTimer) clearTimeout(quickTapResetTimer);
+                quickTapResetTimer = setTimeout(() => { quickTapCount = 0; }, 700);
+
+                if (quickTapCount >= 2) {
+                    completeHoldSuccess();
+                } else {
+                    if (holdHintText) {
+                        if (moonHoldStage === 0) {
+                            holdHintText.textContent = "Ấn và GIỮ ngón tay trên trăng 1 giây để mở bất ngờ nhé! 🌕✨";
+                        } else {
+                            holdHintText.textContent = "Ấn và GIỮ ngón tay lần nữa để bước vào Vũ Trụ Yêu! 💖";
+                        }
+                    }
+                }
             }
         });
     });
