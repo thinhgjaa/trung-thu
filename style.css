@@ -1026,17 +1026,7 @@ html, body {
 }
 
 .chapter-badge {
-    display: inline-block;
-    padding: 3px 12px;
-    border-radius: 14px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--gold-bright);
-    background: rgba(255, 215, 107, 0.14);
-    border: 1px solid rgba(255, 215, 107, 0.3);
-    margin-bottom: 6px;
+    display: none !important;
 }
 
 .scene-title {
