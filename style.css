@@ -79,6 +79,9 @@ html, body {
     pointer-events: none;
     z-index: 2;
     overflow: hidden;
+    contain: paint layout;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 /* Vầng hào quang đại trăng bao trùm toàn vũ trụ */

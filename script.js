@@ -375,7 +375,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resizeFireworkCanvas() {
         if (!fireworkCanvas) return;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const isMobile = window.innerWidth < 768;
+        const dpr = isMobile ? Math.min(window.devicePixelRatio || 1, 1.5) : Math.min(window.devicePixelRatio || 1, 2);
         fireworkCanvas.width = Math.floor(window.innerWidth * dpr);
         fireworkCanvas.height = Math.floor(window.innerHeight * dpr);
         fireworkCanvas.style.width = `${window.innerWidth}px`;
@@ -2395,14 +2396,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const wordsSource = (cfg.chapter4 && cfg.chapter4.loveWords && cfg.chapter4.loveWords.length > 0)
             ? cfg.chapter4.loveWords
             : [
-                "Trung Thu vui vẻ bên anh",
                 "Yêu em thật nhiều",
                 "Xuân Thịnh ♡ Thanh Vy",
-                "Chúc em iuu trung Thu vui vẻ",
                 "Yêu em thật nhiều",
                 "Trung Thu vui vẻ bên anh",
                 "Bên anh thật lâu nhé",
-                "Em là món quà tuyệt nhất",
                 "Thương em nhất trần đời 💕",
                 "Mãi yêu epes của anh",
                 "Nụ cười của em là đẹp nhất",
@@ -3193,19 +3191,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        parallaxCurrentX += (parallaxTargetX - parallaxCurrentX) * 0.045;
-        parallaxCurrentY += (parallaxTargetY - parallaxCurrentY) * 0.045;
+        const diffX = parallaxTargetX - parallaxCurrentX;
+        const diffY = parallaxTargetY - parallaxCurrentY;
 
-        const px = parallaxCurrentX;
-        const py = parallaxCurrentY;
+        // Chỉ cập nhật DOM khi có chuyển động đủ lớn để tiết kiệm pin tối đa trên Android
+        if (Math.abs(diffX) > 0.001 || Math.abs(diffY) > 0.001) {
+            parallaxCurrentX += diffX * 0.045;
+            parallaxCurrentY += diffY * 0.045;
 
-        if (farMount) farMount.style.transform = `translate3d(${px * 14}px, ${py * 7}px, 0)`;
-        if (midMount) midMount.style.transform = `translate3d(${px * 26}px, ${py * 13}px, 0)`;
-        if (nearMount) nearMount.style.transform = `translate3d(${px * 40}px, ${py * 18}px, 0)`;
-        if (grandHalo) grandHalo.style.transform = `translate(-50%, -50%) translate3d(${px * 16}px, ${py * 10}px, 0)`;
-        if (clusterLanterns) clusterLanterns.style.transform = `translate3d(${px * -22}px, ${py * -12}px, 0)`;
-        if (clusterFireflies) clusterFireflies.style.transform = `translate3d(${px * -32}px, ${py * -18}px, 0)`;
-        if (clusterFolklore) clusterFolklore.style.transform = `translate3d(${px * -18}px, ${py * -9}px, 0)`;
+            const px = parallaxCurrentX;
+            const py = parallaxCurrentY;
+
+            if (farMount) farMount.style.transform = `translate3d(${px * 14}px, ${py * 7}px, 0)`;
+            if (midMount) midMount.style.transform = `translate3d(${px * 26}px, ${py * 13}px, 0)`;
+            if (nearMount) nearMount.style.transform = `translate3d(${px * 40}px, ${py * 18}px, 0)`;
+            if (grandHalo) grandHalo.style.transform = `translate(-50%, -50%) translate3d(${px * 16}px, ${py * 10}px, 0)`;
+            if (clusterLanterns) clusterLanterns.style.transform = `translate3d(${px * -22}px, ${py * -12}px, 0)`;
+            if (clusterFireflies) clusterFireflies.style.transform = `translate3d(${px * -32}px, ${py * -18}px, 0)`;
+            if (clusterFolklore) clusterFolklore.style.transform = `translate3d(${px * -18}px, ${py * -9}px, 0)`;
+        }
 
         parallaxAnimId = requestAnimationFrame(renderParallax);
     }
@@ -3293,7 +3297,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePreloaderProgress(100);
 
         if (preloaderStatusArea) preloaderStatusArea.style.display = 'none';
-        if (preloaderEnterArea) preloaderEnterArea.style.display = 'flex';
+        if (preloaderEnterArea) preloaderEnterArea.style.display = 'block';
     }
 
     // Kiểm tra trực tiếp các ảnh trong DOM để tránh tải đè tài nguyên 2 lần
@@ -3403,6 +3407,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2100);
         });
     }
+
+    // Tối ưu quản lý năng lượng khi ứng dụng chạy ngầm / khóa màn hình điện thoại
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            pauseStarCanvas();
+            stopParallax();
+            if (typeof stopFireflies === 'function') stopFireflies();
+            if (typeof isGalaxyRunning !== 'undefined' && isGalaxyRunning && typeof stopGalaxy === 'function') {
+                stopGalaxy();
+            }
+        } else {
+            if (currentChapter === 1) {
+                resumeStarCanvas();
+                startParallax();
+                if (typeof startFireflies === 'function') startFireflies();
+            } else if (currentChapter === 2) {
+                if (typeof startGalaxy === 'function') startGalaxy();
+            }
+        }
+    });
 
     startParallax();
 });
