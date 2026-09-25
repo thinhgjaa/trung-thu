@@ -1142,12 +1142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isHolding) return;
         if (Date.now() - stage1TransformTime < 400) return;
 
-        // Nếu đã biến hình xong (moonHoldStage === 1), một lần chạm/giữ lập tức chuyển sang Chương 2!
-        if (moonHoldStage === 1) {
-            goToScene(2);
-            return;
-        }
-
         // Chặn cuộn trang ngoài ý muốn và menu giữ trên điện thoại
         if (e && e.cancelable && e.type !== 'mousedown') {
             e.preventDefault();
@@ -1176,6 +1170,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showRabbitDialogue("Nhưng mà... ✨");
             if (holdInstructionText) holdInstructionText.textContent = "Đang ngắm trăng cùng nàng thơ... ✨";
             if (holdHintText) holdHintText.textContent = "Giữ tiếp để đón nhận điều bất ngờ... 🌸";
+        } else {
+            // Lần giữ thứ 2: Giữ nguyên câu nói ngọt ngào trước đó của Thỏ Ngọc
+            if (holdInstructionText) holdInstructionText.textContent = "Đang chuẩn bị điều bí mật... ✨";
+            if (holdHintText) holdHintText.textContent = "Giữ tiếp một chút nữa nhé... 💖";
         }
 
         if (holdProgressBar) {
@@ -1235,8 +1233,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (holdInstructionText) holdInstructionText.textContent = "Ấn giữ để cùng ngắm trăng nhé... ✨";
             if (holdHintText) holdHintText.textContent = "Nhớ ấn và giữ ngón tay đủ lâu nhé... 🌸";
         } else {
-            if (holdInstructionText) holdInstructionText.textContent = "Khám phá Vũ Trụ Tình Yêu 💖➔";
-            if (holdHintText) holdHintText.textContent = "Chạm để bước vào dải ngân hà bất ngờ... ✨";
+            // Lần giữ thứ 2: Giữ nguyên câu nói cũ của Thỏ Ngọc
+            if (holdInstructionText) holdInstructionText.textContent = "Ấn giữ để tiếp tục ✨";
+            if (holdHintText) holdHintText.textContent = "Ấn và giữ ngón tay để mở tiếp bất ngờ... ✨";
         }
 
         if (holdProgressBar) {
@@ -1312,10 +1311,10 @@ document.addEventListener('DOMContentLoaded', () => {
             launchGirlfriendCelebrationFireworks();
 
             // Bé Thỏ Ngọc nói câu tỏ tình ngọt ngào: "Em vẫn đẹp nhất trong lòng anhh"
-            showRabbitDialogue("Em vẫn đẹp nhất trong lòng anhh 💖✨");
+            showRabbitDialogue("Vẫn hong đẹp bằng em cụa anh 💖✨");
 
-            // Nút ở dưới đổi thành nút chuyển sang Vũ Trụ Tình Yêu
-            showHoldActionButton("Khám phá Vũ Trụ Tình Yêu 💖➔", "Chạm để bước vào dải ngân hà bất ngờ... ✨");
+            // Nút ở dưới đổi sang trạng thái ấn giữ để tiếp tục điều bất ngờ (không spoil màn hình tiếp theo)
+            showHoldActionButton("Ấn giữ để tiếp tục ✨", "Ấn và giữ ngón tay để mở tiếp bất ngờ... ✨");
 
         } else {
             stopGirlfriendAmbientFireworks();
@@ -1323,14 +1322,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Mở cánh cửa bước vào Chương 2: Vũ Trụ Tình Yêu!
+            // Mở cánh cửa bước vào Chương tiếp theo
             try {
                 if (navigator.vibrate) navigator.vibrate([60, 80, 180]);
                 playCelebrationChord();
                 playRealisticFireworkSound(1.2);
             } catch (e) { }
 
-            if (holdHintText) holdHintText.textContent = "Đang mở khóa Vũ Trụ Tình Yêu... 🎁✨";
+            if (holdHintText) holdHintText.textContent = "Điều bất ngờ đang mở ra... ✨";
 
             if (luminousMoon) {
                 const rect = luminousMoon.getBoundingClientRect();
@@ -1371,16 +1370,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentChapter === 1) {
                 if (Date.now() - lastHoldSuccessTime < 300) return;
 
-                if (moonHoldStage === 0) {
-                    // Nhấp chuột / chạm nhẹ mà KHÔNG giữ đủ lâu: chỉ tạo sóng nhẹ và nhắc nhở ấn giữ
-                    createRipple();
-                    if (navigator.vibrate) navigator.vibrate(15);
-                    playChime(580, 0.2);
-                    showRabbitDialogue("Nhớ ấn và giữ một lát nha em 🐰✨");
-                    if (holdHintText) holdHintText.textContent = "Hãy chạm và giữ ngón tay vào vầng trăng nhé... ✨";
-                } else {
-                    goToScene(2);
-                }
+                // Nhấp chuột / chạm nhẹ mà KHÔNG giữ đủ lâu: chỉ tạo sóng nhẹ phản hồi
+                createRipple();
+                if (navigator.vibrate) navigator.vibrate(15);
+                playChime(580, 0.2);
             }
         });
     });
