@@ -4159,6 +4159,10 @@ body.in-galaxy {
 
 .preloader-enter-container {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 16px;
     animation: preloaderPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -4169,8 +4173,8 @@ body.in-galaxy {
 
 .btn-enter-app {
     width: 100%;
-    padding: 12px 24px;
-    font-size: 0.98rem;
+    padding: 13px 24px;
+    font-size: 1rem;
     font-weight: 700;
     border-radius: 25px;
     background: linear-gradient(135deg, #ffd56b 0%, #ff9f43 50%, #ee5253 100%);
@@ -4179,19 +4183,58 @@ body.in-galaxy {
     cursor: pointer;
     box-shadow: 0 4px 18px rgba(238, 82, 83, 0.45), 0 0 14px rgba(255, 213, 107, 0.6);
     transition: transform 0.2s, box-shadow 0.2s;
+    touch-action: manipulation;
+}
+
+.btn-enter-app:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 159, 67, 0.6), 0 0 22px rgba(255, 215, 120, 0.8);
 }
 
 .btn-enter-app:active {
     transform: scale(0.96);
 }
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 
-        0 12px 35px rgba(255, 159, 67, 0.7),
-        0 0 35px rgba(255, 215, 120, 0.9);
+
+.btn-fullscreen-preloader {
+    width: 100%;
+    padding: 11px 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: var(--font-main);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 215, 120, 0.35);
+    color: #ffeaa7;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.22s ease;
+    touch-action: manipulation;
 }
 
-.btn-enter-app:active {
+.btn-fullscreen-preloader:hover {
+    background: rgba(255, 215, 120, 0.16);
+    border-color: rgba(255, 215, 120, 0.7);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 120, 0.25);
+}
+
+.btn-fullscreen-preloader:active {
     transform: scale(0.97);
+}
+
+.btn-fullscreen-preloader.is-fullscreen {
+    background: rgba(255, 215, 120, 0.22);
+    border-color: var(--gold-bright);
+    color: #ffffff;
+}
+
+.btn-fullscreen-preloader .fs-icon {
+    font-size: 1.05rem;
 }
 
 /* ==============================================

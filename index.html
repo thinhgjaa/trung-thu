@@ -39,7 +39,11 @@
             </div>
             <div class="preloader-enter-container" id="preloaderEnterArea" style="display: none;">
                 <button id="btnEnterApp" class="btn-primary btn-enter-app">
-                    <span>Mở Quà Trung Thu ✨ ➔</span>
+                    <span>Sẵn sàng ✨</span>
+                </button>
+                <button id="btnEnterFullscreen" class="btn-fullscreen-preloader" aria-label="Mở toàn màn hình" title="Mở toàn màn hình">
+                    <span class="fs-icon">⛶</span>
+                    <span>Toàn màn hình</span>
                 </button>
             </div>
         </div>
@@ -488,12 +492,6 @@
                                     <p class="sig-from">Mãi mãi yêu em,</p>
                                     <p class="sig-name" id="galaxyLetterSenderText">Ngừi iuu cụa em 💖</p>
                                 </div>
-                                <div class="imperial-red-seal" title="Dấu ấn tình yêu trọn vẹn">
-                                    <div class="seal-inner-frame">
-                                        <span class="seal-char-top">TÌNH</span>
-                                        <span class="seal-char-bot">NỒNG</span>
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="letter-actions galaxy-letter-actions">
@@ -536,7 +534,7 @@
                 <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
                     <span class="back-arrow">‹</span> Quay lại
                 </button>
-                <h2 class="scene-title" id="ch2Title">Thả Đèn Trời</h2>
+                <h2 class="scene-title" id="ch3Title">Thả Đèn Trời</h2>
             </div>
 
             <!-- Wish Lantern Interactive Center -->
@@ -562,13 +560,15 @@
                 </div>
                 <button class="btn-primary btn-wish-release" id="btnReleaseWish">
                     <span class="btn-icon">🏮</span>
-                    <span id="btnReleaseText">Thả Đèn Lên Cung Trăng 🏮✨</span>
+                    <span id="btnReleaseText">Thả Đèn Lên Bầu Trời 🏮✨</span>
                 </button>
             </div>
 
             <!-- Success Celebration Overlay (After releasing lantern) -->
             <div class="wish-success-box glass-panel" id="wishSuccessBox">
                 <div class="success-icon">🌕💖✨</div>
+                <h3 class="success-title" id="successTitleText">Điều Ước Của Em Đã Được Gửi Đi Thành Công ✨</h3>
+                <p class="success-desc" id="successDescText">Nguyện ước của em đã được gửi gắm vào ngàn vì sao. Anh hứa sẽ luôn ở bên, che chở và cùng em biến mọi ước mơ thành hiện thực!</p>
 
                 <button class="btn-primary btn-release-another" id="btnReleaseAnotherLantern">
                     <span class="btn-icon">🏮</span>
@@ -621,14 +621,6 @@
     <!-- Scripts -->
     <script src="config.js?v=17"></script>
     <script src="script.js?v=64"></script>
-
-
-
-
-
-
-
-
 </body>
 
 </html>

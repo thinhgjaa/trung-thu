@@ -42,10 +42,10 @@ const TRUNG_THU_CONFIG = {
     // 5. Chương 3: Thả Đèn Trời Nguyện Ước
     chapter3: {
         title: "Thả Đèn Trời Nguyện Ước",
-        prompt: "Hãy nhắm mắt lại, nghĩ về tương lai của hai đứa và viết điều ước của em gửi lên cung trăng nhé... ✨",
+        prompt: "Hãy nhắm mắt lại, nghĩ về tương lai của hai đứa và viết điều ước của em gửi lên bầu trời nhé... ✨",
         placeholder: "Ví dụ: Mong cho hai đứa mình mãi luôn hạnh phúc bên nhau...",
-        sendButton: "Thả Đèn Lên Cung Trăng 🏮✨",
-        afterWishSuccessTitle: "Chiếc Đèn Của Em Đã Chạm Tới Cung Trăng 🌕💫",
+        sendButton: "Thả Đèn Lên Bầu Trời 🏮✨",
+        afterWishSuccessTitle: "Điều Ước Của Em Đã Được Gửi Đi Thành Công ✨",
         afterWishSuccessText: "Nguyện ước của em đã được gửi gắm vào ngàn vì sao. Anh hứa sẽ luôn ở bên, che chở và cùng em biến mọi ước mơ thành hiện thực!",
         replayButton: "Xem Lại Hành Trình Yêu Thương 🔄",
         goToGalaxyButton: "Mở Hộp Quà Bí Mật 🎁✨"

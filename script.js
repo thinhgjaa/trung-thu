@@ -281,11 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let isStarCanvasPaused = false;
+    let starAnimId = null;
 
     function drawStars() {
-        if (!starCtx) return;
-        if (isStarCanvasPaused) {
-            requestAnimationFrame(drawStars);
+        if (!starCtx || isStarCanvasPaused) {
+            starAnimId = null;
             return;
         }
         starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
@@ -340,7 +340,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         starCtx.globalAlpha = 1;
-        requestAnimationFrame(drawStars);
+        starAnimId = requestAnimationFrame(drawStars);
+    }
+
+    function resumeStarCanvas() {
+        if (isStarCanvasPaused) {
+            isStarCanvasPaused = false;
+        }
+        if (!starAnimId && starCtx) {
+            starAnimId = requestAnimationFrame(drawStars);
+        }
+    }
+
+    function pauseStarCanvas() {
+        isStarCanvasPaused = true;
+        if (starAnimId) {
+            cancelAnimationFrame(starAnimId);
+            starAnimId = null;
+        }
     }
 
     if (starCanvas) {
@@ -724,13 +741,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, 2350);
 
-        // Sau khi bắn pháo hoa mở màn xong -> Bé Thỏ Ngọc nói lời chào & hiện nút tương tác "Đúm là đẹp thiệc"
+        // Sau khi bắn pháo hoa mở màn xong -> Thỏ Ngọc thủ thỉ chậm rãi, ngắt nghỉ từng câu
         setTimeout(() => {
             if (currentChapter === 1 && moonHoldStage === 0) {
-                showRabbitDialogue("Trăng đêm nay đẹp ha ✨");
-                showHoldActionButton("Đúm là đẹp thiệc ✨", "Ấn giữ để cùng ngắm trăng nhé...");
+                showRabbitDialogue("Trăng rằm đêm nay... 🌕");
             }
         }, 3600);
+
+        setTimeout(() => {
+            if (currentChapter === 1 && moonHoldStage === 0) {
+                showRabbitDialogue("Đẹp thật đấy em nhỉ ✨");
+                showHoldActionButton("Ấn giữ để cùng ngắm trăng nhé... ✨", "Giữ ngón tay vào vầng trăng để đón nhận điều bất ngờ...");
+            }
+        }, 5800);
     }
 
     let girlfriendAmbientFireworksTimer = null;
@@ -934,6 +957,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentChapter = 1;
     const totalChapters = 3;
     const progressSteps = document.querySelectorAll('.progress-step');
+    let startFireflies = () => {};
+    let stopFireflies = () => {};
 
     function updateProgressUI(chapterNum) {
         progressSteps.forEach((step, idx) => {
@@ -955,12 +980,17 @@ document.addEventListener('DOMContentLoaded', () => {
             stopGirlfriendAmbientFireworks();
         }
 
+        if (currentChapter === 1 && chapterNum !== 1) {
+            stopParallax();
+            stopFireflies();
+        }
+
         if (currentChapter === 2 && chapterNum !== 2) {
             stop3DLoveGalaxy();
-            isStarCanvasPaused = false;
+            resumeStarCanvas();
             document.body.classList.remove('in-galaxy');
         } else if (chapterNum === 2) {
-            isStarCanvasPaused = true;
+            pauseStarCanvas();
             document.body.classList.add('in-galaxy');
         }
 
@@ -1006,6 +1036,9 @@ document.addEventListener('DOMContentLoaded', () => {
         playChime(650, 0.4);
 
         if (chapterNum === 1) {
+            resumeStarCanvas();
+            startParallax();
+            startFireflies();
             hideRabbitDialogue();
             hideHoldActionButton();
             setTimeout(() => {
@@ -1014,6 +1047,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (chapterNum === 2) {
             start3DLoveGalaxy();
         } else if (chapterNum === 3) {
+            resumeStarCanvas();
             initChapter3Wish();
         }
     }
@@ -1032,9 +1066,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const holdActionArea = document.querySelector('.hold-action-area');
     const rabbitBranchWrapper = document.getElementById('rabbitBranchWrapper');
 
-    function showRabbitDialogue(text) {
+    let rabbitTypewriterTimer = null;
+
+    function showRabbitDialogue(text, isSlow = true) {
         if (!rabbitSpeechBubble || !rabbitBubbleText) return;
-        rabbitBubbleText.textContent = text;
+        if (rabbitTypewriterTimer) {
+            clearTimeout(rabbitTypewriterTimer);
+            rabbitTypewriterTimer = null;
+        }
+
         rabbitSpeechBubble.classList.add('bubble-active');
         const targetRabbit = jadeRabbit || rabbitBranchWrapper;
         if (targetRabbit) {
@@ -1043,14 +1083,40 @@ document.addEventListener('DOMContentLoaded', () => {
             targetRabbit.classList.add('rabbit-hopping');
             setTimeout(() => targetRabbit.classList.remove('rabbit-hopping'), 650);
         }
-        playMagicSparkleSound();
+
+        if (!isSlow) {
+            rabbitBubbleText.textContent = text;
+            playMagicSparkleSound();
+            return;
+        }
+
+        rabbitBubbleText.textContent = '';
+        let c = 0;
+        playChime(640, 0.15);
+
+        function typeChar() {
+            if (c < text.length) {
+                rabbitBubbleText.textContent += text[c];
+                c++;
+                const char = text[c - 1];
+                const delay = (char === '.' || char === '…') ? 150 : (char === ',' ? 110 : 42);
+                rabbitTypewriterTimer = setTimeout(typeChar, delay);
+            } else {
+                rabbitTypewriterTimer = null;
+            }
+        }
+        typeChar();
     }
 
     function hideRabbitDialogue() {
+        if (rabbitTypewriterTimer) {
+            clearTimeout(rabbitTypewriterTimer);
+            rabbitTypewriterTimer = null;
+        }
         if (rabbitSpeechBubble) rabbitSpeechBubble.classList.remove('bubble-active');
     }
 
-    function showHoldActionButton(buttonText = "Đúm là đẹp thiệc ✨", hintText = "Ấn giữ để cùng ngắm trăng nhé...") {
+    function showHoldActionButton(buttonText = "Ấn giữ để cùng ngắm trăng nhé... ✨", hintText = "Giữ ngón tay vào vầng trăng để đón nhận điều bất ngờ...") {
         if (holdActionArea) holdActionArea.classList.add('button-revealed');
         if (holdInstructionText) holdInstructionText.textContent = buttonText;
         if (holdHintText) holdHintText.textContent = hintText;
@@ -1107,7 +1173,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (holdPrompt) holdPrompt.classList.add('holding');
 
         if (moonHoldStage === 0) {
-            showRabbitDialogue("Nhưng mà... 🐰💭");
+            showRabbitDialogue("Ủa... chờ xíu nha 🐰");
+            setTimeout(() => {
+                if (isHolding && moonHoldStage === 0) {
+                    showRabbitDialogue("Chuẩn bị nè... ✨");
+                }
+            }, 850);
             if (holdInstructionText) holdInstructionText.textContent = "Đang ngắm trăng cùng nàng thơ... ✨";
             if (holdHintText) holdHintText.textContent = "Giữ tiếp để đón nhận điều bất ngờ... 🌸";
         }
@@ -1165,9 +1236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (moonHoldStage === 0) {
-            showRabbitDialogue("Trăng đêm nay đẹp ha ✨");
-            if (holdInstructionText) holdInstructionText.textContent = "Đúm là đẹp thiệc ✨";
-            if (holdHintText) holdHintText.textContent = "Ấn giữ để cùng ngắm trăng nhé...";
+            showRabbitDialogue("Trăng rằm đêm nay đẹp ha ✨");
+            if (holdInstructionText) holdInstructionText.textContent = "Ấn giữ để cùng ngắm trăng nhé... ✨";
+            if (holdHintText) holdHintText.textContent = "Nhớ ấn và giữ ngón tay đủ lâu nhé... 🌸";
         } else {
             if (holdInstructionText) holdInstructionText.textContent = "Khám phá Vũ Trụ Tình Yêu 💖➔";
             if (holdHintText) holdHintText.textContent = "Chạm để bước vào dải ngân hà bất ngờ... ✨";
@@ -1300,19 +1371,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Chống menu chuột phải / menu giữ ảnh
         target.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // Bấm / chạm vào Mặt Trăng hoặc Button để chuyển đổi ngay tức thì & phóng pháo hoa bay lên
+        // Bấm / chạm vào Mặt Trăng hoặc Button
         target.addEventListener('click', (e) => {
             if (currentChapter === 1) {
                 if (Date.now() - lastHoldSuccessTime < 300) return;
 
                 if (moonHoldStage === 0) {
-                    const rect = luminousMoon ? luminousMoon.getBoundingClientRect() : target.getBoundingClientRect();
-                    const clickX = (e.clientX && e.clientX > 0) ? e.clientX : (rect.left + rect.width / 2);
-                    const clickY = (e.clientY && e.clientY > 0) ? e.clientY : (rect.top + rect.height / 2);
-
-                    launchRocketTo(clickX, clickY, { type: 'heart', color: '#ff7675' });
+                    // Nhấp chuột / chạm nhẹ mà KHÔNG giữ đủ lâu: chỉ tạo sóng nhẹ và nhắc nhở ấn giữ
                     createRipple();
-                    completeHoldSuccess();
+                    if (navigator.vibrate) navigator.vibrate(15);
+                    playChime(580, 0.2);
+                    showRabbitDialogue("Nhớ ấn và giữ một lát nha em 🐰✨");
+                    if (holdHintText) holdHintText.textContent = "Hãy chạm và giữ ngón tay vào vầng trăng nhé... ✨";
                 } else {
                     goToScene(2);
                 }
@@ -1497,24 +1567,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
+            let firefliesAnimId = null;
+
             function updateFireflies() {
-                if (currentChapter === 1) {
-                    fireflies.forEach(f => {
-                        f.phase += f.speed;
-                        f.x += f.vx;
-                        f.y = f.baseY + Math.sin(f.phase) * f.amplitude;
-
-                        // Giới hạn biên màn hình mềm mại
-                        if (f.x < -10) f.x = 330;
-                        if (f.x > 330) f.x = -10;
-
-                        f.el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0)`;
-                    });
+                if (currentChapter !== 1) {
+                    firefliesAnimId = null;
+                    return;
                 }
-                requestAnimationFrame(updateFireflies);
+                fireflies.forEach(f => {
+                    f.phase += f.speed;
+                    f.x += f.vx;
+                    f.y = f.baseY + Math.sin(f.phase) * f.amplitude;
+
+                    // Giới hạn biên màn hình mềm mại
+                    if (f.x < -10) f.x = 330;
+                    if (f.x > 330) f.x = -10;
+
+                    f.el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0)`;
+                });
+                firefliesAnimId = requestAnimationFrame(updateFireflies);
             }
 
-            requestAnimationFrame(updateFireflies);
+            startFireflies = function() {
+                if (!firefliesAnimId && currentChapter === 1) {
+                    firefliesAnimId = requestAnimationFrame(updateFireflies);
+                }
+            };
+
+            stopFireflies = function() {
+                if (firefliesAnimId) {
+                    cancelAnimationFrame(firefliesAnimId);
+                    firefliesAnimId = null;
+                }
+            };
+
+            startFireflies();
         }
 
         // 2. TƯƠNG TÁC CHẠM TẠO SÓNG NƯỚC TRÊN MẶT HỒ
@@ -1637,17 +1724,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // 8. CHƯƠNG 3: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
     // ----------------------------------------------------
     const wishInput = document.getElementById('wishInput');
-    const wishPreviewText = document.getElementById('wishPreviewText');
+    const wishPreviewText = document.getElementById('wishPreviewText') || document.getElementById('lanternFlyingWishText');
     const btnReleaseWish = document.getElementById('btnReleaseWish');
     const giantWishLantern = document.getElementById('giantWishLantern');
     const wishInputCard = document.getElementById('wishInputCard');
     const wishSuccessBox = document.getElementById('wishSuccessBox');
     const btnReplayStory = document.getElementById('btnReplayStory');
-    const scene3El = document.getElementById('scene-2');
+    const scene3El = document.getElementById('scene-3');
 
     function initChapter3Wish() {
-        if (wishPreviewText && cfg.chapter3 && cfg.chapter3.defaultWish) {
-            wishPreviewText.textContent = `"${cfg.chapter3.defaultWish}"`;
+        const defaultWish = (cfg.chapter3 && cfg.chapter3.defaultWish) || "Mong cho hai đứa mình mãi luôn hạnh phúc bên nhau 💕";
+        if (wishPreviewText && (!wishInput || !wishInput.value.trim())) {
+            wishPreviewText.textContent = `"${defaultWish}"`;
         }
     }
 
@@ -2163,7 +2251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { color: '#ffffff', glow: '#ffd56b', fontType: 'quicksand', size: 14, bold: false }
     ];
 
-    const midAutumnDecorIcons = ['🌙', '⭐', '🥮', '🌸', '✨', '💖'];
+    const midAutumnDecorIcons = ['🏮', '🥮', '🌕', '🐰', '⭐', '🏮', '🥮', '🌸', '✨', '💖', '🎋', '🏮', '🥮', '🏮', '⭐', '🌕'];
 
     function getGalaxyDimensions() {
         if (!galaxyCanvas) return { w: 440, h: 750 };
@@ -2268,22 +2356,31 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Xen kẽ các icon neon Trung Thu (Trăng khuyết, ngôi sao, bánh trung thu)
-        for (let i = 0; i < 10; i++) {
+        // Xen kẽ các icon neon Trung Thu rực rỡ (Đèn lồng đỏ, bánh trung thu, thỏ ngọc, trăng rằm, sao vàng)
+        const decorIconStyles = [
+            { color: '#ff4757', glow: '#ff6b81', fontType: 'quicksand', size: 24, bold: true }, // Đèn lồng đỏ
+            { color: '#ffa502', glow: '#ffbe76', fontType: 'quicksand', size: 22, bold: true }, // Bánh nướng vàng
+            { color: '#ffd32a', glow: '#fffa65', fontType: 'quicksand', size: 24, bold: true }, // Trăng rằm
+            { color: '#ffffff', glow: '#70a1ff', fontType: 'quicksand', size: 22, bold: true }, // Thỏ ngọc
+            { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 20, bold: true }  // Hoa quế hồng
+        ];
+
+        const totalIconSlots = 18;
+        for (let i = 0; i < totalIconSlots; i++) {
             const icon = midAutumnDecorIcons[i % midAutumnDecorIcons.length];
-            const theta = (i / 10) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
-            const phi = ((i % 3) - 1) * 0.4;
-            const radiusX = 100 + Math.random() * 50;
-            const radiusY = 140 + Math.random() * 80;
-            const radiusZ = 110 + Math.random() * 45;
-            const style = { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 20, bold: true };
+            const theta = (i / totalIconSlots) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
+            const phi = ((i % 4) - 1.5) * 0.35;
+            const radiusX = 105 + Math.random() * 55;
+            const radiusY = 145 + Math.random() * 85;
+            const radiusZ = 115 + Math.random() * 50;
+            const style = decorIconStyles[i % decorIconStyles.length];
             const sprite = getCachedWordSprite(icon, style);
 
             const baseX = radiusX * Math.cos(theta) * Math.cos(phi);
             const baseY = radiusY * Math.sin(phi);
             const baseZ = radiusZ * Math.sin(theta) * Math.cos(phi);
 
-            const staggerZ = (1 - (i / 10)) * 220 + Math.random() * 60;
+            const staggerZ = (1 - (i / totalIconSlots)) * 220 + Math.random() * 60;
 
             gWords.push({
                 sprite: sprite,
@@ -2943,9 +3040,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const clusterFireflies = document.getElementById('backdropFireflies');
     const clusterFolklore = document.getElementById('backdropFolklore');
 
+    let parallaxAnimId = null;
+
     function renderParallax() {
         if (currentChapter !== 1) {
-            requestAnimationFrame(renderParallax);
+            parallaxAnimId = null;
             return;
         }
 
@@ -2963,19 +3062,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (clusterFireflies) clusterFireflies.style.transform = `translate3d(${px * -32}px, ${py * -18}px, 0)`;
         if (clusterFolklore) clusterFolklore.style.transform = `translate3d(${px * -18}px, ${py * -9}px, 0)`;
 
-        requestAnimationFrame(renderParallax);
+        parallaxAnimId = requestAnimationFrame(renderParallax);
+    }
+
+    function startParallax() {
+        if (!parallaxAnimId && currentChapter === 1) {
+            parallaxAnimId = requestAnimationFrame(renderParallax);
+        }
+    }
+
+    function stopParallax() {
+        if (parallaxAnimId) {
+            cancelAnimationFrame(parallaxAnimId);
+            parallaxAnimId = null;
+        }
     }
 
     // Girlfriend Photo Cameo Modal Handler
-    const gfCameoBtn = document.getElementById('gfCameoBtn');
     const gfPhotoModal = document.getElementById('gfPhotoModal');
     const gfModalClose = document.getElementById('gfModalClose');
     const gfModalBackdrop = document.getElementById('gfModalBackdrop');
+    const moonGfBadgeEl = document.getElementById('moonGfBadge');
+    const moonSphereWrap = document.getElementById('moonSphereContainer');
 
     function openGfModal() {
         if (!gfPhotoModal) return;
         gfPhotoModal.classList.add('active');
         gfPhotoModal.setAttribute('aria-hidden', 'false');
+        if (navigator.vibrate) navigator.vibrate([20, 30]);
+        playChime(680, 0.4);
     }
 
     function closeGfModal() {
@@ -2984,7 +3099,19 @@ document.addEventListener('DOMContentLoaded', () => {
         gfPhotoModal.setAttribute('aria-hidden', 'true');
     }
 
-    if (gfCameoBtn) gfCameoBtn.addEventListener('click', openGfModal);
+    if (moonGfBadgeEl) {
+        moonGfBadgeEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openGfModal();
+        });
+    }
+    if (moonSphereWrap) {
+        moonSphereWrap.addEventListener('click', () => {
+            if (moonSphereWrap.classList.contains('transformed-gf')) {
+                openGfModal();
+            }
+        });
+    }
     if (gfModalClose) gfModalClose.addEventListener('click', closeGfModal);
     if (gfModalBackdrop) gfModalBackdrop.addEventListener('click', closeGfModal);
 
@@ -3052,6 +3179,58 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(onPreloadComplete, 600);
     }
 
+    const btnEnterFullscreen = document.getElementById('btnEnterFullscreen');
+
+    function toggleAppFullscreen() {
+        const doc = window.document;
+        const docEl = doc.documentElement;
+        const isFs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+
+        if (!isFs) {
+            const requestFs = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.webkitRequestFullScreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+            if (requestFs) {
+                try {
+                    const p = requestFs.call(docEl);
+                    if (p && p.catch) p.catch(() => { });
+                } catch (err) { }
+            }
+        } else {
+            const exitFs = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
+            if (exitFs) {
+                try {
+                    const p = exitFs.call(doc);
+                    if (p && p.catch) p.catch(() => { });
+                } catch (err) { }
+            }
+        }
+    }
+
+    function updateFullscreenButtonUI() {
+        if (!btnEnterFullscreen) return;
+        const doc = window.document;
+        const isFs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+        btnEnterFullscreen.innerHTML = isFs
+            ? `<span class="fs-icon">🗗</span><span>Thu nhỏ màn hình</span>`
+            : `<span class="fs-icon">⛶</span><span>Toàn màn hình</span>`;
+        if (isFs) {
+            btnEnterFullscreen.classList.add('is-fullscreen');
+        } else {
+            btnEnterFullscreen.classList.remove('is-fullscreen');
+        }
+    }
+
+    if (btnEnterFullscreen) {
+        btnEnterFullscreen.addEventListener('click', () => {
+            toggleAppFullscreen();
+            playChime(620, 0.2);
+            if (navigator.vibrate) navigator.vibrate(15);
+        });
+
+        ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+            document.addEventListener(ev, updateFullscreenButtonUI);
+        });
+    }
+
     if (btnEnterApp) {
         btnEnterApp.addEventListener('click', () => {
             initAudioContext();
@@ -3080,7 +3259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    requestAnimationFrame(renderParallax);
+    startParallax();
 });
 
 
