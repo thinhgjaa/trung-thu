@@ -1694,7 +1694,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnGalaxyAddHeart.addEventListener('click', (e) => {
             e.stopPropagation();
             if (navigator.vibrate) navigator.vibrate([25, 45]);
-            burstGalaxyHearts(window.innerWidth / 2, window.innerHeight * 0.6, 12);
+            const center = getGalaxyCanvasCenter();
+            burstGalaxyHearts(center.x, center.y * 1.1, 12);
             playMagicSparkleSound();
         });
     }
@@ -1903,22 +1904,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Neon Styling Palettes
     const neonStyles = [
-        { color: '#ffffff', glow: '#ff79c6', fontType: 'dancing', size: 23, bold: true },
-        { color: '#ffb8e6', glow: '#ff2a8d', fontType: 'dancing', size: 26, bold: true },
-        { color: '#ffffff', glow: '#ff4d94', fontType: 'quicksand', size: 17, bold: true },
-        { color: '#ffd56b', glow: '#ff9f43', fontType: 'quicksand', size: 16, bold: true },
-        { color: '#ffffff', glow: '#ffd56b', fontType: 'quicksand', size: 15, bold: false }
+        { color: '#ffffff', glow: '#ff79c6', fontType: 'dancing', size: 19, bold: true },
+        { color: '#ffb8e6', glow: '#ff2a8d', fontType: 'dancing', size: 20, bold: true },
+        { color: '#ffffff', glow: '#ff4d94', fontType: 'quicksand', size: 15, bold: true },
+        { color: '#ffd56b', glow: '#ff9f43', fontType: 'quicksand', size: 14, bold: true },
+        { color: '#ffffff', glow: '#ffd56b', fontType: 'quicksand', size: 14, bold: false }
     ];
 
     const midAutumnDecorIcons = ['🌙', '⭐', '🥮', '🌸', '✨', '💖'];
 
+    function getGalaxyDimensions() {
+        if (!galaxyCanvas) return { w: 440, h: 750 };
+        const rect = galaxyCanvas.getBoundingClientRect();
+        const appContainer = document.querySelector('.app-container');
+        const appRect = appContainer ? appContainer.getBoundingClientRect() : null;
+        const w = Math.floor(rect.width || (appRect ? appRect.width : 0) || window.innerWidth || 440);
+        const h = Math.floor(rect.height || (appRect ? appRect.height : 0) || window.innerHeight || 750);
+        return { w, h };
+    }
+
+    function getGalaxyCanvasCenter() {
+        const dim = getGalaxyDimensions();
+        return { x: dim.w / 2, y: dim.h / 2 };
+    }
+
     function resizeGalaxyCanvas() {
         if (!galaxyCanvas) return;
+        const dim = getGalaxyDimensions();
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        galaxyCanvas.width = Math.floor(window.innerWidth * dpr);
-        galaxyCanvas.height = Math.floor(window.innerHeight * dpr);
-        galaxyCanvas.style.width = `${window.innerWidth}px`;
-        galaxyCanvas.style.height = `${window.innerHeight}px`;
+        galaxyCanvas.width = Math.floor(dim.w * dpr);
+        galaxyCanvas.height = Math.floor(dim.h * dpr);
+        galaxyCanvas.style.width = '100%';
+        galaxyCanvas.style.height = '100%';
         if (galaxyCtx) {
             galaxyCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
@@ -1932,15 +1949,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         getOrCreateCachedHeartSprite();
 
-        // 1. Vũ trụ vì sao nền (150 vì sao tối ưu hiệu năng và độ mượt)
-        const starCount = 150;
+        // 1. Vũ trụ vì sao nền
+        const starCount = 130;
         for (let i = 0; i < starCount; i++) {
-            const r = 220 + Math.random() * 560;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = (Math.random() - 0.5) * Math.PI;
-            const baseX = r * Math.cos(theta) * Math.cos(phi);
-            const baseY = r * Math.sin(phi);
-            const baseZ = r * Math.sin(theta) * Math.cos(phi);
+            const baseX = (Math.random() - 0.5) * 380;
+            const baseY = (Math.random() - 0.5) * 680;
+            const baseZ = (Math.random() - 0.5) * 480;
 
             gStars.push({
                 baseX: baseX,
@@ -1972,22 +1986,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Yêu em 3000 ✨"
             ];
 
-        const totalWordSlots = 32;
+        const totalWordSlots = 24;
         for (let i = 0; i < totalWordSlots; i++) {
             const text = wordsSource[i % wordsSource.length];
             const style = neonStyles[i % neonStyles.length];
-            const theta = (i / totalWordSlots) * Math.PI * 2 + (Math.random() - 0.5) * 0.25;
-            const phi = ((i % 5) - 2) * 0.32 + (Math.random() - 0.5) * 0.16;
-            const radius = 230 + Math.random() * 220;
+            const theta = (i / totalWordSlots) * Math.PI * 2 + (Math.random() - 0.5) * 0.15;
+            const phi = ((i % 5) - 2) * 0.3 + (Math.random() - 0.5) * 0.1;
+
+            const radiusX = 115 + Math.random() * 60;
+            const radiusY = 160 + Math.random() * 100;
+            const radiusZ = 125 + Math.random() * 55;
 
             const sprite = getCachedWordSprite(text, style);
 
-            const baseX = radius * Math.cos(theta) * Math.cos(phi);
-            const baseY = radius * Math.sin(phi) + (Math.random() - 0.5) * 60;
-            const baseZ = radius * Math.sin(theta) * Math.cos(phi);
+            const baseX = radiusX * Math.cos(theta) * Math.cos(phi);
+            const baseY = radiusY * Math.sin(phi) + (Math.random() - 0.5) * 40;
+            const baseZ = radiusZ * Math.sin(theta) * Math.cos(phi);
 
-            // Độ trễ chiều sâu Z tạo cảm giác các câu chữ lướt bay vào màn hình ấn tượng
-            const staggerZ = (1 - (i / totalWordSlots)) * 500 + Math.random() * 120;
+            const staggerZ = (1 - (i / totalWordSlots)) * 250 + Math.random() * 60;
 
             gWords.push({
                 sprite: sprite,
@@ -2001,19 +2017,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Xen kẽ các icon neon Trung Thu (Trăng khuyết, ngôi sao, bánh trung thu)
-        for (let i = 0; i < 14; i++) {
+        for (let i = 0; i < 10; i++) {
             const icon = midAutumnDecorIcons[i % midAutumnDecorIcons.length];
-            const theta = Math.random() * Math.PI * 2;
-            const phi = (Math.random() - 0.5) * Math.PI * 0.75;
-            const radius = 220 + Math.random() * 240;
-            const style = { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 24, bold: true };
+            const theta = (i / 10) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
+            const phi = ((i % 3) - 1) * 0.4;
+            const radiusX = 100 + Math.random() * 50;
+            const radiusY = 140 + Math.random() * 80;
+            const radiusZ = 110 + Math.random() * 45;
+            const style = { color: '#ff79c6', glow: '#ff2a8d', fontType: 'quicksand', size: 20, bold: true };
             const sprite = getCachedWordSprite(icon, style);
 
-            const baseX = radius * Math.cos(theta) * Math.cos(phi);
-            const baseY = radius * Math.sin(phi);
-            const baseZ = radius * Math.sin(theta) * Math.cos(phi);
+            const baseX = radiusX * Math.cos(theta) * Math.cos(phi);
+            const baseY = radiusY * Math.sin(phi);
+            const baseZ = radiusZ * Math.sin(theta) * Math.cos(phi);
 
-            const staggerZ = (1 - (i / 14)) * 600 + Math.random() * 150;
+            const staggerZ = (1 - (i / 10)) * 220 + Math.random() * 60;
 
             gWords.push({
                 sprite: sprite,
@@ -2026,7 +2044,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 2.1 THÊM LÁ THƯ TÌNH 3D NỔI BẬT XOAY QUANH VŨ TRỤ (Có thể click để mở)
+        // 2.1 THÊM LÁ THƯ TÌNH 3D NỔI BẬT XOAY QUANH VŨ TRỤ (Nằm ở ngay chính diện phía trước)
         gSpecialLetters = [];
         const specialLetterConfigs = [
             {
@@ -2034,8 +2052,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 badge: "✨ Chạm để mở ✨",
                 theta: -Math.PI / 2,
                 phi: 0,
-                radius: 200,
-                y: -18
+                radius: 130,
+                y: -15
             }
         ];
 
@@ -2051,8 +2069,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 baseX: baseX,
                 baseY: baseY,
                 baseZ: baseZ,
-                staggerZ: 200,
-                floatPhase: Math.random() * Math.PI * 2,
+                staggerZ: 60,
+                floatPhase: 0,
                 floatSpeed: 0.014
             };
             gWords.push(letterObj);
@@ -2060,7 +2078,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // 3. Quả cầu tim 3D đỏ rực phát sáng (Floating Red Hearts)
-        const heartCount = 18;
+        const heartCount = 14;
         for (let i = 0; i < heartCount; i++) {
             spawnHeartObject(true);
         }
@@ -2068,18 +2086,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function spawnHeartObject(initialRandomY = false) {
         const theta = Math.random() * Math.PI * 2;
-        const radius = 150 + Math.random() * 260;
-        const y = initialRandomY ? (Math.random() * 650 - 325) : 360;
+        const radiusX = 65 + Math.random() * 60;
+        const radiusZ = 65 + Math.random() * 60;
+        const y = initialRandomY ? (Math.random() * 550 - 275) : 300;
 
         gHearts.push({
-            baseX: radius * Math.cos(theta),
+            baseX: radiusX * Math.cos(theta),
             y: y,
-            baseZ: radius * Math.sin(theta),
-            size: 20 + Math.random() * 18,
-            vy: -(0.6 + Math.random() * 0.8),
+            baseZ: radiusZ * Math.sin(theta),
+            size: 18 + Math.random() * 14,
+            vy: -(0.5 + Math.random() * 0.7),
             swayPhase: Math.random() * Math.PI * 2,
             swaySpeed: 0.018 + Math.random() * 0.02,
-            swayAmp: 14 + Math.random() * 22,
+            swayAmp: 10 + Math.random() * 16,
             rot: (Math.random() - 0.5) * 0.35
         });
     }
@@ -2109,8 +2128,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isGalaxyRunning || !galaxyCtx || !galaxyCanvas) return;
 
         try {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
+            const dim = getGalaxyDimensions();
+            const w = dim.w;
+            const h = dim.h;
             const cx = w / 2;
             const cy = h / 2;
 
@@ -2154,8 +2174,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const z2 = s.baseY * sinX + z1 * cosX;
 
                 // Safe camera depth calculation
-                const zView = Math.max(120, z2 + 650 + (warpFactor * 600));
-                const scale = Math.min(2.0, Math.max(0.04, galaxyFov / zView));
+                const zView = Math.max(100, z2 + 500 + (warpFactor * 400));
+                const scale = Math.min(1.8, Math.max(0.04, galaxyFov / zView));
                 const px = cx + x1 * scale;
                 const py = cy + y1 * scale;
 
@@ -2204,7 +2224,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Safe camera depth with staggered entrance
                 const itemStagger = (wObj.staggerZ || 0) * warpFactor;
-                const zView = Math.max(100, z2 + 650 + (warpFactor * 750) + itemStagger);
+                const zView = Math.max(90, z2 + 500 + (warpFactor * 450) + itemStagger);
 
                 renderQueue.push({
                     type: 'word',
@@ -2234,7 +2254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const y1 = hObj.y * cosX - z1 * sinX;
                 const z2 = hObj.y * sinX + z1 * cosX;
 
-                const zView = Math.max(90, z2 + 650 + (warpFactor * 650));
+                const zView = Math.max(80, z2 + 500 + (warpFactor * 400));
 
                 renderQueue.push({
                     type: 'heart',
@@ -2333,7 +2353,8 @@ document.addEventListener('DOMContentLoaded', () => {
         galaxyAnimId = requestAnimationFrame(render3DLoveGalaxy);
 
         setTimeout(() => {
-            burstGalaxyHearts(window.innerWidth / 2, window.innerHeight * 0.45, 10);
+            const center = getGalaxyCanvasCenter();
+            burstGalaxyHearts(center.x, center.y * 0.9, 10);
             playMagicSparkleSound();
         }, 400);
     }
@@ -2389,9 +2410,10 @@ document.addEventListener('DOMContentLoaded', () => {
         playMagicSparkleSound();
 
         const envelopeEl = romanticEnvelope || galaxyEnvelopeWrapper;
-        if (envelopeEl) {
+        if (envelopeEl && galaxyCanvas) {
             const rect = envelopeEl.getBoundingClientRect();
-            burstGalaxyHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+            const cRect = galaxyCanvas.getBoundingClientRect();
+            burstGalaxyHearts((rect.left + rect.width / 2) - cRect.left, (rect.top + rect.height / 2) - cRect.top, 10);
         }
 
         setTimeout(() => {
@@ -2455,7 +2477,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }, 180);
         }
-        burstGalaxyHearts(window.innerWidth / 2, window.innerHeight * 0.7, 8);
+        const center = getGalaxyCanvasCenter();
+        burstGalaxyHearts(center.x, center.y * 1.2, 8);
         playMagicSparkleSound();
     }
 
@@ -2578,13 +2601,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hiệu ứng rê chuột trên Desktop: đổi thành bàn tay click khi lướt qua lá thư 3D
         galaxyCanvas.addEventListener('pointermove', (e) => {
             if (isGalaxyDragging || isGalaxyLetterOpen) return;
+            const rect = galaxyCanvas.getBoundingClientRect();
+            const canvasX = e.clientX - rect.left;
+            const canvasY = e.clientY - rect.top;
             let isOverLetter = false;
             for (let i = 0; i < gSpecialLetters.length; i++) {
                 const sObj = gSpecialLetters[i];
                 if (sObj.screenX !== undefined && sObj.alpha > 0.22) {
                     const padX = (sObj.drawW / 2) + 16;
                     const padY = (sObj.drawH / 2) + 14;
-                    if (Math.abs(e.clientX - sObj.screenX) <= padX && Math.abs(e.clientY - sObj.screenY) <= padY) {
+                    if (Math.abs(canvasX - sObj.screenX) <= padX && Math.abs(canvasY - sObj.screenY) <= padY) {
                         isOverLetter = true;
                         break;
                     }
@@ -2600,16 +2626,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const dragDist = Math.hypot(e.clientX - galaxyPointerDownX, e.clientY - galaxyPointerDownY);
             if (dragDist > 10) return; // Đang vuốt xoay màn hình, không kích hoạt click
 
+            const rect = galaxyCanvas.getBoundingClientRect();
+            const canvasX = e.clientX - rect.left;
+            const canvasY = e.clientY - rect.top;
+
             let clickedLetter = false;
             for (let i = 0; i < gSpecialLetters.length; i++) {
                 const sObj = gSpecialLetters[i];
                 if (sObj.screenX !== undefined && sObj.alpha > 0.22) {
                     const padX = (sObj.drawW / 2) + 24;
                     const padY = (sObj.drawH / 2) + 18;
-                    if (Math.abs(e.clientX - sObj.screenX) <= padX && Math.abs(e.clientY - sObj.screenY) <= padY) {
+                    if (Math.abs(canvasX - sObj.screenX) <= padX && Math.abs(canvasY - sObj.screenY) <= padY) {
                         clickedLetter = true;
                         if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
-                        burstGalaxyHearts(e.clientX, e.clientY, 15);
+                        burstGalaxyHearts(canvasX, canvasY, 15);
                         playCelebrationChord();
                         playMagicSparkleSound();
                         openGalaxyLoveLetter();
@@ -2621,7 +2651,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!clickedLetter) {
                 if (navigator.vibrate) navigator.vibrate(18);
                 playChime(640, 0.25);
-                burstGalaxyHearts(e.clientX, e.clientY, 6);
+                burstGalaxyHearts(canvasX, canvasY, 6);
             }
         });
     }
