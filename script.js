@@ -2063,6 +2063,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let gHearts = [];
     let gBursts = [];
     let gSpecialLetters = [];
+    let gCenterMoon = null;
+    let cached3DMoonSprite = null;
+    let moonTextureImg = null;
     let galaxyPointerDownX = 0, galaxyPointerDownY = 0;
 
     // Pre-rendered Sprites Cache (Triệt tiêu 100% hiện tượng giật lag do shadowBlur)
@@ -2104,6 +2107,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cachedHeartCanvas = c;
         return cachedHeartCanvas;
+    }
+
+    // Tạo sprite Mặt Trăng 3D đại thụ phát sáng đặt tại trung tâm vũ trụ
+    function getOrCreateCached3DMoonSprite() {
+        if (cached3DMoonSprite) return cached3DMoonSprite;
+
+        const size = 180;
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const ctx = c.getContext('2d');
+        const cx = size / 2;
+        const cy = size / 2;
+        const r = 58;
+
+        // 1. Quầng hào quang phát sáng vàng kim lan tỏa (Outer Lunar Aura)
+        const auraGrad = ctx.createRadialGradient(cx, cy, r * 0.7, cx, cy, r * 1.4);
+        auraGrad.addColorStop(0, 'rgba(255, 235, 150, 0.48)');
+        auraGrad.addColorStop(0.5, 'rgba(255, 175, 75, 0.22)');
+        auraGrad.addColorStop(0.85, 'rgba(255, 107, 129, 0.08)');
+        auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+        ctx.fillStyle = auraGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 1.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 2. Hình cầu mặt trăng 3D
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.clip();
+
+        const domMoonImg = document.getElementById('moonSphereImg') || document.querySelector('img[src*="luminous_super_moon"]');
+        if (domMoonImg && domMoonImg.complete && domMoonImg.naturalWidth > 0) {
+            ctx.drawImage(domMoonImg, cx - r, cy - r, r * 2, r * 2);
+        } else if (!moonTextureImg) {
+            moonTextureImg = new Image();
+            moonTextureImg.onload = () => {
+                cached3DMoonSprite = null;
+            };
+            moonTextureImg.src = 'assets/images/luminous_super_moon.jpg';
+            const baseMoonGrad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.1, cx, cy, r);
+            baseMoonGrad.addColorStop(0, '#fffbe6');
+            baseMoonGrad.addColorStop(0.6, '#ffd56b');
+            baseMoonGrad.addColorStop(1, '#ff9f43');
+            ctx.fillStyle = baseMoonGrad;
+            ctx.fill();
+        } else {
+            const baseMoonGrad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.1, cx, cy, r);
+            baseMoonGrad.addColorStop(0, '#fffbe6');
+            baseMoonGrad.addColorStop(0.6, '#ffd56b');
+            baseMoonGrad.addColorStop(1, '#ff9f43');
+            ctx.fillStyle = baseMoonGrad;
+            ctx.fill();
+        }
+
+        // 3. Hiệu ứng ánh sáng 3D hình cầu (Spherical Specular & Shading)
+        const sphereShade = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.05, cx, cy, r);
+        sphereShade.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+        sphereShade.addColorStop(0.55, 'rgba(255, 240, 180, 0.1)');
+        sphereShade.addColorStop(0.85, 'rgba(25, 10, 40, 0.22)');
+        sphereShade.addColorStop(1, 'rgba(10, 5, 25, 0.65)');
+
+        ctx.fillStyle = sphereShade;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 4. Viền sáng vàng ngọc dạ quang (Lunar Rim Light)
+        ctx.strokeStyle = 'rgba(255, 235, 160, 0.85)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.restore();
+
+        cached3DMoonSprite = {
+            canvas: c,
+            width: size,
+            height: size,
+            radius: r
+        };
+        return cached3DMoonSprite;
     }
 
     // Pre-render chữ neon tình yêu vào offscreen sprite để GPU vẽ cực nhanh
@@ -2288,6 +2374,16 @@ document.addEventListener('DOMContentLoaded', () => {
         gBursts = [];
 
         getOrCreateCachedHeartSprite();
+        getOrCreateCached3DMoonSprite();
+
+        // 0. Mặt Trăng 3D ngự trị tại tâm điểm vũ trụ
+        gCenterMoon = {
+            baseX: 0,
+            baseY: -6,
+            baseZ: 0,
+            floatPhase: 0,
+            floatSpeed: 0.012
+        };
 
         // 1. Vũ trụ vì sao nền
         const starCount = 130;
@@ -2556,8 +2652,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             galaxyCtx.restore();
 
-            // 3. Sắp xếp thứ tự Z của Chữ, Icon, Thư 3D và Trái Tim
+            // 3. Sắp xếp thứ tự Z của Mặt Trăng 3D, Chữ, Icon, Thư 3D và Trái Tim
             const renderQueue = [];
+
+            // 3.0 Mặt trăng 3D trung tâm vũ trụ
+            if (gCenterMoon) {
+                gCenterMoon.floatPhase += gCenterMoon.floatSpeed;
+                const floatY = Math.sin(gCenterMoon.floatPhase) * 6;
+                const currY = gCenterMoon.baseY + floatY;
+
+                const x1 = gCenterMoon.baseX * cosY - gCenterMoon.baseZ * sinY;
+                const z1 = gCenterMoon.baseX * sinY + gCenterMoon.baseZ * cosY;
+                const y1 = currY * cosX - z1 * sinX;
+                const z2 = currY * sinX + z1 * cosX;
+
+                const zView = Math.max(90, z2 + 500 + (warpFactor * 420));
+
+                renderQueue.push({
+                    type: 'centerMoon',
+                    data: gCenterMoon,
+                    x: x1,
+                    y: y1,
+                    z: z2,
+                    zView: zView
+                });
+            }
 
             // 3.1 Chữ tình yêu & Icon & Thư 3D
             for (let i = 0; i < gWords.length; i++) {
@@ -2656,6 +2775,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     galaxyCtx.rotate(hObj.rot);
                     galaxyCtx.globalAlpha = alpha;
                     galaxyCtx.drawImage(heartSprite, -hSize / 2, -hSize / 2, hSize, hSize);
+                    galaxyCtx.restore();
+                } else if (item.type === 'centerMoon') {
+                    const moonSprite = getOrCreateCached3DMoonSprite();
+                    if (!moonSprite || !moonSprite.canvas) continue;
+                    const pulse = 1 + Math.sin(Date.now() * 0.0025) * 0.035;
+                    const drawW = (moonSprite.width / 1.32) * scale * pulse;
+                    const drawH = (moonSprite.height / 1.32) * scale * pulse;
+
+                    item.data.screenX = px;
+                    item.data.screenY = py;
+                    item.data.drawW = drawW;
+                    item.data.drawH = drawH;
+                    item.data.alpha = Math.min(1, Math.max(0.35, scale * 1.3));
+
+                    galaxyCtx.save();
+                    galaxyCtx.globalAlpha = item.data.alpha;
+                    galaxyCtx.drawImage(
+                        moonSprite.canvas,
+                        px - drawW / 2,
+                        py - drawH / 2,
+                        drawW,
+                        drawH
+                    );
                     galaxyCtx.restore();
                 }
             }
@@ -2980,19 +3122,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const canvasY = e.clientY - rect.top;
 
             let clickedLetter = false;
-            for (let i = 0; i < gSpecialLetters.length; i++) {
-                const sObj = gSpecialLetters[i];
-                if (sObj.screenX !== undefined && sObj.alpha > 0.22) {
-                    const padX = (sObj.drawW / 2) + 24;
-                    const padY = (sObj.drawH / 2) + 18;
-                    if (Math.abs(canvasX - sObj.screenX) <= padX && Math.abs(canvasY - sObj.screenY) <= padY) {
-                        clickedLetter = true;
-                        if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
-                        burstGalaxyHearts(canvasX, canvasY, 15);
-                        playCelebrationChord();
-                        playMagicSparkleSound();
-                        openGalaxyLoveLetter();
-                        break;
+
+            // Kiểm tra click vào Mặt Trăng 3D ở tâm vũ trụ
+            if (gCenterMoon && gCenterMoon.screenX !== undefined && gCenterMoon.alpha > 0.25) {
+                const moonPad = (gCenterMoon.drawW / 2) * 0.85;
+                if (Math.hypot(canvasX - gCenterMoon.screenX, canvasY - gCenterMoon.screenY) <= moonPad) {
+                    clickedLetter = true;
+                    if (navigator.vibrate) navigator.vibrate([35, 60, 90]);
+                    burstGalaxyHearts(canvasX, canvasY, 14);
+                    playCelebrationChord();
+                    playMagicSparkleSound();
+                }
+            }
+
+            if (!clickedLetter) {
+                for (let i = 0; i < gSpecialLetters.length; i++) {
+                    const sObj = gSpecialLetters[i];
+                    if (sObj.screenX !== undefined && sObj.alpha > 0.22) {
+                        const padX = (sObj.drawW / 2) + 24;
+                        const padY = (sObj.drawH / 2) + 18;
+                        if (Math.abs(canvasX - sObj.screenX) <= padX && Math.abs(canvasY - sObj.screenY) <= padY) {
+                            clickedLetter = true;
+                            if (navigator.vibrate) navigator.vibrate([40, 60, 100]);
+                            burstGalaxyHearts(canvasX, canvasY, 15);
+                            playCelebrationChord();
+                            playMagicSparkleSound();
+                            openGalaxyLoveLetter();
+                            break;
+                        }
                     }
                 }
             }
