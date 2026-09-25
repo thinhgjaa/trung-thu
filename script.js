@@ -184,11 +184,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bgAudio) return;
 
         if (forcePlay === true || (!isMusicPlaying && forcePlay !== false)) {
+            bgAudio.volume = 0.08;
             const playPromise = bgAudio.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     isMusicPlaying = true;
                     if (musicDisc) musicDisc.classList.add('playing');
+                    // Tăng âm lượng mượt mà (Smooth fade-in)
+                    let vol = 0.08;
+                    const fadeTimer = setInterval(() => {
+                        vol = Math.min(1, vol + 0.12);
+                        bgAudio.volume = vol;
+                        if (vol >= 0.95) {
+                            bgAudio.volume = 1;
+                            clearInterval(fadeTimer);
+                        }
+                    }, 80);
                 }).catch(() => {
                     isMusicPlaying = false;
                     if (musicDisc) musicDisc.classList.remove('playing');
@@ -1566,7 +1577,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 scene3El.classList.add('sky-illuminated');
             }
 
-            // Thắp sáng ngọn lửa tâm nguyện bên trong đèn
+            // Thắp sáng ngọn lửa tâm nguyện bên trong đèn & khắc chữ ước nguyện
+            const lanternFlyingWishText = document.getElementById('lanternFlyingWishText');
+            const customWish = (wishInput && wishInput.value.trim()) || (cfg.chapter3 && cfg.chapter3.defaultWish) || "Mong hai đứa mình mãi hạnh phúc bên nhau ❤️";
+            if (lanternFlyingWishText) {
+                lanternFlyingWishText.textContent = `"${customWish}"`;
+            }
+
             if (giantWishLantern) {
                 giantWishLantern.classList.add('ignited');
             }
@@ -1616,6 +1633,41 @@ document.addEventListener('DOMContentLoaded', () => {
             createFirework(clickX, clickY, 35);
             playRealisticFireworkSound(0.6);
             if (navigator.vibrate) navigator.vibrate(18);
+        });
+    }
+
+    // Nút Thả thêm đèn trời (cho phép viết điều ước mới và thả tiếp)
+    const btnReleaseAnotherLantern = document.getElementById('btnReleaseAnotherLantern');
+    if (btnReleaseAnotherLantern) {
+        btnReleaseAnotherLantern.addEventListener('click', () => {
+            if (navigator.vibrate) navigator.vibrate([25, 45]);
+            playChime(580, 0.35);
+            playMagicSparkleSound();
+
+            if (wishSuccessBox) wishSuccessBox.classList.remove('active');
+
+            if (giantWishLantern) {
+                giantWishLantern.classList.remove('floating-away-spectacular', 'floating-away', 'ignited');
+            }
+            const lanternFlyingWishText = document.getElementById('lanternFlyingWishText');
+            if (lanternFlyingWishText) lanternFlyingWishText.textContent = '';
+
+            const wishReleaseContainer = document.getElementById('wishReleaseContainer');
+            if (wishReleaseContainer) wishReleaseContainer.classList.remove('sky-illuminated');
+            const scene3El = document.getElementById('scene-3');
+            if (scene3El) scene3El.classList.remove('sky-illuminated');
+
+            if (wishInputCard) {
+                wishInputCard.style.display = 'block';
+                wishInputCard.style.opacity = '1';
+                wishInputCard.style.transform = 'none';
+            }
+            if (wishInput) {
+                wishInput.value = '';
+                wishInput.placeholder = 'Viết thêm điều ước khác của em nhé... ✨';
+                wishInput.focus();
+            }
+            quickWishChips.forEach(c => c.classList.remove('chip-active'));
         });
     }
 
