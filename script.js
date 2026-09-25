@@ -670,6 +670,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 8900);
     }
 
+    // Tràng pháo hoa mở màn chào đón sau khi các hình ảnh & cảnh sắc Đêm Rằm xuất hiện hoàn tất
+    function launchIntroductoryFireworks() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const isMobile = w < 768;
+
+        // Đợt 1: Quả rocket bên trái vút bay lên nổ pháo hoa Trái Tim hồng lãng mạn
+        setTimeout(() => {
+            launchRocketTo(w * (isMobile ? 0.22 : 0.25), h * (isMobile ? 0.28 : 0.24), {
+                color: '#ff7675',
+                type: 'heart',
+                particleCount: 42
+            });
+        }, 100);
+
+        // Đợt 2: Quả rocket bên phải vút bay lên nổ hoa Liễu Rủ Hoàng Kim lộng lẫy
+        setTimeout(() => {
+            launchRocketTo(w * (isMobile ? 0.78 : 0.75), h * (isMobile ? 0.22 : 0.20), {
+                color: '#ffd56b',
+                type: 'willow',
+                particleCount: 48
+            });
+        }, 600);
+
+        // Đợt 3: Quả rocket chính giữa đỉnh trời nổ tung chùm pháo hoa ngọc bích đa sắc + hợp âm chúc mừng
+        setTimeout(() => {
+            launchRocketTo(w * 0.50, h * (isMobile ? 0.15 : 0.14), {
+                color: '#00d2d3',
+                type: 'burst',
+                particleCount: 58
+            });
+            playCelebrationChord();
+        }, 1150);
+
+        // Đợt 4: Cặp pháo hoa đôi hai bên cánh trời bừng sáng rực rỡ
+        setTimeout(() => {
+            launchRocketTo(w * (isMobile ? 0.32 : 0.35), h * (isMobile ? 0.32 : 0.28), {
+                color: '#fd79a8',
+                type: 'burst',
+                particleCount: 46
+            });
+            launchRocketTo(w * (isMobile ? 0.68 : 0.65), h * (isMobile ? 0.30 : 0.26), {
+                color: '#ffa801',
+                type: 'heart',
+                particleCount: 42
+            });
+        }, 1750);
+
+        // Đợt 5: Kết màn tràng pháo hoa mở màn - Mưa liễu vàng rơi óng ánh khắp không gian
+        setTimeout(() => {
+            launchRocketTo(w * 0.50, h * (isMobile ? 0.22 : 0.18), {
+                color: '#fff2a3',
+                type: 'willow',
+                particleCount: 52
+            });
+        }, 2350);
+    }
+
     function updateFireworks() {
         if (!fwCtx || !fireworkCanvas) {
             isFireworkLoopRunning = false;
@@ -853,7 +911,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function onSceneEntered(chapterNum) {
         playChime(650, 0.4);
 
-        if (chapterNum === 2) {
+        if (chapterNum === 1) {
+            setTimeout(() => {
+                launchIntroductoryFireworks();
+            }, 600);
+        } else if (chapterNum === 2) {
             start3DLoveGalaxy();
         } else if (chapterNum === 3) {
             initChapter3Wish();
@@ -1761,7 +1823,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let galaxyLastX = 0, galaxyLastY = 0;
     const galaxyFov = 460;
     let galaxyWarpStartTime = 0;
-    const galaxyWarpDuration = 3800; // 3.8 seconds cinematic hyperspace zoom intro
+    const galaxyWarpDuration = 8500; // 8.5 seconds super fast & extended vortex spin intro then smoothly decelerates to normal speed
 
     // 3D Entities
     let gStars = [];
@@ -2182,25 +2244,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             galaxyCtx.clearRect(0, 0, w, h);
 
-            // 1. Hyperspace Warp Speed Intro Calculation (Phóng nhanh như phim viễn tưởng rồi chậm dần sau 3.8s)
+            // 1. Hiệu ứng quay nhanh và lâu hơn (kéo dài 8.5s) khi mới vào rồi êm ái giảm dần về tốc độ bình thường
             let warpFactor = 0;
             if (galaxyWarpStartTime > 0) {
                 const elapsed = Date.now() - galaxyWarpStartTime;
                 if (elapsed < galaxyWarpDuration) {
                     const progress = elapsed / galaxyWarpDuration;
-                    // Exponential deceleration curve: swooshes in super fast and eases smoothly
-                    warpFactor = Math.pow(1 - progress, 2.4);
+                    // Đường cong giữ tốc độ cao lâu hơn ở những giây đầu rồi êm ái chuyển về bình thường
+                    warpFactor = Math.pow(1 - progress, 1.6);
                 } else {
                     galaxyWarpStartTime = 0;
                 }
             }
 
-            // 1.1 Quán tính xoay vũ trụ & hiệu ứng xoay nhanh khi phóng vào
+            // 1.1 Quán tính xoay vũ trụ & hiệu ứng xoay lốc xoáy cực nhanh
             if (!isGalaxyDragging) {
-                const warpSpin = warpFactor * 0.032;
+                const warpSpin = warpFactor * 0.058;
                 galaxyRotY += galaxyVelRotY + warpSpin;
-                galaxyRotX += galaxyVelRotX + (warpSpin * 0.15);
-                galaxyVelRotY = galaxyVelRotY * 0.96 + 0.0018 * 0.04;
+                galaxyRotX += galaxyVelRotX + (warpSpin * 0.08);
+                galaxyVelRotY = galaxyVelRotY * 0.96 + 0.0022 * 0.04;
                 galaxyVelRotX *= 0.94;
             }
 
@@ -2851,6 +2913,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     appPreloader.style.display = 'none';
                 }, 500);
             }
+
+            // Sau khi tất cả các hình ảnh, vầng trăng, thỏ ngọc và cảnh sắc xuất hiện hoàn tất (~2.1s)
+            // Bắt đầu tràng pháo hoa mở màn chào đón lộng lẫy
+            setTimeout(() => {
+                launchIntroductoryFireworks();
+            }, 2100);
         });
     }
 
