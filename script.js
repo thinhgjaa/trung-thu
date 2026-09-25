@@ -498,15 +498,51 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { /* silent fail */ }
     }
 
-    // Helper: phát tiếng rocket bay lên trước khi nổ (cho launchGrandLanternCelebration)
+    // Helper: phát tiếng rocket bay lên trước khi nổ
     function playRocketLaunchSound(volume = 0.55) {
         playPooledAudio('rocket', volume);
     }
 
     let isFireworkLoopRunning = false;
+    let rockets = [];
+
+    // Bắn một quả pháo hoa tên lửa vút bay từ dưới đáy màn hình lên vị trí chỉ định rồi nổ tung
+    function launchRocketTo(targetX, targetY, options = {}) {
+        initAudioContext();
+        const startX = targetX + (Math.random() * 40 - 20);
+        const startY = window.innerHeight + 15;
+        const distance = Math.max(100, startY - targetY);
+        // Thời gian bay từ 300ms đến 620ms tùy theo độ cao
+        const duration = Math.max(300, Math.min(620, distance * 0.68));
+        const startTime = Date.now();
+
+        const palette = ['#ffd56b', '#ff7675', '#ff9ff3', '#00d2d3', '#ffa801', '#ff4d94', '#fff2a3', '#70a1ff'];
+        const rocketColor = options.color || palette[Math.floor(Math.random() * palette.length)];
+
+        playRocketLaunchSound(0.65);
+        if (navigator.vibrate) navigator.vibrate(18);
+
+        rockets.push({
+            startX,
+            startY,
+            targetX,
+            targetY,
+            startTime,
+            duration,
+            color: rocketColor,
+            particleCount: options.particleCount || 48,
+            type: options.type || (Math.random() > 0.4 ? 'heart' : (Math.random() > 0.5 ? 'willow' : 'burst')),
+            trail: []
+        });
+
+        if (!isFireworkLoopRunning && fireworkCanvas) {
+            isFireworkLoopRunning = true;
+            requestAnimationFrame(updateFireworks);
+        }
+    }
 
     function createFirework(x, y, particleCount = 45) {
-        const colors = ['#ffd56b', '#ff7a18', '#ee5253', '#00d2d3', '#ffffff', '#ff9ff3', '#f368e0'];
+        const colors = ['#ffd56b', '#ff7a18', '#ee5253', '#00d2d3', '#ffffff', '#ff9ff3', '#f368e0', '#70a1ff'];
         for (let i = 0; i < particleCount; i++) {
             const angle = Math.random() * Math.PI * 2;
             const velocity = Math.random() * 6 + 1.8;
@@ -522,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Kích hoạt vòng lặp render pháo hoa chỉ khi có hạt (tiết kiệm pin tối đa cho điện thoại)
+        // Kích hoạt vòng lặp render pháo hoa chỉ khi có hạt
         if (!isFireworkLoopRunning && fireworkCanvas) {
             isFireworkLoopRunning = true;
             requestAnimationFrame(updateFireworks);
@@ -535,8 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const x = window.innerWidth * (0.2 + Math.random() * 0.6);
                 const y = window.innerHeight * (0.2 + Math.random() * 0.35);
-                createFirework(x, y, 65);
-                playRealisticFireworkSound(0.85);
+                launchRocketTo(x, y, { particleCount: 65, type: 'burst' });
             }, i * 360);
         }
     }
@@ -593,48 +628,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // Đại tiệc pháo hoa đa tầng chúc mừng thả đèn trời (đồng bộ nhịp bay chậm rãi 12s)
     function launchGrandLanternCelebration() {
         // Tầng 1: Rocket nhỏ bay lên → Đốm sáng bùng nổ êm ái chân lồng đèn
-        setTimeout(() => { playRocketLaunchSound(0.5); }, 400);
         setTimeout(() => {
-            createFirework(window.innerWidth * 0.5, window.innerHeight * 0.45, 45);
-            playRealisticFireworkSound(0.65);
-        }, 800);
+            launchRocketTo(window.innerWidth * 0.5, window.innerHeight * 0.45, { particleCount: 45, type: 'burst' });
+        }, 600);
 
         // Tầng 2: Cặp pháo hoa Trái Tim đôi hai bên màn hình khi đèn lên tầng trung
-        setTimeout(() => { playRocketLaunchSound(0.55); }, 2100);
         setTimeout(() => {
-            createHeartFirework(window.innerWidth * 0.26, window.innerHeight * 0.32, '#ff7675', 4.5);
-            playRealisticFireworkSound(0.85);
-        }, 2400);
+            launchRocketTo(window.innerWidth * 0.26, window.innerHeight * 0.32, { color: '#ff7675', type: 'heart' });
+        }, 2200);
 
-        setTimeout(() => { playRocketLaunchSound(0.5); }, 3900);
         setTimeout(() => {
-            createHeartFirework(window.innerWidth * 0.74, window.innerHeight * 0.28, '#fd79a8', 4.5);
-            playRealisticFireworkSound(0.85);
-        }, 4200);
+            launchRocketTo(window.innerWidth * 0.74, window.innerHeight * 0.28, { color: '#fd79a8', type: 'heart' });
+        }, 4000);
 
         // Tầng 3: Pháo hoa Liễu Rủ Hoàng Kim lộng lẫy chầm chậm buông rủ
-        setTimeout(() => { playRocketLaunchSound(0.62); }, 5650);
         setTimeout(() => {
-            createSparkleWillowFirework(window.innerWidth * 0.42, window.innerHeight * 0.25, '#ffd56b');
-            playRealisticFireworkSound(1.0);
-        }, 6000);
+            launchRocketTo(window.innerWidth * 0.42, window.innerHeight * 0.25, { color: '#ffd56b', type: 'willow' });
+        }, 5800);
 
-        setTimeout(() => { playRocketLaunchSound(0.58); }, 7050);
         setTimeout(() => {
-            createSparkleWillowFirework(window.innerWidth * 0.68, window.innerHeight * 0.35, '#fff2a3');
-            playRealisticFireworkSound(0.95);
-        }, 7400);
+            launchRocketTo(window.innerWidth * 0.68, window.innerHeight * 0.35, { color: '#fff2a3', type: 'willow' });
+        }, 7200);
 
         // Tầng 4: Đại kết cục bừng sáng toàn bầu trời - Cluster + Blast + Chord
-        setTimeout(() => { playRocketLaunchSound(0.72); }, 8700);
-        setTimeout(() => { playRocketLaunchSound(0.68); }, 8900);
         setTimeout(() => {
-            createFirework(window.innerWidth * 0.32, window.innerHeight * 0.2, 70);
-            createFirework(window.innerWidth * 0.52, window.innerHeight * 0.16, 75);
-            createFirework(window.innerWidth * 0.76, window.innerHeight * 0.22, 70);
-            playRealisticFireworkSound(1.3); // → cluster + blast (đại tiệc)
+            launchRocketTo(window.innerWidth * 0.32, window.innerHeight * 0.2, { particleCount: 70, type: 'burst' });
+            launchRocketTo(window.innerWidth * 0.52, window.innerHeight * 0.16, { particleCount: 75, type: 'burst' });
+            launchRocketTo(window.innerWidth * 0.76, window.innerHeight * 0.22, { particleCount: 70, type: 'burst' });
             playCelebrationChord();
-        }, 9200);
+        }, 8900);
     }
 
     function updateFireworks() {
@@ -644,7 +666,77 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         fwCtx.clearRect(0, 0, fireworkCanvas.width, fireworkCanvas.height);
+        const now = Date.now();
 
+        // 1. Cập nhật & vẽ các tên lửa pháo hoa đang bay vút lên từ dưới đáy màn hình
+        for (let i = rockets.length - 1; i >= 0; i--) {
+            const r = rockets[i];
+            const elapsed = now - r.startTime;
+            const progress = Math.min(1, elapsed / r.duration);
+
+            // Easing: vút bay nhanh từ đáy và giảm tốc mềm mại khi chạm đỉnh nổ
+            const ease = 1 - Math.pow(1 - progress, 1.7);
+            const curX = r.startX + (r.targetX - r.startX) * ease;
+            const curY = r.startY - (r.startY - r.targetY) * ease;
+
+            // Vệt đuôi tia lửa (Spark Trail)
+            r.trail.push({
+                x: curX + (Math.random() * 2 - 1),
+                y: curY + (Math.random() * 3),
+                alpha: 1,
+                radius: Math.random() * 2.2 + 1.2,
+                color: r.color
+            });
+            if (r.trail.length > 15) r.trail.shift();
+
+            // Vẽ vệt đuôi lấp lánh
+            for (let t of r.trail) {
+                t.alpha -= 0.06;
+                t.y += 0.8;
+                if (t.alpha > 0) {
+                    fwCtx.save();
+                    fwCtx.globalAlpha = Math.max(0, t.alpha);
+                    fwCtx.fillStyle = t.color;
+                    fwCtx.shadowBlur = 6;
+                    fwCtx.shadowColor = t.color;
+                    fwCtx.beginPath();
+                    fwCtx.arc(t.x, t.y, t.radius, 0, Math.PI * 2);
+                    fwCtx.fill();
+                    fwCtx.restore();
+                }
+            }
+
+            // Vẽ đầu tên lửa rực sáng
+            fwCtx.save();
+            fwCtx.fillStyle = '#ffffff';
+            fwCtx.shadowBlur = 14;
+            fwCtx.shadowColor = r.color;
+            fwCtx.beginPath();
+            fwCtx.arc(curX, curY, 3.2, 0, Math.PI * 2);
+            fwCtx.fill();
+            fwCtx.restore();
+
+            // Khi tên lửa chạm đích -> Nổ tung pháo hoa rực rỡ!
+            if (progress >= 1) {
+                rockets.splice(i, 1);
+                playRealisticFireworkSound(0.85);
+                if (navigator.vibrate) navigator.vibrate([25, 35]);
+
+                if (r.type === 'heart') {
+                    createHeartFirework(r.targetX, r.targetY, r.color, 4.2);
+                    createFirework(r.targetX, r.targetY, 24);
+                } else if (r.type === 'willow') {
+                    createSparkleWillowFirework(r.targetX, r.targetY, r.color);
+                } else {
+                    createFirework(r.targetX, r.targetY, r.particleCount);
+                    if (Math.random() > 0.35) {
+                        createHeartFirework(r.targetX, r.targetY, '#ff7675', 3.6);
+                    }
+                }
+            }
+        }
+
+        // 2. Cập nhật & vẽ các hạt pháo hoa bùng nổ
         for (let i = fireworks.length - 1; i >= 0; i--) {
             const p = fireworks[i];
             p.x += p.vx;
@@ -668,7 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fwCtx.restore();
         }
 
-        if (fireworks.length > 0) {
+        if (fireworks.length > 0 || rockets.length > 0) {
             requestAnimationFrame(updateFireworks);
         } else {
             // Đã tắt toàn bộ pháo hoa -> dừng vòng lặp để GPU điện thoại nghỉ ngơi
@@ -767,24 +859,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const holdHintText = document.getElementById('holdHintText');
     const jadeRabbit = document.getElementById('jadeRabbit');
 
-    const moonStageContainer = document.querySelector('.moon-stage-container');
-
     const totalCircumference = 421;
-    const holdDuration = (cfg.chapter1 && cfg.chapter1.moonHoldDurationMs) || 1300;
+    // Thời gian giữ tối ưu 750ms (nhanh, mượt, không bị khựng giữa chừng)
+    const holdDuration = (cfg.chapter1 && cfg.chapter1.moonHoldDurationMs) || 750;
     let holdTimer = null;
     let holdStartTime = 0;
     let isHolding = false;
     let chimeInterval = null;
-    let quickTapCount = 0;
-    let quickTapResetTimer = null;
     let moonHoldStage = 0; // 0: Super Moon, 1: Girlfriend Photo (tvy.jpg)
+    let stage1TransformTime = 0;
+    let lastHoldSuccessTime = 0;
 
     function startHolding(e) {
         if (currentChapter !== 1) return;
         if (isHolding) return;
-        if (Date.now() - stage1TransformTime < 800) return; // Khóa 800ms sau khi vừa biến hình mặt trăng
+        if (Date.now() - stage1TransformTime < 400) return;
 
-        // Chặn cuộn trang ngoài ý muốn khi đang giữ trên điện thoại
+        // Chặn cuộn trang ngoài ý muốn và menu giữ trên điện thoại
         if (e && e.cancelable && e.type !== 'mousedown') {
             e.preventDefault();
         }
@@ -799,29 +890,34 @@ document.addEventListener('DOMContentLoaded', () => {
         isHolding = true;
         holdStartTime = Date.now();
 
+        // Khóa con trỏ pointer để không bị mất kết nối khi di chuyển nhẹ ngón tay
+        if (e && e.pointerId && e.currentTarget && e.currentTarget.setPointerCapture) {
+            try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) { }
+        }
+
         // Hiệu ứng thị giác phản hồi tức thì
         if (luminousMoon) luminousMoon.classList.add('holding');
         if (holdPrompt) holdPrompt.classList.add('holding');
 
         if (moonHoldStage === 0) {
-            if (holdInstructionText) holdInstructionText.textContent = "Đang mở món quà bí mật... ✨";
-            if (holdHintText) holdHintText.textContent = "Giữ để khám phá điều bất ngờ... 🌸";
+            if (holdInstructionText) holdInstructionText.textContent = "Đang nạp năng lượng cung trăng... ✨";
+            if (holdHintText) holdHintText.textContent = "Giữ để đón nhận điều bất ngờ... 🌸";
         } else {
-            if (holdInstructionText) holdInstructionText.textContent = "Đang mở điều bí mật tiếp theo... ✨";
-            if (holdHintText) holdHintText.textContent = "Giữ tiếp để mở điều bất ngờ tiếp theo... 🎁✨";
+            if (holdInstructionText) holdInstructionText.textContent = "Đang mở Vũ Trụ Tình Yêu... ✨";
+            if (holdHintText) holdHintText.textContent = "Giữ tiếp để bước vào dải ngân hà... 🎁✨";
         }
 
         if (holdProgressBar) {
             holdProgressBar.style.transition = 'none';
         }
 
-        if (navigator.vibrate) navigator.vibrate(35);
+        if (navigator.vibrate) navigator.vibrate(30);
         playChime(440, 0.3);
 
         chimeInterval = setInterval(() => {
             playChime(500 + Math.random() * 200, 0.2, 'triangle');
-            if (navigator.vibrate) navigator.vibrate(14);
-        }, 200);
+            if (navigator.vibrate) navigator.vibrate(12);
+        }, 180);
 
         createRipple();
 
@@ -857,29 +953,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (luminousMoon) luminousMoon.classList.remove('holding');
         if (holdPrompt) holdPrompt.classList.remove('holding');
 
+        // Nếu người dùng đã giữ được từ 50% thời lượng trở lên trước khi nhả, hoàn thành chuyển đổi luôn!
+        if (heldDuration >= holdDuration * 0.5) {
+            completeHoldSuccess();
+            return;
+        }
+
         if (holdInstructionText) {
             if (moonHoldStage === 0) {
                 holdInstructionText.textContent = cfg.holdInstruction || "Ấn giữ để mở quà ✨";
             } else {
-                holdInstructionText.textContent = "Ấn giữ lần nữa để mở điều bí mật 🎁✨";
+                holdInstructionText.textContent = "Chạm tiếp để mở Vũ Trụ Tình Yêu 🎁✨";
             }
         }
 
         if (holdProgressBar) {
-            holdProgressBar.style.transition = 'stroke-dashoffset 0.35s ease';
+            holdProgressBar.style.transition = 'stroke-dashoffset 0.3s ease';
             holdProgressBar.style.strokeDashoffset = totalCircumference;
-        }
-
-        if (currentChapter === 1) {
-            if (heldDuration > 100 && heldDuration < holdDuration) {
-                if (holdHintText) {
-                    if (moonHoldStage === 0) {
-                        holdHintText.textContent = "Giữ khoảng 1 giây để mở điều bất ngờ nhé em! ✨";
-                    } else {
-                        holdHintText.textContent = "Giữ tiếp 1 giây để mở món quà tiếp theo nhé! 💖";
-                    }
-                }
-            }
         }
     }
 
@@ -890,10 +980,6 @@ document.addEventListener('DOMContentLoaded', () => {
         holdRipples.appendChild(wave);
         setTimeout(() => wave.remove(), 1000);
     }
-
-    let stage1TransformTime = 0;
-
-    let lastHoldSuccessTime = 0;
 
     function completeHoldSuccess() {
         isHolding = false;
@@ -906,7 +992,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (holdProgressBar) {
             holdProgressBar.style.transition = 'stroke-dashoffset 0.35s ease';
-            holdProgressBar.style.strokeDashoffset = totalCircumference;
+            holdProgressBar.style.strokeDashoffset = 0;
         }
 
         try {
@@ -916,10 +1002,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { }
 
         if (moonHoldStage === 0) {
-            // Lần giữ 1 thành công: Biến hình Mặt Trăng ➔ Ảnh Bạn Gái (tvy.jpg)
+            // Biến hình Mặt Trăng ➔ Ảnh Bạn Gái (tvy.jpg)
             moonHoldStage = 1;
             stage1TransformTime = Date.now();
-            quickTapCount = 0;
 
             try {
                 if (navigator.vibrate) navigator.vibrate([50, 70, 150]);
@@ -948,18 +1033,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 luminousMoon.classList.add('transformed-active');
                 const rect = luminousMoon.getBoundingClientRect();
                 createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
+                createHeartFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, '#ff7675', 4.0);
             }
 
-            if (holdInstructionText) holdInstructionText.textContent = "Ấn giữ lần nữa để mở điều bí mật 🎁✨";
-            if (holdHintText) holdHintText.textContent = "Vẫn còn một món quà bất ngờ đang chờ em... Giữ tiếp nào! 💖";
+            if (holdInstructionText) holdInstructionText.textContent = "Chạm tiếp để mở Vũ Trụ Tình Yêu 🎁✨";
+            if (holdHintText) holdHintText.textContent = "Nàng thơ xinh đẹp nhất đêm rằm! Chạm để tiếp tục... 💖";
 
         } else {
-            // Khóa an toàn 800ms để tránh việc nhấp đúp vô tình nhảy luôn sang màn 2
-            if (Date.now() - stage1TransformTime < 800) {
+            // Khóa an toàn 400ms để tránh việc nhấp đúp vô tình nhảy luôn sang màn 2
+            if (Date.now() - stage1TransformTime < 400) {
                 return;
             }
 
-            // Lần giữ 2 thành công: Mở cánh cửa bước vào Chương II!
+            // Lần 2: Mở cánh cửa bước vào Chương II!
             try {
                 if (navigator.vibrate) navigator.vibrate([60, 80, 180]);
                 playCelebrationChord();
@@ -971,6 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (luminousMoon) {
                 const rect = luminousMoon.getBoundingClientRect();
                 createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, 70);
+                createHeartFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, '#ff4d94', 4.5);
             }
 
             setTimeout(() => {
@@ -979,7 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Gắn sự kiện giữ cho cả Mặt Trăng và Nút "Ấn giữ vào mặt trăng"
+    // Gắn sự kiện giữ cho cả Mặt Trăng và Nút Prompt
     const interactiveHoldTargets = [luminousMoon, holdPrompt].filter(Boolean);
 
     interactiveHoldTargets.forEach(target => {
@@ -1001,45 +1088,49 @@ document.addEventListener('DOMContentLoaded', () => {
         // Chống menu chuột phải / menu giữ ảnh
         target.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // Hỗ trợ bấm/chạm vào Mặt Trăng để bắn pháo hoa rực rỡ & giữ để nạp năng lượng
+        // Bấm / chạm vào Mặt Trăng để chuyển đổi ngay tức thì & phóng pháo hoa bay lên
         target.addEventListener('click', (e) => {
             if (currentChapter === 1) {
-                if (Date.now() - lastHoldSuccessTime < 800) return; // Bỏ qua click sinh ra ngay sau khi nhả ngón tay sau khi giữ
+                if (Date.now() - lastHoldSuccessTime < 400) return;
 
                 const rect = luminousMoon ? luminousMoon.getBoundingClientRect() : target.getBoundingClientRect();
                 const clickX = (e.clientX && e.clientX > 0) ? e.clientX : (rect.left + rect.width / 2);
                 const clickY = (e.clientY && e.clientY > 0) ? e.clientY : (rect.top + rect.height / 2);
 
-                // Bắn pháo hoa rực rỡ & pháo hoa trái tim ngay tại vị trí bấm vào Mặt Trăng
-                createFirework(clickX, clickY, 42);
-                if (Math.random() > 0.35) {
-                    createHeartFirework(clickX, clickY, '#ff7675', 3.8);
-                } else {
-                    createSparkleWillowFirework(clickX, clickY, '#ffd56b');
-                }
-
-                playRealisticFireworkSound(0.75);
-                if (navigator.vibrate) navigator.vibrate(25);
+                // Phóng pháo hoa tên lửa vút bay từ dưới lên nổ ngay tại Mặt Trăng
+                launchRocketTo(clickX, clickY, { type: 'heart', color: '#ff7675' });
                 createRipple();
 
-                quickTapCount++;
-                if (quickTapResetTimer) clearTimeout(quickTapResetTimer);
-                quickTapResetTimer = setTimeout(() => { quickTapCount = 0; }, 700);
-
-                if (quickTapCount >= 2) {
-                    completeHoldSuccess();
-                } else {
-                    if (holdHintText) {
-                        if (moonHoldStage === 0) {
-                            holdHintText.textContent = "Ấn và GIỮ 1 giây để mở bất ngờ nhé! 🌕✨";
-                        } else {
-                            holdHintText.textContent = "Ấn và GIỮ lần nữa để mở điều bí mật! 💖";
-                        }
-                    }
-                }
+                // Chuyển đổi trạng thái ngay khi bấm
+                completeHoldSuccess();
             }
         });
     });
+
+    // Tương tác bấm vào bất kỳ đâu trên màn hình Chương 1 để pháo hoa bay lên và nổ tung rực rỡ
+    const scene1 = document.getElementById('scene-1');
+    if (scene1) {
+        scene1.addEventListener('pointerdown', (e) => {
+            if (currentChapter !== 1) return;
+            // Bỏ qua nếu chạm vào nút âm thanh, nút mở ứng dụng hoặc nút điều khiển header
+            if (e.target.closest('#musicToggleBtn') || e.target.closest('#appPreloader') || e.target.closest('.header-actions') || e.target.closest('.btn-primary') || e.target.closest('.btn-secondary')) {
+                return;
+            }
+
+            // Nếu chạm vào mặt trăng hay nút giữ thì đã có handler riêng xử lý
+            if (e.target.closest('#luminousMoon') || e.target.closest('#holdPrompt')) {
+                return;
+            }
+
+            const clickX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : window.innerWidth / 2);
+            const clickY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : window.innerHeight * 0.35);
+
+            if (clickX && clickY) {
+                // Phóng tên lửa pháo hoa từ dưới đáy bay vút lên và nổ tung
+                launchRocketTo(clickX, clickY);
+            }
+        });
+    }
 
     // Thả chuột hoặc nhấc ngón tay ở bất cứ đâu trên màn hình cũng giải phóng trạng thái giữ an toàn
     window.addEventListener('pointerup', cancelHolding);
@@ -1316,16 +1407,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initFairytaleLakeScene();
 
     // ----------------------------------------------------
-    // 7. CHƯƠNG 2: BỨC THƯ TÌNH CUNG TRĂNG (ROYAL SCROLL TYPEWRITER)
+    // 7. CẤU HÌNH ĐOẠN VĂN BỨC THƯ TÌNH (LOVE LETTER PARAGRAPHS)
     // ----------------------------------------------------
-    const royalScrollWrapper = document.getElementById('royalScrollWrapper');
-    const letterContentBody = document.getElementById('letterContentBody');
-    const letterFastHint = document.getElementById('letterFastHint');
-    const btnGoToCh3 = document.getElementById('btnGoToCh3');
-    let hasTypedLetter = false;
-    let isTypingLetter = false;
-    let typewriterTimer = null;
-
     const defaultParagraphs = [
         "Gửi ngừi anh iuu !!",
         "Trung Thu năm nay thật sự rất khác biệt, vì đây là mùa lễ đầu tiên anh được đón cùng dí em.",
@@ -1334,108 +1417,6 @@ document.addEventListener('DOMContentLoaded', () => {
         "Chúc em mụt mùa Trung Thu thật ấm áp, bình an, lúc nào cũng rạng rỡ và hạnh phúc nheee!"
     ];
     const letterParagraphs = (cfg.chapter2 && cfg.chapter2.letterParagraphs) || defaultParagraphs;
-
-    function startRoyalLoveLetter() {
-        if (!hasTypedLetter) {
-            hasTypedLetter = true;
-            if (navigator.vibrate) navigator.vibrate([30, 40, 60]);
-            playCelebrationChord();
-
-            // Nhẹ nhàng bắn pháo hoa lấp lánh khi mở bức thư
-            setTimeout(() => {
-                createFirework(window.innerWidth * 0.5, window.innerHeight * 0.3, 35);
-            }, 300);
-
-            setTimeout(() => {
-                typewriterLetter();
-            }, 500);
-        }
-    }
-
-    // Tính năng đọc nhanh ngay lập tức khi chạm trên màn hình
-    function completeTypewriterImmediately() {
-        if (!letterContentBody) return;
-        if (typewriterTimer) clearTimeout(typewriterTimer);
-        isTypingLetter = false;
-
-        letterContentBody.innerHTML = '';
-        letterParagraphs.forEach((text, idx) => {
-            const p = document.createElement('p');
-            p.className = 'scroll-paragraph';
-            if (idx === 0) p.classList.add('salutation');
-            p.textContent = text;
-            letterContentBody.appendChild(p);
-        });
-
-        if (letterFastHint) {
-            letterFastHint.style.display = 'none';
-        }
-        if (navigator.vibrate) navigator.vibrate(15);
-    }
-
-    function typewriterLetter() {
-        if (!letterContentBody) return;
-        letterContentBody.innerHTML = '';
-        isTypingLetter = true;
-        if (letterFastHint) letterFastHint.style.display = 'block';
-
-        let currentParagraphIndex = 0;
-        let currentCharIndex = 0;
-
-        let activeP = document.createElement('p');
-        activeP.className = 'scroll-paragraph';
-        if (currentParagraphIndex === 0) activeP.classList.add('salutation');
-        letterContentBody.appendChild(activeP);
-
-        function typeNext() {
-            if (!isTypingLetter || currentParagraphIndex >= letterParagraphs.length) {
-                isTypingLetter = false;
-                if (letterFastHint) letterFastHint.style.display = 'none';
-                return;
-            }
-
-            const targetText = letterParagraphs[currentParagraphIndex];
-
-            if (currentCharIndex < targetText.length) {
-                activeP.textContent += targetText[currentCharIndex];
-                currentCharIndex++;
-                typewriterTimer = setTimeout(typeNext, 20);
-            } else {
-                currentParagraphIndex++;
-                currentCharIndex = 0;
-                if (currentParagraphIndex < letterParagraphs.length) {
-                    activeP = document.createElement('p');
-                    activeP.className = 'scroll-paragraph';
-                    letterContentBody.appendChild(activeP);
-                    typewriterTimer = setTimeout(() => {
-                        typeNext();
-                    }, 140);
-                } else {
-                    isTypingLetter = false;
-                    if (letterFastHint) letterFastHint.style.display = 'none';
-                }
-            }
-        }
-
-        typeNext();
-    }
-
-    if (letterFastHint) {
-        letterFastHint.addEventListener('click', completeTypewriterImmediately);
-    }
-
-    if (letterContentBody) {
-        letterContentBody.addEventListener('click', () => {
-            if (isTypingLetter) completeTypewriterImmediately();
-        });
-    }
-
-    if (btnGoToCh3) {
-        btnGoToCh3.addEventListener('click', () => {
-            if (navigator.vibrate) navigator.vibrate(15);
-            goToScene(3);
-        });
-    }
 
     // ----------------------------------------------------
     // 8. CHƯƠNG 3: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH)
@@ -1664,8 +1645,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (wishSuccessBox) wishSuccessBox.classList.remove('active');
             if (wishInput) wishInput.value = '';
-            hasTypedLetter = false;
             quickWishChips.forEach(c => c.classList.remove('chip-active'));
+
+            // Reset trạng thái Mặt Trăng & Lá thư về ban đầu để trải nghiệm trọn vẹn
+            moonHoldStage = 0;
+            const moonSphereContainer = document.getElementById('moonSphereContainer');
+            const moonSphereImg = document.getElementById('moonSphereImg');
+            const moonGfBadge = document.getElementById('moonGfBadge');
+            if (moonSphereImg) moonSphereImg.src = 'assets/images/luminous_super_moon.jpg';
+            if (moonSphereContainer) moonSphereContainer.classList.remove('transformed-gf', 'morphing');
+            if (moonGfBadge) moonGfBadge.style.display = 'none';
+            if (luminousMoon) luminousMoon.classList.remove('transformed-active');
+            document.body.classList.remove('gf-moon-active');
+            if (holdInstructionText) holdInstructionText.textContent = cfg.holdInstruction || "Ấn giữ để mở quà ✨";
+            if (holdHintText) holdHintText.textContent = "Chạm và giữ để đón nhận điều bất ngờ...";
+            hasGalaxyLetterTypedOnce = false;
 
             goToScene(1);
         });
