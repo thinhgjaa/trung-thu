@@ -1337,80 +1337,85 @@ html, body {
 /* Bong bóng thoại bé Thỏ Ngọc */
 .rabbit-speech-bubble {
     position: absolute;
-    top: -22px;
-    left: -28px;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.7) translateY(8px);
     z-index: 25;
-    background: rgba(14, 22, 50, 0.94);
+    background: rgba(12, 18, 42, 0.94);
     border: 1.5px solid rgba(255, 215, 120, 0.9);
-    padding: 9px 18px;
-    border-radius: 22px;
+    padding: 6px 14px;
+    border-radius: 18px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.8), 0 0 22px rgba(255, 215, 120, 0.45);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    justify-content: center;
+    gap: 6px;
+    width: max-content;
+    max-width: calc(100% - 24px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.75), 0 0 16px rgba(255, 215, 120, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     opacity: 0;
     pointer-events: none;
-    transform: scale(0.65) translateY(12px);
-    transition: opacity 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: nowrap;
-    max-width: 280px;
 }
 
 .rabbit-speech-bubble.bubble-active {
     opacity: 1;
     pointer-events: auto;
-    transform: scale(1) translateY(0);
-    animation: bubbleFloating 3.2s ease-in-out infinite alternate;
+    transform: translateX(-50%) scale(1) translateY(0);
+    animation: bubbleFloating 3s ease-in-out infinite alternate;
 }
 
 @keyframes bubbleFloating {
-    0%   { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-5px) scale(1.02); }
+    0%   { transform: translateX(-50%) translateY(0) scale(1); }
+    100% { transform: translateX(-50%) translateY(-4px) scale(1.02); }
 }
 
 .rabbit-speech-bubble .bubble-icon {
-    font-size: 1.15rem;
+    font-size: 1rem;
     line-height: 1;
+    display: inline-block;
     animation: bunnyBounce 1.4s ease-in-out infinite;
 }
 
 @keyframes bunnyBounce {
     0%, 100% { transform: translateY(0) scale(1); }
-    50%      { transform: translateY(-4px) scale(1.15); }
+    50%      { transform: translateY(-3px) scale(1.12); }
 }
 
 .rabbit-speech-bubble .bubble-text {
-    font-size: 0.94rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: #fff9e6;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     font-family: "Quicksand", sans-serif;
-    text-shadow: 0 0 10px rgba(255, 215, 120, 0.6);
+    text-shadow: 0 0 8px rgba(255, 215, 120, 0.5);
+    line-height: 1.2;
 }
 
 .rabbit-speech-bubble .bubble-tail {
     position: absolute;
-    bottom: -8px;
-    right: 36px;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 9px solid rgba(255, 215, 120, 0.9);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 7px solid rgba(255, 215, 120, 0.9);
 }
 
 .rabbit-speech-bubble .bubble-tail::after {
     content: '';
     position: absolute;
-    top: -10px;
-    left: -7px;
+    top: 2px;
+    left: -5px;
     width: 0;
     height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 8px solid rgba(14, 22, 50, 0.98);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 6px solid rgba(12, 18, 42, 0.98);
 }
 
 @keyframes rabbitGentleBreathe {
@@ -1560,57 +1565,20 @@ html, body {
     transform: scale(0.92);
 }
 
-.rabbit-speech-bubble {
-    position: absolute;
-    bottom: 190px;
-    right: 15px;
-    left: auto;
-    max-width: 220px;
-    padding: 8px 14px;
-    border-radius: 18px 18px 4px 18px;
-    background: rgba(18, 22, 45, 0.94);
-    border: 1px solid rgba(255, 215, 107, 0.75);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 215, 107, 0.4);
-    backdrop-filter: blur(8px);
-    color: #fff9e6;
-    font-size: 0.82rem;
-    font-weight: 600;
-    line-height: 1.35;
-    pointer-events: none;
-    z-index: 32;
-    opacity: 0;
-    transform: translateY(12px) scale(0.88);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.rabbit-speech-bubble.active {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    animation: bubbleGlowPulse 2.5s ease-in-out infinite alternate;
-}
-
-@keyframes bubbleGlowPulse {
-    0% { border-color: rgba(255, 215, 107, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 10px rgba(255,215,107,0.3); }
-    100% { border-color: rgba(255, 235, 160, 0.95); box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 22px rgba(255,215,107,0.65); }
-}
-
-.bubble-sparkle {
-    margin-right: 4px;
-    display: inline-block;
-    animation: tapBounce 1s infinite alternate;
-}
-
-/* Rabbit Hop Joy Animation */
-.rabbit-branch-container.rabbit-hopping {
+/* Rabbit Hop Joy Animation (Nhảy tung tăng nhẹ nhàng, không làm biến mất hình) */
+.rabbit-branch-container.rabbit-hopping,
+.rabbit-branch-img.rabbit-hopping {
     animation: rabbitHopJoy 0.65s cubic-bezier(0.25, 1.4, 0.5, 1) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 @keyframes rabbitHopJoy {
-    0% { transform: translateY(0) scale(1); }
-    25% { transform: translateY(6px) scale(1.04, 0.95); }
-    55% { transform: translateY(-22px) scale(0.96, 1.05); }
-    75% { transform: translateY(2px) scale(1.02, 0.98); }
-    100% { transform: translateY(0) scale(1); }
+    0%   { transform: translateY(0) scale(1); opacity: 1; }
+    25%  { transform: translateY(4px) scale(1.03, 0.97); opacity: 1; }
+    55%  { transform: translateY(-16px) scale(0.97, 1.04); opacity: 1; }
+    75%  { transform: translateY(2px) scale(1.01, 0.99); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 /* Floating Emoji Emitter */
@@ -4249,8 +4217,15 @@ body.in-galaxy {
     animation: paintingLanternFloat 1.2s ease-out 0.95s both;
 }
 
-.painting-reveal-active .rabbit-branch-container {
+body.painting-reveal-active:not(.painting-revealed) .rabbit-branch-container {
     animation: paintingRabbitSlide 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 1.15s both;
+}
+
+body.painting-revealed .rabbit-branch-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none;
+    filter: none;
 }
 
 .painting-reveal-active .mystic-moonlit-lake {
@@ -4309,10 +4284,10 @@ body.in-galaxy {
 }
 
 /* ==============================================
-   3D MORPH TRANSFORM (MẶT TRĂNG ➔ ẢNH BẠN GÁI)
+   3D MORPH TRANSFORM (MẶT TRĂNG ➔ ẢNH BẠN GÁI VỪA VẶN HOÀN TOÀN)
    ============================================== */
 .luminous-moon.transformed-active {
-    z-index: 100 !important;
+    z-index: 50 !important;
 }
 
 .gf-moon-active .moon-stage-container,
@@ -4321,35 +4296,55 @@ body.in-galaxy {
 }
 
 .moon-sphere-container {
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease, filter 0.3s ease;
-}
-
-.moon-sphere-container.morphing {
-    transform: scale(1.12) rotate(3deg);
-    filter: brightness(1.5) drop-shadow(0 0 30px #ffffff);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.3s ease;
 }
 
 .moon-sphere-container.transformed-gf {
-    z-index: 100 !important;
+    z-index: 50 !important;
     background: #000000 !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    transform: none !important;
     box-shadow: 
-        0 0 0 4px rgba(255, 235, 170, 0.98),
-        0 0 40px rgba(255, 180, 100, 0.95),
-        0 0 80px rgba(255, 118, 117, 0.8),
-        inset 0 0 15px rgba(255, 255, 240, 0.9) !important;
-    animation: gfPortraitPulse 4s ease-in-out infinite alternate;
+        0 0 0 2px rgba(255, 245, 200, 0.85),
+        0 0 25px rgba(255, 220, 120, 0.85),
+        0 0 60px rgba(255, 170, 70, 0.5),
+        inset 0 0 20px rgba(255, 255, 240, 0.6) !important;
+    animation: gfMoonSphereGlow 3.5s ease-in-out infinite alternate !important;
 }
 
 .moon-sphere-container.transformed-gf .moon-sphere-img {
-    filter: brightness(1.10) contrast(1.08) saturate(1.06) !important;
+    filter: brightness(1.05) contrast(1.05) saturate(1.05) !important;
     object-fit: cover !important;
+    object-position: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
     z-index: 10 !important;
     position: relative !important;
+    display: block !important;
 }
 
-.moon-sphere-container.transformed-gf .moon-specular-glow,
+.moon-sphere-container.transformed-gf .moon-specular-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.35) 0%, transparent 60%);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 12;
+    display: block !important;
+}
+
 .moon-sphere-container.transformed-gf .moon-lunar-edge-highlight {
-    display: none !important;
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 245, 200, 0.75);
+    box-shadow: inset 0 0 15px rgba(255, 225, 130, 0.5);
+    pointer-events: none;
+    z-index: 14;
+    display: block !important;
 }
 
 /* Ensure traditional ornamental gold ring and celestial clouds remain 100% visible framing the portrait from behind */
@@ -4365,7 +4360,7 @@ body.in-galaxy {
 .gf-moon-active .flowing-cloud {
     opacity: 0.85 !important;
     visibility: visible !important;
-    z-index: 2 !important; /* Kept behind moon stage (z-index 50) so clouds don't cut across photo */
+    z-index: 2 !important;
 }
 
 .gf-moon-active .moon-radial-beams,
@@ -4374,27 +4369,27 @@ body.in-galaxy {
     opacity: 0.85 !important;
 }
 
-@keyframes gfPortraitPulse {
-    0%   { box-shadow: 0 0 0 3px rgba(255, 235, 170, 0.95), 0 0 35px rgba(255, 180, 100, 0.85), 0 0 65px rgba(255, 118, 117, 0.6); }
-    100% { box-shadow: 0 0 0 4px rgba(255, 245, 190, 1), 0 0 48px rgba(255, 200, 120, 1), 0 0 90px rgba(255, 130, 130, 0.85); }
+@keyframes gfMoonSphereGlow {
+    0%   { box-shadow: 0 0 0 2px rgba(255, 245, 200, 0.8), 0 0 22px rgba(255, 220, 120, 0.75), 0 0 50px rgba(255, 170, 70, 0.4), inset 0 0 16px rgba(255, 255, 240, 0.5); }
+    100% { box-shadow: 0 0 0 3px rgba(255, 255, 220, 0.95), 0 0 32px rgba(255, 230, 140, 0.95), 0 0 70px rgba(255, 180, 80, 0.65), inset 0 0 24px rgba(255, 255, 240, 0.75); }
 }
 
 .moon-gf-badge {
     position: absolute;
-    bottom: -32px;
+    bottom: -28px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, rgba(20, 15, 35, 0.92) 0%, rgba(45, 25, 55, 0.92) 100%);
-    border: 1.5px solid rgba(255, 215, 120, 0.85);
+    background: linear-gradient(135deg, rgba(20, 15, 35, 0.94) 0%, rgba(45, 25, 55, 0.94) 100%);
+    border: 1.5px solid rgba(255, 215, 120, 0.9);
     color: #ffd56b;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 700;
-    padding: 4px 14px;
-    border-radius: 20px;
+    padding: 3px 12px;
+    border-radius: 18px;
     white-space: nowrap;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 215, 120, 0.6);
-    z-index: 15;
-    animation: gfBadgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65), 0 0 12px rgba(255, 215, 120, 0.5);
+    z-index: 20;
+    animation: gfBadgePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes gfBadgePop {

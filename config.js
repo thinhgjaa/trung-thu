@@ -19,7 +19,7 @@ const TRUNG_THU_CONFIG = {
     // 3. Chương 1: Đêm Rằm Huyền Ảo
     chapter1: {
         subtitle: "Mùa trăng rằm này, anh có một điều bất ngờ dành tặng riêng em...",
-        moonHoldDurationMs: 1200 // 1.2 giây ấn giữ
+        moonHoldDurationMs: 2200 // 2.2 giây ấn giữ để tăng cảm xúc hồi hộp
     },
 
     // 4. Chương 2: Thư Tình Cung Trăng

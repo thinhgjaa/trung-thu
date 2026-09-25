@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sử dụng file âm thanh pháo hoa thực từ thư mục assets/audios/
     // ----------------------------------------------------
 
-    // Preload all 4 firework audio files
+    // Lazy Firework Audio Pool - Tải âm thanh khi cần, không chiếm dụng tài nguyên lúc mở trang
     const fwAudioFiles = {
         cluster: 'assets/audios/freesound_community-firework-cluster-90480.mp3',
         blast: 'assets/audios/freesound_community-fireworkblast-106275.mp3',
@@ -383,36 +383,33 @@ document.addEventListener('DOMContentLoaded', () => {
         rocket: 'assets/audios/freesound_community-tiny_rocketwav-14647.mp3'
     };
 
-    // Audio pool: mỗi loại có pool 3 instances để tránh cut-off khi nhiều pháo hoa nổ cùng lúc
     const fwAudioPool = {};
-    const FW_POOL_SIZE = 3;
+    const FW_POOL_SIZE = 2; // Tối ưu tối đa 2 instance/loại để tiết kiệm RAM & luồng mạng
 
-    function buildAudioPool() {
-        Object.entries(fwAudioFiles).forEach(([key, src]) => {
-            fwAudioPool[key] = [];
-            for (let i = 0; i < FW_POOL_SIZE; i++) {
-                try {
-                    const audio = new Audio(src);
-                    audio.preload = 'auto';
-                    audio.volume = 0.72;
-                    fwAudioPool[key].push({ el: audio, busy: false });
-                } catch (e) { /* ignore */ }
-            }
-        });
-    }
-    buildAudioPool();
-
-    // Lấy instance rảnh trong pool, nếu không có thì dùng instance đầu tiên (giật sang)
+    // Lấy instance rảnh trong pool, tạo mới lười (lazy) khi cần
     function getPooledAudio(key) {
+        if (!fwAudioFiles[key]) return null;
+        if (!fwAudioPool[key]) {
+            fwAudioPool[key] = [];
+        }
         const pool = fwAudioPool[key];
-        if (!pool || pool.length === 0) return null;
-        const free = pool.find(a => !a.busy);
-        return free || pool[0];
+        let free = pool.find(a => !a.busy);
+        if (!free && pool.length < FW_POOL_SIZE) {
+            try {
+                const audio = new Audio(fwAudioFiles[key]);
+                audio.volume = 0.72;
+                free = { el: audio, busy: false };
+                pool.push(free);
+            } catch (e) {
+                return null;
+            }
+        }
+        return free || pool[0] || null;
     }
 
     function playPooledAudio(key, volume = 0.72) {
         const item = getPooledAudio(key);
-        if (!item) return;
+        if (!item || !item.el) return;
         try {
             item.el.volume = Math.min(1, Math.max(0, volume));
             item.el.currentTime = 0;
@@ -736,6 +733,91 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3600);
     }
 
+    let girlfriendAmbientFireworksTimer = null;
+
+    function stopGirlfriendAmbientFireworks() {
+        if (girlfriendAmbientFireworksTimer) {
+            clearInterval(girlfriendAmbientFireworksTimer);
+            girlfriendAmbientFireworksTimer = null;
+        }
+    }
+
+    // Tràng pháo hoa rực rỡ chúc mừng khi chuyển qua hình bạn gái & duy trì pháo hoa lãng mạn
+    function launchGirlfriendCelebrationFireworks() {
+        stopGirlfriendAmbientFireworks();
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const isMobile = w < 768;
+
+        // Âm thanh chúc mừng & tiếng pháo hoa
+        try {
+            playCelebrationChord();
+            playRealisticFireworkSound(0.8);
+        } catch (e) { }
+
+        // Đợt 1 (t=100ms): Pháo hoa Trái Tim rực rỡ màu hồng cánh sen bên trái
+        setTimeout(() => {
+            launchRocketTo(w * (isMobile ? 0.22 : 0.26), h * (isMobile ? 0.28 : 0.24), {
+                color: '#ff7675',
+                type: 'heart',
+                particleCount: 52
+            });
+        }, 100);
+
+        // Đợt 2 (t=600ms): Pháo hoa Liễu Rủ Hoàng Kim óng ánh bên phải
+        setTimeout(() => {
+            launchRocketTo(w * (isMobile ? 0.78 : 0.74), h * (isMobile ? 0.24 : 0.20), {
+                color: '#ffd56b',
+                type: 'willow',
+                particleCount: 55
+            });
+        }, 600);
+
+        // Đợt 3 (t=1200ms): Pháo hoa đôi hình trái tim tím hồng & chùm pháo ngọc bích
+        setTimeout(() => {
+            launchRocketTo(w * (isMobile ? 0.35 : 0.38), h * (isMobile ? 0.20 : 0.18), {
+                color: '#fd79a8',
+                type: 'heart',
+                particleCount: 48
+            });
+            launchRocketTo(w * (isMobile ? 0.65 : 0.62), h * (isMobile ? 0.22 : 0.19), {
+                color: '#00d2d3',
+                type: 'burst',
+                particleCount: 50
+            });
+            playCelebrationChord();
+        }, 1200);
+
+        // Đợt 4 (t=2000ms): Pháo hoa Đại Hỷ Hoàng Kim ngay đỉnh trời tỏa xuống
+        setTimeout(() => {
+            launchRocketTo(w * 0.50, h * (isMobile ? 0.16 : 0.14), {
+                color: '#fff2a3',
+                type: 'willow',
+                particleCount: 65
+            });
+        }, 2000);
+
+        // Duy trì bắn pháo hoa lãng mạn định kỳ trong lúc đang ngắm ảnh bạn gái
+        girlfriendAmbientFireworksTimer = setInterval(() => {
+            if (currentChapter !== 1 || moonHoldStage !== 1) {
+                stopGirlfriendAmbientFireworks();
+                return;
+            }
+            const colors = ['#ff7675', '#ffd56b', '#fd79a8', '#ff9ff3', '#00d2d3', '#fff2a3'];
+            const types = ['heart', 'willow', 'burst'];
+            const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+            const chosenType = types[Math.floor(Math.random() * types.length)];
+            const rx = (0.2 + Math.random() * 0.6) * window.innerWidth;
+            const ry = (0.15 + Math.random() * 0.25) * window.innerHeight;
+
+            launchRocketTo(rx, ry, {
+                color: chosenColor,
+                type: chosenType,
+                particleCount: 42
+            });
+        }, 3800);
+    }
+
     function updateFireworks() {
         if (!fwCtx || !fireworkCanvas) {
             isFireworkLoopRunning = false;
@@ -869,6 +951,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentSceneEl = document.getElementById(`scene-${currentChapter}`);
         const nextSceneEl = document.getElementById(`scene-${chapterNum}`);
 
+        if (chapterNum !== 1) {
+            stopGirlfriendAmbientFireworks();
+        }
+
         if (currentChapter === 2 && chapterNum !== 2) {
             stop3DLoveGalaxy();
             isStarCanvasPaused = false;
@@ -950,9 +1036,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!rabbitSpeechBubble || !rabbitBubbleText) return;
         rabbitBubbleText.textContent = text;
         rabbitSpeechBubble.classList.add('bubble-active');
-        if (rabbitBranchWrapper) {
-            rabbitBranchWrapper.classList.add('rabbit-hopping');
-            setTimeout(() => rabbitBranchWrapper.classList.remove('rabbit-hopping'), 600);
+        const targetRabbit = jadeRabbit || rabbitBranchWrapper;
+        if (targetRabbit) {
+            targetRabbit.classList.remove('rabbit-hopping');
+            void targetRabbit.offsetWidth;
+            targetRabbit.classList.add('rabbit-hopping');
+            setTimeout(() => targetRabbit.classList.remove('rabbit-hopping'), 650);
         }
         playMagicSparkleSound();
     }
@@ -972,8 +1061,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const totalCircumference = 421;
-    // Thời gian giữ tối ưu 750ms (nhanh, mượt, không bị khựng giữa chừng)
-    const holdDuration = (cfg.chapter1 && cfg.chapter1.moonHoldDurationMs) || 750;
+    // Thời gian giữ theo cấu hình (mặc định 2200ms để tăng cảm giác hồi hộp, lắng đọng)
+    const holdDuration = (cfg.chapter1 && cfg.chapter1.moonHoldDurationMs) || 2200;
     let holdTimer = null;
     let holdStartTime = 0;
     let isHolding = false;
@@ -1069,8 +1158,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (luminousMoon) luminousMoon.classList.remove('holding');
         if (holdPrompt) holdPrompt.classList.remove('holding');
 
-        // Nếu người dùng đã giữ được từ 50% thời lượng trở lên trước khi nhả, hoàn thành chuyển đổi luôn!
-        if (heldDuration >= holdDuration * 0.5) {
+        // Nếu người dùng đã giữ được gần như trọn vẹn (92% trở lên) mới hoàn thành
+        if (heldDuration >= holdDuration * 0.92) {
             completeHoldSuccess();
             return;
         }
@@ -1153,6 +1242,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 createHeartFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, '#ff7675', 4.0);
             }
 
+            // Đại tiệc pháo hoa chúc mừng tình yêu & duy trì pháo hoa lung linh
+            launchGirlfriendCelebrationFireworks();
+
             // Bé Thỏ Ngọc nói câu tỏ tình ngọt ngào: "Em vẫn đẹp nhất trong lòng anhh"
             showRabbitDialogue("Em vẫn đẹp nhất trong lòng anhh 💖✨");
 
@@ -1160,6 +1252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showHoldActionButton("Khám phá Vũ Trụ Tình Yêu 💖➔", "Chạm để bước vào dải ngân hà bất ngờ... ✨");
 
         } else {
+            stopGirlfriendAmbientFireworks();
             if (Date.now() - stage1TransformTime < 350) {
                 return;
             }
@@ -1317,10 +1410,12 @@ document.addEventListener('DOMContentLoaded', () => {
             playRealisticFireworkSound(0.4);
 
             // Hiệu ứng nhảy tung tăng đáng yêu
-            if (rabbitBranchWrapper) {
-                rabbitBranchWrapper.classList.remove('rabbit-hopping');
-                void rabbitBranchWrapper.offsetWidth;
-                rabbitBranchWrapper.classList.add('rabbit-hopping');
+            const targetRabbit = jadeRabbit || rabbitBranchWrapper;
+            if (targetRabbit) {
+                targetRabbit.classList.remove('rabbit-hopping');
+                void targetRabbit.offsetWidth;
+                targetRabbit.classList.add('rabbit-hopping');
+                setTimeout(() => targetRabbit.classList.remove('rabbit-hopping'), 650);
             }
 
             // Bắn tim và icon trung thu bay lên từ chú thỏ
@@ -2894,7 +2989,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gfModalBackdrop) gfModalBackdrop.addEventListener('click', closeGfModal);
 
     // ----------------------------------------------------
-    // CLEAN & ROBUST RESOURCE PRELOADER
+    // OPTIMIZED RESOURCE PRELOADER (Tối ưu tài nguyên nhẹ & mượt)
     // ----------------------------------------------------
     const appPreloader = document.getElementById('appPreloader');
     const preloaderBarFill = document.getElementById('preloaderBarFill');
@@ -2925,27 +3020,37 @@ document.addEventListener('DOMContentLoaded', () => {
         isPreloadDone = true;
         updatePreloaderProgress(100);
 
-        setTimeout(() => {
-            if (preloaderStatusArea) preloaderStatusArea.style.display = 'none';
-            if (preloaderEnterArea) preloaderEnterArea.style.display = 'block';
-        }, 200);
+        if (preloaderStatusArea) preloaderStatusArea.style.display = 'none';
+        if (preloaderEnterArea) preloaderEnterArea.style.display = 'block';
     }
 
+    // Kiểm tra trực tiếp các ảnh trong DOM để tránh tải đè tài nguyên 2 lần
     essentialAssets.forEach(src => {
-        const img = new Image();
-        img.onload = img.onerror = () => {
+        const domImg = document.querySelector(`img[src="${src}"]`);
+        if (domImg && domImg.complete && domImg.naturalWidth > 0) {
             loadedCount++;
-            const pct = Math.round((loadedCount / totalAssets) * 100);
-            updatePreloaderProgress(pct);
-            if (loadedCount >= totalAssets) {
-                onPreloadComplete();
-            }
-        };
-        img.src = src;
+        } else {
+            const img = new Image();
+            img.onload = img.onerror = () => {
+                loadedCount++;
+                const pct = Math.min(100, Math.round((loadedCount / totalAssets) * 100));
+                updatePreloaderProgress(pct);
+                if (loadedCount >= totalAssets) {
+                    onPreloadComplete();
+                }
+            };
+            img.src = src;
+        }
     });
 
-    // Safety timeout (max 1.6s) so it never gets stuck
-    setTimeout(onPreloadComplete, 1600);
+    const initialPct = Math.min(100, Math.round((loadedCount / totalAssets) * 100));
+    updatePreloaderProgress(initialPct);
+    if (loadedCount >= totalAssets) {
+        onPreloadComplete();
+    } else {
+        // Tối ưu safety timeout nhanh chóng (tối đa 600ms) để không giữ người dùng chờ lâu
+        setTimeout(onPreloadComplete, 600);
+    }
 
     if (btnEnterApp) {
         btnEnterApp.addEventListener('click', () => {
@@ -2955,6 +3060,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navigator.vibrate) navigator.vibrate([30, 40]);
 
             document.body.classList.add('painting-reveal-active');
+            setTimeout(() => {
+                document.body.classList.remove('painting-reveal-active');
+                document.body.classList.add('painting-revealed');
+            }, 2600);
 
             if (appPreloader) {
                 appPreloader.classList.add('loaded-fade-out');
