@@ -726,6 +726,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 particleCount: 52
             });
         }, 2350);
+
+        // Sau khi bắn pháo hoa mở màn xong -> Bé Thỏ Ngọc nói lời chào & hiện nút tương tác "Đúm là đẹp thiệc"
+        setTimeout(() => {
+            if (currentChapter === 1 && moonHoldStage === 0) {
+                showRabbitDialogue("Trăng đêm nay đẹp ha ✨");
+                showHoldActionButton("Đúm là đẹp thiệc ✨", "Ấn giữ để cùng ngắm trăng nhé...");
+            }
+        }, 3600);
     }
 
     function updateFireworks() {
@@ -912,6 +920,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playChime(650, 0.4);
 
         if (chapterNum === 1) {
+            hideRabbitDialogue();
+            hideHoldActionButton();
             setTimeout(() => {
                 launchIntroductoryFireworks();
             }, 600);
@@ -923,7 +933,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 6. CHƯƠNG 1: TƯƠNG TÁC ẤN GIỮ MẶT TRĂNG (HOLD TO CHARGE)
+    // 6. CHƯƠNG 1: TƯƠNG TÁC THỎ NGỌC ĐỐI THOẠI & ẤN GIỮ MẶT TRĂNG
     // ----------------------------------------------------
     const luminousMoon = document.getElementById('luminousMoon');
     const holdProgressBar = document.getElementById('holdProgressBar');
@@ -931,6 +941,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const holdPrompt = document.getElementById('holdPrompt');
     const holdHintText = document.getElementById('holdHintText');
     const jadeRabbit = document.getElementById('jadeRabbit');
+    const rabbitSpeechBubble = document.getElementById('rabbitSpeechBubble');
+    const rabbitBubbleText = document.getElementById('rabbitBubbleText');
+    const holdActionArea = document.querySelector('.hold-action-area');
+    const rabbitBranchWrapper = document.getElementById('rabbitBranchWrapper');
+
+    function showRabbitDialogue(text) {
+        if (!rabbitSpeechBubble || !rabbitBubbleText) return;
+        rabbitBubbleText.textContent = text;
+        rabbitSpeechBubble.classList.add('bubble-active');
+        if (rabbitBranchWrapper) {
+            rabbitBranchWrapper.classList.add('rabbit-hopping');
+            setTimeout(() => rabbitBranchWrapper.classList.remove('rabbit-hopping'), 600);
+        }
+        playMagicSparkleSound();
+    }
+
+    function hideRabbitDialogue() {
+        if (rabbitSpeechBubble) rabbitSpeechBubble.classList.remove('bubble-active');
+    }
+
+    function showHoldActionButton(buttonText = "Đúm là đẹp thiệc ✨", hintText = "Ấn giữ để cùng ngắm trăng nhé...") {
+        if (holdActionArea) holdActionArea.classList.add('button-revealed');
+        if (holdInstructionText) holdInstructionText.textContent = buttonText;
+        if (holdHintText) holdHintText.textContent = hintText;
+    }
+
+    function hideHoldActionButton() {
+        if (holdActionArea) holdActionArea.classList.remove('button-revealed');
+    }
 
     const totalCircumference = 421;
     // Thời gian giữ tối ưu 750ms (nhanh, mượt, không bị khựng giữa chừng)
@@ -947,6 +986,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentChapter !== 1) return;
         if (isHolding) return;
         if (Date.now() - stage1TransformTime < 400) return;
+
+        // Nếu đã biến hình xong (moonHoldStage === 1), một lần chạm/giữ lập tức chuyển sang Chương 2!
+        if (moonHoldStage === 1) {
+            goToScene(2);
+            return;
+        }
 
         // Chặn cuộn trang ngoài ý muốn và menu giữ trên điện thoại
         if (e && e.cancelable && e.type !== 'mousedown') {
@@ -973,11 +1018,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (holdPrompt) holdPrompt.classList.add('holding');
 
         if (moonHoldStage === 0) {
-            if (holdInstructionText) holdInstructionText.textContent = "Đang nạp năng lượng cung trăng... ✨";
-            if (holdHintText) holdHintText.textContent = "Giữ để đón nhận điều bất ngờ... 🌸";
-        } else {
-            if (holdInstructionText) holdInstructionText.textContent = "Đang mở Vũ Trụ Tình Yêu... ✨";
-            if (holdHintText) holdHintText.textContent = "Giữ tiếp để bước vào dải ngân hà... 🎁✨";
+            showRabbitDialogue("Nhưng mà... 🐰💭");
+            if (holdInstructionText) holdInstructionText.textContent = "Đang ngắm trăng cùng nàng thơ... ✨";
+            if (holdHintText) holdHintText.textContent = "Giữ tiếp để đón nhận điều bất ngờ... 🌸";
         }
 
         if (holdProgressBar) {
@@ -1032,12 +1075,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (holdInstructionText) {
-            if (moonHoldStage === 0) {
-                holdInstructionText.textContent = cfg.holdInstruction || "Ấn giữ để mở quà ✨";
-            } else {
-                holdInstructionText.textContent = "Chạm tiếp để mở Vũ Trụ Tình Yêu 🎁✨";
-            }
+        if (moonHoldStage === 0) {
+            showRabbitDialogue("Trăng đêm nay đẹp ha ✨");
+            if (holdInstructionText) holdInstructionText.textContent = "Đúm là đẹp thiệc ✨";
+            if (holdHintText) holdHintText.textContent = "Ấn giữ để cùng ngắm trăng nhé...";
+        } else {
+            if (holdInstructionText) holdInstructionText.textContent = "Khám phá Vũ Trụ Tình Yêu 💖➔";
+            if (holdHintText) holdHintText.textContent = "Chạm để bước vào dải ngân hà bất ngờ... ✨";
         }
 
         if (holdProgressBar) {
@@ -1109,23 +1153,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 createHeartFirework(rect.left + rect.width / 2, rect.top + rect.height / 2, '#ff7675', 4.0);
             }
 
-            if (holdInstructionText) holdInstructionText.textContent = "Chạm tiếp để mở Vũ Trụ Tình Yêu 🎁✨";
-            if (holdHintText) holdHintText.textContent = "Nàng thơ xinh đẹp nhất đêm rằm! Chạm để tiếp tục... 💖";
+            // Bé Thỏ Ngọc nói câu tỏ tình ngọt ngào: "Em vẫn đẹp nhất trong lòng anhh"
+            showRabbitDialogue("Em vẫn đẹp nhất trong lòng anhh 💖✨");
+
+            // Nút ở dưới đổi thành nút chuyển sang Vũ Trụ Tình Yêu
+            showHoldActionButton("Khám phá Vũ Trụ Tình Yêu 💖➔", "Chạm để bước vào dải ngân hà bất ngờ... ✨");
 
         } else {
-            // Khóa an toàn 400ms để tránh việc nhấp đúp vô tình nhảy luôn sang màn 2
-            if (Date.now() - stage1TransformTime < 400) {
+            if (Date.now() - stage1TransformTime < 350) {
                 return;
             }
 
-            // Lần 2: Mở cánh cửa bước vào Chương II!
+            // Mở cánh cửa bước vào Chương 2: Vũ Trụ Tình Yêu!
             try {
                 if (navigator.vibrate) navigator.vibrate([60, 80, 180]);
                 playCelebrationChord();
                 playRealisticFireworkSound(1.2);
             } catch (e) { }
 
-            if (holdHintText) holdHintText.textContent = "Mở khóa thành công món quà bí mật! 🎁✨";
+            if (holdHintText) holdHintText.textContent = "Đang mở khóa Vũ Trụ Tình Yêu... 🎁✨";
 
             if (luminousMoon) {
                 const rect = luminousMoon.getBoundingClientRect();
@@ -1135,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 goToScene(2);
-            }, 500);
+            }, 350);
         }
     }
 
@@ -1161,21 +1207,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Chống menu chuột phải / menu giữ ảnh
         target.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // Bấm / chạm vào Mặt Trăng để chuyển đổi ngay tức thì & phóng pháo hoa bay lên
+        // Bấm / chạm vào Mặt Trăng hoặc Button để chuyển đổi ngay tức thì & phóng pháo hoa bay lên
         target.addEventListener('click', (e) => {
             if (currentChapter === 1) {
-                if (Date.now() - lastHoldSuccessTime < 400) return;
+                if (Date.now() - lastHoldSuccessTime < 300) return;
 
-                const rect = luminousMoon ? luminousMoon.getBoundingClientRect() : target.getBoundingClientRect();
-                const clickX = (e.clientX && e.clientX > 0) ? e.clientX : (rect.left + rect.width / 2);
-                const clickY = (e.clientY && e.clientY > 0) ? e.clientY : (rect.top + rect.height / 2);
+                if (moonHoldStage === 0) {
+                    const rect = luminousMoon ? luminousMoon.getBoundingClientRect() : target.getBoundingClientRect();
+                    const clickX = (e.clientX && e.clientX > 0) ? e.clientX : (rect.left + rect.width / 2);
+                    const clickY = (e.clientY && e.clientY > 0) ? e.clientY : (rect.top + rect.height / 2);
 
-                // Phóng pháo hoa tên lửa vút bay từ dưới lên nổ ngay tại Mặt Trăng
-                launchRocketTo(clickX, clickY, { type: 'heart', color: '#ff7675' });
-                createRipple();
-
-                // Chuyển đổi trạng thái ngay khi bấm
-                completeHoldSuccess();
+                    launchRocketTo(clickX, clickY, { type: 'heart', color: '#ff7675' });
+                    createRipple();
+                    completeHoldSuccess();
+                } else {
+                    goToScene(2);
+                }
             }
         });
     });
@@ -1761,8 +1808,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (wishInput) wishInput.value = '';
             quickWishChips.forEach(c => c.classList.remove('chip-active'));
 
-            // Reset trạng thái Mặt Trăng & Lá thư về ban đầu để trải nghiệm trọn vẹn
+            // Reset trạng thái Mặt Trăng & Lá thư & Thỏ Ngọc về ban đầu để trải nghiệm trọn vẹn
             moonHoldStage = 0;
+            hideRabbitDialogue();
+            hideHoldActionButton();
             const moonSphereContainer = document.getElementById('moonSphereContainer');
             const moonSphereImg = document.getElementById('moonSphereImg');
             const moonGfBadge = document.getElementById('moonGfBadge');
