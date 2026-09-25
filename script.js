@@ -744,16 +744,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sau khi bắn pháo hoa mở màn xong -> Thỏ Ngọc thủ thỉ chậm rãi, ngắt nghỉ từng câu
         setTimeout(() => {
             if (currentChapter === 1 && moonHoldStage === 0) {
-                showRabbitDialogue("Trăng rằm đêm nay... 🌕");
+                showRabbitDialogue("Bầu trời đêm nay... 🌕");
             }
         }, 3600);
 
         setTimeout(() => {
             if (currentChapter === 1 && moonHoldStage === 0) {
-                showRabbitDialogue("Đẹp thật đấy em nhỉ ✨");
+                showRabbitDialogue("Trăng đẹp thiệc em ha ✨");
                 showHoldActionButton("Ấn giữ để cùng ngắm trăng nhé... ✨", "Giữ ngón tay vào vầng trăng để đón nhận điều bất ngờ...");
             }
-        }, 5800);
+        }, 7600);
     }
 
     let girlfriendAmbientFireworksTimer = null;
@@ -957,8 +957,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentChapter = 1;
     const totalChapters = 3;
     const progressSteps = document.querySelectorAll('.progress-step');
-    let startFireflies = () => {};
-    let stopFireflies = () => {};
+    let startFireflies = () => { };
+    let stopFireflies = () => { };
 
     function updateProgressUI(chapterNum) {
         progressSteps.forEach((step, idx) => {
@@ -1173,12 +1173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (holdPrompt) holdPrompt.classList.add('holding');
 
         if (moonHoldStage === 0) {
-            showRabbitDialogue("Ủa... chờ xíu nha 🐰");
-            setTimeout(() => {
-                if (isHolding && moonHoldStage === 0) {
-                    showRabbitDialogue("Chuẩn bị nè... ✨");
-                }
-            }, 850);
+            showRabbitDialogue("Nhưng mà... ✨");
             if (holdInstructionText) holdInstructionText.textContent = "Đang ngắm trăng cùng nàng thơ... ✨";
             if (holdHintText) holdHintText.textContent = "Giữ tiếp để đón nhận điều bất ngờ... 🌸";
         }
@@ -1588,13 +1583,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 firefliesAnimId = requestAnimationFrame(updateFireflies);
             }
 
-            startFireflies = function() {
+            startFireflies = function () {
                 if (!firefliesAnimId && currentChapter === 1) {
                     firefliesAnimId = requestAnimationFrame(updateFireflies);
                 }
             };
 
-            stopFireflies = function() {
+            stopFireflies = function () {
                 if (firefliesAnimId) {
                     cancelAnimationFrame(firefliesAnimId);
                     firefliesAnimId = null;
