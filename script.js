@@ -3293,7 +3293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePreloaderProgress(100);
 
         if (preloaderStatusArea) preloaderStatusArea.style.display = 'none';
-        if (preloaderEnterArea) preloaderEnterArea.style.display = 'block';
+        if (preloaderEnterArea) preloaderEnterArea.style.display = 'flex';
     }
 
     // Kiểm tra trực tiếp các ảnh trong DOM để tránh tải đè tài nguyên 2 lần
