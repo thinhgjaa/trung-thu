@@ -745,13 +745,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sau khi bắn pháo hoa mở màn xong -> Thỏ Ngọc thủ thỉ chậm rãi, ngắt nghỉ từng câu
         setTimeout(() => {
             if (currentChapter === 1 && moonHoldStage === 0) {
-                showRabbitDialogue("Bầu trời đêm nay... 🌕");
+                showRabbitDialogue("Đêm nay... ");
             }
         }, 3600);
 
         setTimeout(() => {
             if (currentChapter === 1 && moonHoldStage === 0) {
-                showRabbitDialogue("Trăng đẹp thiệc em ha ✨");
+                showRabbitDialogue("Trăng đẹp thiệc em ha 🌕");
                 showHoldActionButton("Ấn giữ để cùng ngắm trăng nhé... ✨", "Giữ ngón tay vào vầng trăng để đón nhận điều bất ngờ...");
             }
         }, 7600);
