@@ -1312,7 +1312,7 @@ document.addEventListener('DOMContentLoaded', () => {
             launchGirlfriendCelebrationFireworks();
 
             // Bé Thỏ Ngọc nói câu tỏ tình ngọt ngào: "Em vẫn đẹp nhất trong lòng anhh"
-            showRabbitDialogue("Vẫn hong đẹp bằng em cụa anh 💖✨");
+            showRabbitDialogue("Vẫn hong đẹp bằng ngừi anh iuu 💖✨");
 
             // Nút ở dưới đổi sang trạng thái ấn giữ để tiếp tục điều bất ngờ (không spoil màn hình tiếp theo)
             showHoldActionButton("Ấn giữ để tiếp tục ✨", "Ấn và giữ ngón tay để mở tiếp bất ngờ... ✨");
@@ -1702,11 +1702,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     const defaultParagraphs = [
         "Gửi ngừi anh iuu !!",
-        "Trung Thu năm nay thật sự rất khác biệt, vì đây là mùa lễ đầu tiên anh được đón cùng dí em.",
-        "Cảm ơn em đã xuất hiện và cùng anh tạo nên một buổi tối thật trọn vẹn và nhiều niềm vui nà .",
-        "Anh chỉ mong là những ngày tháng sắp tới và cả những mùa trăng sau này, tụi mình vẫn sẽ luôn kề bước bên nhau như thế này.",
-        "Chúc em mụt mùa Trung Thu thật ấm áp, bình an, lúc nào cũng rạng rỡ và hạnh phúc nheee!"
-    ];
+        "Chúc em mụt mùa Trung Thu thật ấm áp, bình an. Mong sao niềm vui và hạnh phúc của em lúc nào cũng rạng rỡ, tròn đầy và trọn vẹn như ánh trăng đêm rằm nàaa !!",
+        "Anh mong rằng không chỉ Trung Thu này, mà mọi ngày lễ của những năm tháng về sau, chúng mìn vẫn sẽ luôn nắm tay nhau cùng đón nhéee !!"];
     const letterParagraphs = (cfg.chapter2 && cfg.chapter2.letterParagraphs) || defaultParagraphs;
 
     // ----------------------------------------------------
@@ -2396,16 +2393,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const wordsSource = (cfg.chapter4 && cfg.chapter4.loveWords && cfg.chapter4.loveWords.length > 0)
             ? cfg.chapter4.loveWords
             : [
-                "Yêu em thật nhiều",
+                "Yêu em rấccc nhìuu",
                 "Xuân Thịnh ♡ Thanh Vy",
                 "Yêu em thật nhiều",
-                "Trung Thu vui vẻ bên anh",
-                "Bên anh thật lâu nhé",
+                "Bên anh hong rời nhee",
                 "Thương em nhất trần đời 💕",
                 "Mãi yêu epes của anh",
-                "Nụ cười của em là đẹp nhất",
-                "Em là ngừi dệ thưn nhất quả đất",
-                "Yêu em 3000 ✨"
+                "Mãi giữ nụ cười trên môi nhee",
+                "Ngừi dệ thưn nhấtttt quả đất",
+                "Yêu em 3000 ✨",
+                "I love youuu"
             ];
 
         const totalWordSlots = 24;
@@ -2479,7 +2476,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gSpecialLetters = [];
         const specialLetterConfigs = [
             {
-                title: "💌 Có thư nèee 🌸",
+                title: "💌 🌸",
                 badge: "✨ Chạm để mở ✨",
                 theta: -Math.PI / 2,
                 phi: 0,
