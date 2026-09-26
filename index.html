@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Trung Thu">
+    <meta name="theme-color" content="#070b19">
+    <meta name="format-detection" content="telephone=no">
+    <title>Trung Thu</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="shortcut icon" href="favicon.svg">
+    <!-- Google Fonts: Be Vietnam Pro & Dancing Script / Playfair for romantic calligraphy -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Quicksand:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=64">
+</head>
+
+<body>
+    <!-- Clean Robust Mid-Autumn Preloader -->
+    <div id="appPreloader" class="app-preloader">
+        <div class="preloader-content">
+            <div class="preloader-lantern-icon">🏮</div>
+            <h2 class="preloader-title">Trung Thu Yêu Thương</h2>
+            <div class="preloader-status-container" id="preloaderStatusArea">
+                <div class="preloader-bar-bg">
+                    <div class="preloader-bar-fill" id="preloaderBarFill"></div>
+                </div>
+                <div class="preloader-status-text" id="preloaderStatusText">
+                    Đang nạp ánh trăng rằm... <span id="preloaderPercentText">0%</span>
+                </div>
+            </div>
+            <div class="preloader-enter-container" id="preloaderEnterArea" style="display: none;">
+                <button id="btnEnterApp" class="btn-primary btn-enter-app">
+                    <span>Sẵn sàng ✨</span>
+                </button>
+                <button id="btnEnterFullscreen" class="btn-fullscreen-preloader" aria-label="Mở toàn màn hình"
+                    title="Mở toàn màn hình">
+                    <span class="fs-icon">⛶</span>
+                    <span>Toàn màn hình</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Canvas Layers -->
+    <canvas id="star-canvas"></canvas>
+    <canvas id="firework-canvas"></canvas>
+
+    <!-- Full-Screen Celestial Backdrop: Ethereal Depth, Mountain Silhouettes, Lunar Halos & Fireflies -->
+    <div id="celestial-backdrop" class="celestial-backdrop" aria-hidden="true">
+        <!-- Vầng hào quang đại trăng & Tinh vân huyền ảo -->
+        <div class="backdrop-grand-moon-halo"></div>
+        <div class="backdrop-nebula nebula-left"></div>
+        <div class="backdrop-nebula nebula-right"></div>
+        <div class="backdrop-nebula nebula-top"></div>
+
+        <!-- Dải cực quang mềm mại (Celestial Auroras) -->
+        <div class="backdrop-aurora aurora-1"></div>
+        <div class="backdrop-aurora aurora-2"></div>
+
+        <!-- Dãy núi mờ sương 3 tầng chiều sâu tiên cảnh -->
+        <div class="backdrop-mountain-layer mountain-layer-far">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none" class="mountain-svg">
+                <defs>
+                    <linearGradient id="mountGradFar" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#232954" stop-opacity="0.75" />
+                        <stop offset="60%" stop-color="#121634" stop-opacity="0.9" />
+                        <stop offset="100%" stop-color="#070a18" stop-opacity="1" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#mountGradFar)"
+                    d="M0,150 C130,95 240,185 390,120 C540,55 670,165 810,110 C950,55 1080,175 1220,115 C1340,75 1400,135 1440,105 L1440,320 L0,320 Z">
+                </path>
+            </svg>
+        </div>
+        <div class="backdrop-mountain-layer mountain-layer-mid">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none" class="mountain-svg">
+                <defs>
+                    <linearGradient id="mountGradMid" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#181c42" stop-opacity="0.88" />
+                        <stop offset="70%" stop-color="#0c0f24" stop-opacity="0.96" />
+                        <stop offset="100%" stop-color="#040611" stop-opacity="1" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#mountGradMid)"
+                    d="M0,200 C150,150 270,230 430,180 C570,130 710,220 850,170 C990,120 1150,210 1290,160 C1370,130 1415,180 1440,160 L1440,320 L0,320 Z">
+                </path>
+            </svg>
+        </div>
+        <div class="backdrop-mountain-layer mountain-layer-near">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none" class="mountain-svg">
+                <defs>
+                    <linearGradient id="mountGradNear" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#0e112b" stop-opacity="0.95" />
+                        <stop offset="100%" stop-color="#03040c" stop-opacity="1" />
+                    </linearGradient>
+                </defs>
+                <path fill="url(#mountGradNear)"
+                    d="M0,250 C190,210 330,270 510,230 C690,190 830,260 1010,220 C1170,180 1330,250 1440,230 L1440,320 L0,320 Z">
+                </path>
+            </svg>
+        </div>
+
+        <!-- Lớp sương lam cuộn trôi thung lũng -->
+        <div class="backdrop-valley-mist mist-1"></div>
+        <div class="backdrop-valley-mist mist-2"></div>
+
+        <!-- Đèn trời lơ lửng 2 bên cánh gà với hiệu ứng DOF (Depth of Field Blur) -->
+        <div class="backdrop-lanterns-cluster" id="backdropLanterns">
+            <div class="backdrop-lantern bl-1"></div>
+            <div class="backdrop-lantern bl-2"></div>
+            <div class="backdrop-lantern bl-3"></div>
+            <div class="backdrop-lantern bl-4"></div>
+            <div class="backdrop-lantern bl-5"></div>
+            <div class="backdrop-lantern bl-6"></div>
+            <div class="backdrop-lantern bl-7"></div>
+            <div class="backdrop-lantern bl-8"></div>
+        </div>
+
+        <!-- Bụi tiên & Đom đóm dạ quang bay lơ lửng -->
+        <div class="backdrop-fireflies-cluster" id="backdropFireflies">
+            <div class="firefly-orb ff-1"></div>
+            <div class="firefly-orb ff-2"></div>
+            <div class="firefly-orb ff-3"></div>
+            <div class="firefly-orb ff-4"></div>
+            <div class="firefly-orb ff-5"></div>
+            <div class="firefly-orb ff-6"></div>
+            <div class="firefly-orb ff-7"></div>
+            <div class="firefly-orb ff-8"></div>
+        </div>
+
+        <!-- Cành hoa quế/liễu mờ ảo ở 2 góc trên màn hình -->
+        <div class="backdrop-corner-branch branch-top-left">
+            <svg viewBox="0 0 350 250" class="branch-svg">
+                <path
+                    d="M-20,-10 C80,30 150,105 210,115 C175,125 115,140 85,170 M125,80 C165,115 220,130 260,125 M180,105 C200,150 240,180 270,195"
+                    stroke="rgba(24, 30, 62, 0.48)" stroke-width="4.5" stroke-linecap="round" fill="none"></path>
+                <circle cx="212" cy="115" r="5" fill="rgba(255, 215, 120, 0.4)" />
+                <circle cx="262" cy="125" r="4" fill="rgba(255, 215, 120, 0.35)" />
+                <circle cx="272" cy="195" r="6" fill="rgba(255, 215, 120, 0.35)" />
+                <circle cx="88" cy="170" r="5" fill="rgba(255, 215, 120, 0.35)" />
+            </svg>
+        </div>
+        <div class="backdrop-corner-branch branch-top-right">
+            <svg viewBox="0 0 350 250" class="branch-svg">
+                <path
+                    d="M370,-10 C270,30 200,105 140,115 C175,125 235,140 265,170 M225,80 C185,115 130,130 90,125 M170,105 C150,150 110,180 80,195"
+                    stroke="rgba(24, 30, 62, 0.48)" stroke-width="4.5" stroke-linecap="round" fill="none"></path>
+                <circle cx="138" cy="115" r="5" fill="rgba(255, 215, 120, 0.4)" />
+                <circle cx="88" cy="125" r="4" fill="rgba(255, 215, 120, 0.35)" />
+                <circle cx="78" cy="195" r="6" fill="rgba(255, 215, 120, 0.35)" />
+                <circle cx="262" cy="170" r="5" fill="rgba(255, 215, 120, 0.35)" />
+            </svg>
+        </div>
+
+        <!-- Cinematic Vignette Frame (Làm dịu 4 góc màn hình tạo độ sâu) -->
+        <div class="backdrop-cinematic-vignette"></div>
+    </div>
+
+    <!-- Main App Container (Mobile-first viewport framing) -->
+    <div id="app" class="app-container">
+
+        <!-- Deep Depth Atmosphere: Bokeh Orbs, Distant Blurred Lanterns & Mist (Tạo chiều sâu điện ảnh đa tầng) -->
+        <div class="deep-depth-atmosphere" aria-hidden="true">
+            <div class="bokeh-orb b-1"></div>
+            <div class="bokeh-orb b-2"></div>
+            <div class="bokeh-orb b-3"></div>
+            <div class="bokeh-orb b-4"></div>
+            <div class="bokeh-orb b-5"></div>
+            <div class="bokeh-distant-lantern dl-1"></div>
+            <div class="bokeh-distant-lantern dl-2"></div>
+            <div class="bokeh-distant-lantern dl-3"></div>
+            <div class="atmospheric-fog-layer fog-top"></div>
+            <div class="atmospheric-fog-layer fog-mid"></div>
+        </div>
+
+        <!-- Top Navigation & Controls Bar -->
+        <header class="app-header">
+            <div class="header-actions">
+                <!-- Music Control Button with spinning disc animation -->
+                <button id="musicToggleBtn" class="btn-music" aria-label="Bật/Tắt nhạc" title="Âm nhạc">
+                    <div class="music-disc" id="musicDisc">
+                        <span class="disc-inner">🎵</span>
+                    </div>
+                    <div class="music-equalizer" id="musicEqualizer">
+                        <span></span><span></span><span></span>
+                    </div>
+                </button>
+            </div>
+        </header>
+
+
+        <!-- ==============================================
+             CHƯƠNG 1: ĐÊM RẰM HUYỀN ẢO (MẪU ẢNH THỰC TẾ)
+             ============================================== -->
+        <section id="scene-1" class="story-scene scene-active">
+            <!-- Distant Misty Mountain Silhouettes (Dãy núi mờ sương xa xa phong cách thủy mặc tiên cảnh) -->
+            <div class="distant-mountain-silhouettes" aria-hidden="true">
+                <svg class="mountains-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="mountFarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#1e274a" stop-opacity="0.38" />
+                            <stop offset="100%" stop-color="#0a1026" stop-opacity="0" />
+                        </linearGradient>
+                        <linearGradient id="mountMidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#141d40" stop-opacity="0.68" />
+                            <stop offset="100%" stop-color="#0a1026" stop-opacity="0" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 0,90 Q 60,35 120,65 T 240,45 T 340,75 Q 370,55 400,85 L 400,160 L 0,160 Z"
+                        fill="url(#mountFarGrad)" />
+                    <path d="M 0,110 Q 50,70 100,85 T 200,60 T 310,95 Q 360,75 400,105 L 400,160 L 0,160 Z"
+                        fill="url(#mountMidGrad)" />
+                </svg>
+            </div>
+
+            <!-- Celestial Auspicious Clouds (Mây Tường Vân & Mây Lụa Ánh Trăng Tiên Cảnh) -->
+            <div class="celestial-clouds-atmosphere" aria-hidden="true">
+                <!-- Mây lụa trôi chậm vắt ngang bầu trời sao -->
+                <div class="flowing-cloud cloud-wispy-drift">
+                    <svg viewBox="0 0 320 60" class="cloud-svg">
+                        <defs>
+                            <linearGradient id="cloudSilkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#fff4cc" stop-opacity="0.65" />
+                                <stop offset="35%" stop-color="#ffd56b" stop-opacity="0.45" />
+                                <stop offset="70%" stop-color="#ff9f43" stop-opacity="0.2" />
+                                <stop offset="100%" stop-color="#74b9ff" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M 5,35 Q 60,10 130,28 T 260,20 Q 305,35 285,45 Q 210,55 120,40 Q 50,50 5,35 Z"
+                            fill="url(#cloudSilkGrad)" />
+                    </svg>
+                </div>
+
+                <!-- Mây Tường Vân cổ phong uốn lượn góc trên bên trái -->
+                <div class="flowing-cloud cloud-auspicious-left">
+                    <svg viewBox="0 0 160 90" class="cloud-svg">
+                        <path
+                            d="M 15,65 C 15,50 35,40 50,52 C 60,35 85,38 95,50 C 110,38 135,42 140,58 C 150,72 135,82 110,82 C 75,82 40,80 20,78 Z"
+                            fill="url(#cloudSilkGrad)" />
+                        <path d="M 45,62 C 40,56 42,48 48,46 C 55,44 60,50 56,56 C 53,60 48,58 48,54" fill="none"
+                            stroke="#ffd56b" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
+                        <circle cx="95" cy="46" r="2.5" fill="#ffeaa7" />
+                    </svg>
+                </div>
+
+                <!-- Mây Tường Vân cổ phong góc phải vắt qua cành hoa quế -->
+                <div class="flowing-cloud cloud-auspicious-right">
+                    <svg viewBox="0 0 180 90" class="cloud-svg">
+                        <path
+                            d="M 165,65 C 165,50 145,40 130,52 C 120,35 95,38 85,50 C 70,38 45,42 40,58 C 30,72 45,82 70,82 C 105,82 140,80 160,78 Z"
+                            fill="url(#cloudSilkGrad)" />
+                        <path d="M 135,62 C 140,56 138,48 132,46 C 125,44 120,50 124,56 C 127,60 132,58 132,54"
+                            fill="none" stroke="#ffd56b" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
+                        <circle cx="85" cy="46" r="2.5" fill="#ffeaa7" />
+                    </svg>
+                </div>
+
+                <!-- Dải mây bồng bềnh lướt nhẹ dưới chân vầng trăng -->
+                <div class="flowing-cloud cloud-moon-whisper">
+                    <svg viewBox="0 0 280 80" class="cloud-svg">
+                        <path
+                            d="M 10,50 Q 40,20 80,35 Q 120,5 170,25 Q 220,10 250,38 Q 275,55 240,65 Q 190,75 140,60 Q 80,72 30,62 Z"
+                            fill="url(#cloudSilkGrad)" />
+                    </svg>
+                </div>
+
+                <!-- Dải mây sương mờ bồng bềnh phía chân trời mặt hồ -->
+                <div class="flowing-cloud cloud-horizon-mist">
+                    <svg viewBox="0 0 380 70" class="cloud-svg">
+                        <path d="M 0,35 Q 70,15 150,30 T 300,22 Q 355,38 380,48 Q 300,60 190,45 Q 90,55 0,35 Z"
+                            fill="url(#cloudSilkGrad)" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Centerpiece: Realistic Luminous Super Moon, Celestial Orbit Halo, Rabbit & Branch -->
+            <div class="moon-stage-container">
+                <!-- Celestial Gold & Vermilion Orbit Ring (Centered around Moon) -->
+                <div class="traditional-moon-ring">
+                    <svg class="ring-svg" viewBox="0 0 300 300">
+                        <circle cx="150" cy="150" r="142" class="ring-outer" />
+                        <circle cx="150" cy="150" r="128" class="ring-middle" />
+                        <circle cx="150" cy="150" r="118" class="ring-inner" />
+                        <!-- Stylized golden cloud accents -->
+                        <path d="M 28,150 C 28,138 48,134 60,146 C 72,134 88,142 84,154 C 72,162 40,162 28,150 Z"
+                            class="ring-cloud left" />
+                        <path
+                            d="M 272,150 C 272,138 252,134 240,146 C 228,134 212,142 216,154 C 228,162 260,162 272,150 Z"
+                            class="ring-cloud right" />
+                    </svg>
+                </div>
+
+                <!-- Luminous Full Moon (Hold Target) -->
+                <div class="luminous-moon" id="luminousMoon" role="button" aria-label="Ấn giữ để mở quà"
+                    title="Ấn giữ để mở quà">
+                    <!-- Rotating Moonlight Beams & Radiance -->
+                    <div class="moon-radial-beams" id="moonRadialBeams"></div>
+                    <div class="moon-glow-aura"></div>
+                    <div class="moon-glow-halo-far"></div>
+
+                    <!-- High-Definition Realistic Luminous Super Moon Sphere -->
+                    <div class="moon-sphere-container" id="moonSphereContainer">
+                        <img src="assets/images/luminous_super_moon.jpg" alt="Mặt Trăng Rằm Yêu Thương"
+                            class="moon-sphere-img" id="moonSphereImg">
+                        <div class="moon-specular-glow"></div>
+                        <div class="moon-lunar-edge-highlight"></div>
+                        <div class="moon-gf-badge" id="moonGfBadge" style="display: none;">💖 Nàng Thơ Của Anh 💖</div>
+                    </div>
+
+                    <!-- Orbiting Celestial Stardust Ring -->
+                    <div class="moon-orbit-particles" id="moonOrbitParticles"></div>
+
+                    <!-- SVG Circular Progress Indicator during Hold -->
+                    <svg class="hold-progress-svg" viewBox="0 0 156 156">
+                        <defs>
+                            <linearGradient id="holdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffd56b" />
+                                <stop offset="50%" stop-color="#ff9f43" />
+                                <stop offset="100%" stop-color="#ee5253" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="hold-progress-bg" cx="78" cy="78" r="67" />
+                        <circle class="hold-progress-bar" id="holdProgressBar" cx="78" cy="78" r="67" />
+                    </svg>
+
+                    <!-- Ripple Waves when holding -->
+                    <div class="hold-ripples" id="holdRipples"></div>
+                </div>
+
+                <!-- Osmanthus Petals Shower (Mưa Cánh Hoa Quế Cung Trăng Rơi) -->
+                <div class="osmanthus-petals-container" id="osmanthusPetals"></div>
+
+                <!-- Floating Sky Lanterns (Tách nền trong suốt chuẩn không còn ô caro) -->
+                <div class="ambient-sky-lantern lantern-top-right">
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn trời Khổng Minh"
+                        class="floating-trans-lantern">
+                </div>
+                <div class="ambient-sky-lantern lantern-mid-right">
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn trời nhỏ"
+                        class="floating-trans-lantern scale-sm">
+                </div>
+                <div class="ambient-sky-lantern lantern-center-bottom">
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn trời trung"
+                        class="floating-trans-lantern scale-md">
+                </div>
+
+                <!-- Cute White Rabbit on Blooming Osmanthus Branch (Tách nền nghệ thuật sắc nét) -->
+                <div class="rabbit-branch-container" id="rabbitBranchWrapper">
+                    <img src="assets/images/rabbit_branch_transparent.png" alt="Thỏ ngọc bên cành hoa quế"
+                        class="rabbit-branch-img" id="jadeRabbit">
+
+                    <!-- Interactive Speech Bubble from Jade Rabbit -->
+                    <div class="rabbit-speech-bubble" id="rabbitSpeechBubble" aria-live="polite">
+                        <span class="bubble-icon">🐰</span>
+                        <span class="bubble-text" id="rabbitBubbleText">Trăng đêm nay đẹp ha ✨</span>
+                        <div class="bubble-tail"></div>
+                    </div>
+                </div>
+
+                <!-- Interactive Jade Rabbit Touch Zone & Particles -->
+                <div class="rabbit-interactive-wrapper" id="rabbitInteractiveWrapper">
+                    <div class="rabbit-tap-zone" id="rabbitTapZone" role="button" aria-label="Chạm vào thỏ ngọc"
+                        title="Chạm vào thỏ ngọc!"></div>
+                    <div class="rabbit-hearts-container" id="rabbitHeartsContainer"></div>
+                </div>
+            </div>
+
+            <!-- The Mystic Moonlit Lake Surface (Bức Tranh Mặt Hồ Huyền Ảo Soi Ánh Trăng) -->
+            <div class="mystic-moonlit-lake" id="mysticLakeContainer">
+                <!-- Deep Water Base with Shimmer Sheen -->
+                <div class="lake-water-surface"></div>
+
+                <!-- Moonlight Reflection Shimmer Path (Vệt sáng trăng rằm rọi lung linh trên mặt hồ) -->
+                <div class="moonlight-water-reflection">
+                    <div class="shimmer-strip s-1"></div>
+                    <div class="shimmer-strip s-2"></div>
+                    <div class="shimmer-strip s-3"></div>
+                    <div class="shimmer-strip s-4"></div>
+                    <div class="shimmer-strip s-5"></div>
+                    <div class="shimmer-strip s-6"></div>
+                    <div class="shimmer-strip s-7"></div>
+                    <div class="shimmer-strip s-8"></div>
+                </div>
+
+                <!-- Layered Rippling Water Waves -->
+                <div class="lake-water-ripples">
+                    <svg class="water-waves-svg" viewBox="0 0 400 60" preserveAspectRatio="none">
+                        <path class="wave-path wave-1" d="M 0,25 Q 100,15 200,25 T 400,25 L 400,60 L 0,60 Z" />
+                        <path class="wave-path wave-2" d="M 0,38 Q 120,28 240,38 T 400,38 L 400,60 L 0,60 Z" />
+                    </svg>
+                </div>
+
+                <!-- Floating Luminous Lotus Lanterns (Hoa Sen Thả Nổi Phát Sáng Bồng Bềnh) -->
+                <div class="lake-lotus-fleet">
+                    <!-- Hero Lotus (Trôi trên vệt sáng trăng bên trái) -->
+                    <div class="floating-lotus-lantern lotus-hero" id="heroLotus">
+                        <div class="lotus-candle-aura"></div>
+                        <img src="assets/images/lotus_pure.png" alt="Hoa đăng sen phát sáng" class="lotus-img">
+                        <div class="lotus-water-reflection"></div>
+                        <div class="lotus-ripple-ring"></div>
+                    </div>
+
+                    <!-- Companion Lotus (Bên phải dưới cành hoa quế) -->
+                    <div class="floating-lotus-lantern lotus-companion" id="companionLotus">
+                        <div class="lotus-candle-aura"></div>
+                        <img src="assets/images/lotus_pure.png" alt="Hoa đăng sen phụ" class="lotus-img">
+                        <div class="lotus-water-reflection"></div>
+                        <div class="lotus-ripple-ring delay"></div>
+                    </div>
+
+                    <!-- Distant Tiny Lotus (Xa xa giữa hồ) -->
+                    <div class="floating-lotus-lantern lotus-distant">
+                        <div class="lotus-candle-aura sm"></div>
+                        <img src="assets/images/lotus_pure.png" alt="Hoa sen xa" class="lotus-img">
+                        <div class="lotus-water-reflection sm"></div>
+                    </div>
+                </div>
+
+                <!-- Ethereal Lake Mist Layers (Làn sương khói mờ ảo bồng bềnh là là mặt nước) -->
+                <div class="ethereal-lake-mist">
+                    <div class="mist-layer mist-1"></div>
+                    <div class="mist-layer mist-2"></div>
+                </div>
+
+                <!-- Living Fireflies Layer (Đàn Đom Đóm Dạ Quang Bay Lập Lòe) -->
+                <div class="fireflies-lake-layer" id="firefliesContainer"></div>
+
+                <!-- Interactive Touch Overlay on Lake (Chạm vào mặt hồ tạo sóng nước lan tỏa) -->
+                <div class="lake-touch-overlay" id="lakeTouchOverlay" role="button" aria-label="Chạm nhẹ vào mặt hồ"
+                    title="Chạm nhẹ vào mặt hồ để tạo sóng"></div>
+            </div>
+
+            <!-- Interactive Hold-to-Charge Prompt -->
+            <div class="hold-action-area">
+                <div class="hold-prompt" id="holdPrompt">
+                    <span class="finger-tap-icon">👆</span>
+                    <span class="prompt-text" id="holdInstructionText">Ấn giữ để mở quà ✨</span>
+                </div>
+                <div class="hold-status-hint" id="holdHintText">Chạm và giữ để đón nhận điều bất ngờ...</div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CHƯƠNG 2: VŨ TRỤ TÌNH YÊU (3D LOVE GALAXY)
+             ============================================== -->
+        <section id="scene-2" class="story-scene scene-hidden scene-galaxy-universe">
+            <div class="galaxy-universe-wrapper" id="galaxyUniverseWrapper">
+                <!-- 3D Canvas rendering stars, floating neon love texts, glowing red hearts, neon moon/star/mooncake icons -->
+                <canvas id="galaxyCanvas" class="galaxy-canvas"></canvas>
+
+                <!-- Back button -->
+                <div class="galaxy-hud-controls">
+                    <button class="btn-scene-back galaxy-back-btn" id="btnGalaxyBack" aria-label="Quay lại">
+                        <span class="back-arrow">‹</span> Quay lại
+                    </button>
+                </div>
+
+                <!-- Floating Royal Love Letter Scroll inside Galaxy -->
+                <div class="galaxy-letter-modal" id="galaxyLetterModal" aria-hidden="true">
+                    <div class="galaxy-letter-backdrop" id="galaxyLetterBackdrop"></div>
+                    <div class="galaxy-scroll-content">
+                        <!-- Top Scroll Wooden Rod -->
+                        <div class="scroll-wooden-rod rod-top">
+                            <span class="rod-knob knob-left"></span>
+                            <span class="rod-shaft"></span>
+                            <span class="rod-knob knob-right"></span>
+                        </div>
+
+                        <!-- Silk Parchment Main Body -->
+                        <div class="royal-scroll-parchment galaxy-parchment">
+                            <button class="btn-close-galaxy-letter" id="btnCloseGalaxyLetter"
+                                aria-label="Đóng thư">✕</button>
+
+                            <div class="parchment-corner corner-tl">❖</div>
+                            <div class="parchment-corner corner-tr">❖</div>
+                            <div class="parchment-corner corner-bl">❖</div>
+                            <div class="parchment-corner corner-br">❖</div>
+                            <div class="letter-content-body" id="galaxyLetterBody">
+                                <!-- Typewriter paragraphs injected by JS -->
+                            </div>
+
+                            <div class="letter-signature-container">
+                                <div class="letter-signature-content">
+                                    <p class="sig-from">Mãi mãi yêu em,</p>
+                                    <p class="sig-name" id="galaxyLetterSenderText">Ngừi iuu cụa em 💖</p>
+                                </div>
+                            </div>
+
+                            <div class="letter-actions galaxy-letter-actions">
+                                <button class="btn-secondary btn-close-letter-action" id="btnLetterExploreGalaxy">
+                                    <span>Khám phá tiếp ✨</span>
+                                </button>
+                                <button class="btn-primary btn-scroll-action" id="btnGalaxyGoToCh3">
+                                    <span>Thả Đèn Trời</span>
+                                    <span class="btn-arrow">🏮✨ ➔</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Scroll Wooden Rod -->
+                        <div class="scroll-wooden-rod rod-bottom">
+                            <span class="rod-knob knob-left"></span>
+                            <span class="rod-shaft"></span>
+                            <span class="rod-knob knob-right"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="galaxy-touch-hint">
+                    <span>✨ Vuốt để xoay 360°</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             CHƯƠNG 3: THẢ ĐÈN TRỜI NGUYỆN ƯỚC (VĨ THANH - GRAND FINALE)
+             ============================================== -->
+        <section id="scene-3" class="story-scene scene-hidden">
+            <!-- Full Sky Ambient Companion fleet of lanterns -->
+            <div class="lantern-fleet-container" id="lanternFleetContainer"></div>
+
+            <!-- Full Sky Trail of glowing embers and stardust -->
+            <div class="lantern-ember-trail" id="lanternEmberTrail"></div>
+
+            <div class="scene-header">
+                <button class="btn-scene-back" data-back="true" aria-label="Quay lại chương trước">
+                    <span class="back-arrow">‹</span> Quay lại
+                </button>
+                <h2 class="scene-title" id="ch3Title">Thả Đèn Trời</h2>
+            </div>
+
+            <!-- Wish Lantern Interactive Center -->
+            <div class="wish-release-container" id="wishReleaseContainer">
+                <div class="giant-wish-lantern" id="giantWishLantern">
+                    <!-- Warm Fiery Lantern Flame Core Glow -->
+                    <div class="lantern-flame-core" id="lanternFlameCore"></div>
+                    <img src="assets/images/sky_lantern_screen_transparent.png" alt="Đèn ước nguyện"
+                        class="giant-lantern-trans-img">
+                    <div class="lantern-flying-wish-text" id="lanternFlyingWishText"></div>
+                </div>
+            </div>
+
+            <!-- Wish Input Card -->
+            <div class="wish-input-card glass-panel" id="wishInputCard">
+                <label for="wishInput" class="wish-label" id="wishPromptText">
+                    Viết một điều ước Trung Thu của em vào đây nhé... ✨
+                </label>
+
+                <div class="input-wrapper">
+                    <textarea id="wishInput" rows="2" maxlength="120"
+                        placeholder="Viết điều ước của em tại đây..."></textarea>
+                </div>
+                <button class="btn-primary btn-wish-release" id="btnReleaseWish">
+                    <span class="btn-icon">🏮</span>
+                    <span id="btnReleaseText">Thả Đèn Lên Bầu Trời 🏮✨</span>
+                </button>
+            </div>
+
+            <!-- Success Celebration Overlay (After releasing lantern) -->
+            <div class="wish-success-box glass-panel" id="wishSuccessBox">
+                <div class="success-icon">🌕💖✨</div>
+                <h3 class="success-title" id="successTitleText">Điều Ước Của Em Đã Được Gửi Đi Thành Công ✨</h3>
+
+                <button class="btn-primary btn-release-another" id="btnReleaseAnotherLantern">
+                    <span class="btn-icon">🏮</span>
+                    <span id="btnReleaseAnotherText">Thả thêm đèn trời 🏮✨</span>
+                </button>
+                <button class="btn-primary btn-galaxy-explore" id="btnGoToGalaxy">
+                    <span class="btn-icon">🌌</span>
+                    <span id="btnGoToGalaxyText">Quay lại thư 🌌✨</span>
+                </button>
+                <button class="btn-secondary" id="btnReplayStory">
+                    <span class="btn-icon">🔄</span>
+                    <span id="btnReplayText">Xem lại từ đầu</span>
+                </button>
+            </div>
+        </section>
+
+
+        <!-- Hidden Audio Element -->
+        <audio id="bgAudio" preload="auto" loop></audio>
+
+    </div>
+
+    <!-- Romantic Girlfriend Photo Cameo Modal ("Góc Nhỏ Nàng Thơ ✨") -->
+    <div class="gf-photo-modal" id="gfPhotoModal" aria-hidden="true">
+        <div class="gf-modal-backdrop" id="gfModalBackdrop"></div>
+        <div class="gf-modal-card">
+            <button class="gf-modal-close" id="gfModalClose" aria-label="Đóng xem ảnh">✕</button>
+            <div class="gf-card-header">
+                <div class="gf-crown-badge">👑 Nàng Thơ Của Anh 👑</div>
+                <h3 class="gf-card-title">Ngôi Sao Sáng Nhất Bầu Trời</h3>
+                <div class="gf-title-divider"><span>✨ 🌕 ✨</span></div>
+            </div>
+            <div class="gf-photo-frame-container">
+                <div class="gf-photo-glow-ring"></div>
+                <img src="assets/images/tvy.jpg" alt="Nụ cười xinh của em" class="gf-portrait-photo">
+                <div class="gf-photo-shine"></div>
+                <div class="gf-corner-sparkle sp-1">✦</div>
+                <div class="gf-corner-sparkle sp-2">✦</div>
+                <div class="gf-corner-sparkle sp-3">✦</div>
+                <div class="gf-corner-sparkle sp-4">✦</div>
+            </div>
+            <div class="gf-quote-container">
+                <p class="gf-quote-text">"Dẫu cho vạn vì sao trên dải ngân hà lấp lánh, em vẫn luôn là ánh trăng dịu
+                    dàng và tuyệt đẹp nhất trong tim anh..."</p>
+                <div class="gf-heart-seal">💖 Trọn Vẹn Yêu Thương 💖</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js?v=17"></script>
+    <script src="script.js?v=64"></script>
+</body>
+
+</html>

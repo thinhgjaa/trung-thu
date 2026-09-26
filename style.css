@@ -1,0 +1,4449 @@
+/* ====================================================================
+   TRUNG THU YÊU THƯƠNG - MODERN ROMANTIC CSS DESIGN SYSTEM
+   Deep Midnight Sky, Warm Candlelight, Glassmorphism, Micro-Animations
+   ==================================================================== */
+
+:root {
+    --bg-space: #070b19;
+    --bg-gradient: radial-gradient(circle at 50% 30%, #171b38 0%, #0c1024 45%, #050711 100%);
+    --gold-glow: #ffd56b;
+    --gold-bright: #fff2a3;
+    --lantern-orange: #ff7a18;
+    --lantern-fire: #ff9f43;
+    --ruby-red: #d63031;
+    --royal-gold: #f1c40f;
+    --glass-bg: rgba(18, 22, 42, 0.78);
+    --glass-border: rgba(255, 215, 120, 0.28);
+    --glass-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+    --text-primary: #ffffff;
+    --text-secondary: #f0e6d2;
+    --text-muted: #a6b1c9;
+    --font-main: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-script: 'Dancing Script', cursive;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    background: var(--bg-space);
+    font-family: var(--font-main);
+    color: var(--text-primary);
+    overscroll-behavior: none;
+    -webkit-overscroll-behavior: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+/* ==============================================
+   BACKGROUND CANVAS (STARS & FIREWORKS)
+   ============================================== */
+#star-canvas, #firework-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+#firework-canvas {
+    z-index: 99;
+}
+
+/* ==============================================
+   FULL-SCREEN CELESTIAL BACKDROP & CINEMATIC DEPTH (MỜ ẢO TOÀN CẢNH)
+   ============================================== */
+.celestial-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+    contain: paint layout;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* Vầng hào quang đại trăng bao trùm toàn vũ trụ */
+.backdrop-grand-moon-halo {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 950px;
+    height: 950px;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(255, 235, 160, 0.28) 0%, 
+        rgba(255, 185, 70, 0.16) 35%, 
+        rgba(108, 92, 231, 0.08) 60%, 
+        transparent 75%
+    );
+    filter: blur(75px);
+    pointer-events: none;
+    animation: moonHaloBreathe 18s ease-in-out infinite alternate;
+}
+
+@keyframes moonHaloBreathe {
+    0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.75; }
+    50% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.95; }
+    100% { transform: translate(-50%, -50%) scale(0.98); opacity: 0.8; }
+}
+
+/* Các luồng tinh vân mờ ảo đa sắc */
+.backdrop-nebula {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(100px);
+    transition: opacity 1.5s ease;
+}
+
+.backdrop-nebula.nebula-left {
+    top: 20%;
+    left: -12%;
+    width: 650px;
+    height: 650px;
+    background: radial-gradient(circle, rgba(108, 92, 231, 0.38) 0%, rgba(9, 132, 227, 0.22) 50%, transparent 75%);
+    animation: nebulaDriftLeft 24s ease-in-out infinite alternate;
+}
+
+.backdrop-nebula.nebula-right {
+    bottom: 15%;
+    right: -10%;
+    width: 680px;
+    height: 680px;
+    background: radial-gradient(circle, rgba(255, 160, 50, 0.35) 0%, rgba(235, 77, 75, 0.18) 50%, transparent 75%);
+    animation: nebulaDriftRight 26s 2s ease-in-out infinite alternate;
+}
+
+.backdrop-nebula.nebula-top {
+    top: -15%;
+    left: 40%;
+    width: 600px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(72, 52, 212, 0.28) 0%, rgba(130, 204, 221, 0.15) 55%, transparent 75%);
+    animation: nebulaDriftTop 28s 4s ease-in-out infinite alternate;
+}
+
+@keyframes nebulaDriftLeft {
+    0% { transform: translateY(0) scale(1); opacity: 0.35; }
+    50% { transform: translateY(-40px) scale(1.15); opacity: 0.52; }
+    100% { transform: translateY(25px) scale(0.95); opacity: 0.38; }
+}
+
+@keyframes nebulaDriftRight {
+    0% { transform: translateY(0) scale(1); opacity: 0.32; }
+    50% { transform: translateY(35px) scale(1.18); opacity: 0.5; }
+    100% { transform: translateY(-30px) scale(0.92); opacity: 0.36; }
+}
+
+@keyframes nebulaDriftTop {
+    0% { transform: translateX(0) scale(1); opacity: 0.25; }
+    50% { transform: translateX(45px) scale(1.12); opacity: 0.42; }
+    100% { transform: translateX(-35px) scale(0.95); opacity: 0.28; }
+}
+
+/* Dải cực quang mờ lướt chậm */
+.backdrop-aurora {
+    position: absolute;
+    width: 140%;
+    left: -20%;
+    height: 180px;
+    filter: blur(40px);
+    pointer-events: none;
+    opacity: 0.22;
+}
+
+.aurora-1 {
+    top: 18%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(108, 92, 231, 0.25) 25%, 
+        rgba(130, 204, 221, 0.35) 50%, 
+        rgba(255, 215, 107, 0.2) 75%, 
+        transparent 100%
+    );
+    transform: rotate(-3deg);
+    animation: auroraWave1 22s ease-in-out infinite alternate;
+}
+
+.aurora-2 {
+    bottom: 25%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 159, 67, 0.2) 30%, 
+        rgba(108, 92, 231, 0.28) 60%, 
+        transparent 100%
+    );
+    transform: rotate(2deg);
+    animation: auroraWave2 26s 3s ease-in-out infinite alternate;
+}
+
+@keyframes auroraWave1 {
+    0% { transform: rotate(-3deg) translateX(-40px); opacity: 0.18; }
+    50% { transform: rotate(-1deg) translateX(40px); opacity: 0.3; }
+    100% { transform: rotate(-4deg) translateX(0); opacity: 0.2; }
+}
+
+@keyframes auroraWave2 {
+    0% { transform: rotate(2deg) translateX(30px); opacity: 0.15; }
+    50% { transform: rotate(4deg) translateX(-40px); opacity: 0.28; }
+    100% { transform: rotate(1deg) translateX(10px); opacity: 0.18; }
+}
+
+/* Dãy núi mờ sương 3 tầng chiều sâu tiên cảnh */
+.backdrop-mountain-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.mountain-layer-far {
+    height: 38vh;
+    min-height: 260px;
+    z-index: 3;
+    opacity: 0.68;
+    filter: blur(5px);
+}
+
+.mountain-layer-mid {
+    height: 29vh;
+    min-height: 200px;
+    z-index: 4;
+    opacity: 0.85;
+    filter: blur(2.5px);
+}
+
+.mountain-layer-near {
+    height: 20vh;
+    min-height: 140px;
+    z-index: 5;
+    opacity: 0.95;
+    filter: blur(1.2px);
+}
+
+.mountain-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Sương lam cuộn trôi thung lũng */
+.backdrop-valley-mist {
+    position: absolute;
+    bottom: 4%;
+    left: -15%;
+    width: 130%;
+    height: 140px;
+    background: linear-gradient(180deg, 
+        transparent 0%, 
+        rgba(130, 204, 221, 0.16) 40%, 
+        rgba(255, 225, 140, 0.2) 75%, 
+        transparent 100%
+    );
+    filter: blur(32px);
+    pointer-events: none;
+    z-index: 6;
+    opacity: 0.45;
+}
+
+.mist-1 {
+    animation: valleyMistDrift1 30s ease-in-out infinite alternate;
+}
+
+.mist-2 {
+    bottom: 12%;
+    height: 100px;
+    opacity: 0.35;
+    background: linear-gradient(180deg, transparent 0%, rgba(108, 92, 231, 0.14) 50%, transparent 100%);
+    animation: valleyMistDrift2 36s 4s ease-in-out infinite alternate;
+}
+
+@keyframes valleyMistDrift1 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(60px); }
+}
+
+@keyframes valleyMistDrift2 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-70px); }
+}
+
+/* Đèn trời bay lơ lửng ở 2 bên cánh gà ngoài app-container (Cinematic DOF Bokeh) */
+.backdrop-lanterns-cluster {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    will-change: transform;
+}
+
+.backdrop-lantern {
+    position: absolute;
+    background: radial-gradient(circle at 50% 65%, #ffffff 0%, #ffd56b 40%, #ff7a18 80%, #d63031 100%);
+    border-radius: 5px 5px 8px 8px;
+    box-shadow: 0 0 16px #ffd56b, 0 0 30px #ff7a18;
+    pointer-events: none;
+    animation: backdropLanternFloat linear infinite;
+}
+
+/* Chiếc 1: Bên trái gần (rực rỡ, mờ nhẹ) */
+.backdrop-lantern.bl-1 {
+    left: 8%;
+    bottom: -40px;
+    width: 22px;
+    height: 30px;
+    filter: blur(1.8px);
+    opacity: 0.85;
+    animation-duration: 22s;
+    animation-delay: -2s;
+}
+
+/* Chiếc 2: Bên trái trung cảnh */
+.backdrop-lantern.bl-2 {
+    left: 18%;
+    bottom: -40px;
+    width: 15px;
+    height: 22px;
+    filter: blur(3.8px);
+    opacity: 0.65;
+    animation-duration: 27s;
+    animation-delay: -11s;
+}
+
+/* Chiếc 3: Bên trái xa mờ */
+.backdrop-lantern.bl-3 {
+    left: 4%;
+    bottom: -40px;
+    width: 11px;
+    height: 16px;
+    filter: blur(5.5px);
+    opacity: 0.45;
+    animation-duration: 33s;
+    animation-delay: -19s;
+}
+
+/* Chiếc 4: Bên trái sát app */
+.backdrop-lantern.bl-4 {
+    left: 27%;
+    bottom: -40px;
+    width: 13px;
+    height: 19px;
+    filter: blur(3px);
+    opacity: 0.6;
+    animation-duration: 25s;
+    animation-delay: -7s;
+}
+
+/* Chiếc 5: Bên phải gần */
+.backdrop-lantern.bl-5 {
+    right: 9%;
+    bottom: -40px;
+    width: 20px;
+    height: 28px;
+    filter: blur(2px);
+    opacity: 0.85;
+    animation-duration: 21s;
+    animation-delay: -5s;
+}
+
+/* Chiếc 6: Bên phải trung cảnh */
+.backdrop-lantern.bl-6 {
+    right: 19%;
+    bottom: -40px;
+    width: 16px;
+    height: 23px;
+    filter: blur(4px);
+    opacity: 0.68;
+    animation-duration: 28s;
+    animation-delay: -14s;
+}
+
+/* Chiếc 7: Bên phải xa mờ */
+.backdrop-lantern.bl-7 {
+    right: 5%;
+    bottom: -40px;
+    width: 10px;
+    height: 15px;
+    filter: blur(6px);
+    opacity: 0.42;
+    animation-duration: 35s;
+    animation-delay: -23s;
+}
+
+/* Chiếc 8: Bên phải sát app */
+.backdrop-lantern.bl-8 {
+    right: 28%;
+    bottom: -40px;
+    width: 14px;
+    height: 20px;
+    filter: blur(2.8px);
+    opacity: 0.62;
+    animation-duration: 24s;
+    animation-delay: -16s;
+}
+
+@keyframes backdropLanternFloat {
+    0% {
+        transform: translateY(0) translateX(0) scale(0.85);
+        opacity: 0;
+    }
+    12% {
+        opacity: 0.85;
+    }
+    45% {
+        transform: translateY(-45vh) translateX(25px) scale(0.95);
+    }
+    85% {
+        opacity: 0.75;
+    }
+    100% {
+        transform: translateY(-105vh) translateX(45px) scale(0.7);
+        opacity: 0;
+    }
+}
+
+/* Đom đóm & Bụi tiên dạ quang lượn lờ */
+.backdrop-fireflies-cluster {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 7;
+}
+
+.firefly-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff9d2;
+    box-shadow: 0 0 10px #ffeaa7, 0 0 20px #ffd56b, 0 0 35px #ff9f43;
+    pointer-events: none;
+    animation: fireflyGlow linear infinite alternate;
+}
+
+.firefly-orb.ff-1 { top: 22%; left: 14%; width: 5px; height: 5px; animation-duration: 4s; }
+.firefly-orb.ff-2 { top: 48%; left: 8%; width: 6px; height: 6px; animation-duration: 6s; animation-delay: -2s; }
+.firefly-orb.ff-3 { top: 72%; left: 22%; width: 4px; height: 4px; animation-duration: 5s; animation-delay: -1s; }
+.firefly-orb.ff-4 { top: 35%; right: 12%; width: 6px; height: 6px; animation-duration: 5.5s; animation-delay: -3s; }
+.firefly-orb.ff-5 { top: 60%; right: 17%; width: 5px; height: 5px; animation-duration: 4.5s; animation-delay: -1.5s; }
+.firefly-orb.ff-6 { top: 82%; right: 9%; width: 4px; height: 4px; animation-duration: 6.5s; animation-delay: -4s; }
+.firefly-orb.ff-7 { top: 15%; right: 24%; width: 5px; height: 5px; animation-duration: 5s; animation-delay: -2.5s; }
+.firefly-orb.ff-8 { top: 78%; left: 32%; width: 4px; height: 4px; animation-duration: 7s; animation-delay: -3.5s; }
+
+@keyframes fireflyGlow {
+    0% {
+        transform: translate(0, 0) scale(0.6);
+        opacity: 0.2;
+    }
+    50% {
+        transform: translate(15px, -20px) scale(1.2);
+        opacity: 0.95;
+    }
+    100% {
+        transform: translate(-15px, -35px) scale(0.7);
+        opacity: 0.3;
+    }
+}
+
+/* Cành trúc / cành liễu mờ ảo ở 2 góc trên */
+.backdrop-corner-branch {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.38;
+    filter: blur(2.5px);
+}
+
+.branch-top-left {
+    left: 0;
+    width: 320px;
+    height: 220px;
+}
+
+.branch-top-right {
+    right: 0;
+    width: 320px;
+    height: 220px;
+}
+
+.branch-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ==============================================
+   HUYỀN TÍCH CÂY ĐA CHÚ CUỘI & CUNG TRĂNG BACKDROP
+   ============================================== */
+.backdrop-folklore-cluster {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    will-change: transform;
+}
+
+.backdrop-folklore-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    animation: folkloreBackdropFloat 14s ease-in-out infinite alternate;
+}
+
+.backdrop-folklore-item .folklore-silhouette-img {
+    width: 260px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 16px;
+    mix-blend-mode: luminosity;
+    box-shadow:
+        0 0 24px rgba(255, 215, 107, 0.4),
+        0 0 48px rgba(255, 160, 50, 0.2);
+    opacity: 0.75;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.backdrop-folklore-item .folklore-badge-tag {
+    font-family: var(--font-serif);
+    font-size: 0.82rem;
+    color: var(--gold-bright);
+    letter-spacing: 1px;
+    padding: 3px 12px;
+    border-radius: 12px;
+    background: rgba(15, 20, 40, 0.65);
+    border: 1px solid rgba(255, 215, 107, 0.35);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(255, 215, 107, 0.2);
+    opacity: 0.9;
+}
+
+.backdrop-folklore-item.item-cuoi {
+    top: 15%;
+    left: 4%;
+    animation-duration: 15s;
+}
+
+.backdrop-folklore-item.item-palace {
+    top: 13%;
+    right: 4%;
+    animation-duration: 17s;
+    animation-delay: -3s;
+}
+
+@keyframes folkloreBackdropFloat {
+    0% { transform: translateY(0) scale(0.98); }
+    50% { transform: translateY(-16px) scale(1.04); }
+    100% { transform: translateY(10px) scale(0.96); }
+}
+
+@media (max-width: 992px) {
+    .backdrop-folklore-cluster {
+        display: none;
+    }
+}
+
+/* Cinematic Vignette bo nhẹ 4 góc */
+.backdrop-cinematic-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 8;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(4, 6, 16, 0.45) 80%, rgba(2, 3, 9, 0.78) 100%);
+}
+
+/* ==============================================
+   DEEP DEPTH ATMOSPHERE (BOKEH ORBS, DOF LANTERNS & MIST)
+   ============================================== */
+.deep-depth-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.bokeh-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(14px);
+    pointer-events: none;
+    animation: bokehFloat 14s ease-in-out infinite alternate;
+}
+
+.bokeh-orb.b-1 {
+    top: 10%;
+    left: 6%;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(255, 215, 107, 0.5) 0%, rgba(255, 159, 67, 0.15) 60%, transparent 100%);
+    animation-duration: 13s;
+}
+
+.bokeh-orb.b-2 {
+    top: 26%;
+    right: 8%;
+    width: 110px;
+    height: 110px;
+    background: radial-gradient(circle, rgba(255, 235, 160, 0.4) 0%, rgba(108, 92, 231, 0.18) 60%, transparent 100%);
+    animation-duration: 18s;
+    animation-delay: -3s;
+}
+
+.bokeh-orb.b-3 {
+    top: 50%;
+    left: 12%;
+    width: 65px;
+    height: 65px;
+    background: radial-gradient(circle, rgba(255, 175, 50, 0.35) 0%, transparent 70%);
+    animation-duration: 15s;
+    animation-delay: -6s;
+}
+
+.bokeh-orb.b-4 {
+    bottom: 24%;
+    right: 12%;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, rgba(130, 204, 221, 0.35) 0%, transparent 70%);
+    animation-duration: 17s;
+    animation-delay: -4s;
+}
+
+.bokeh-orb.b-5 {
+    top: 5%;
+    right: 22%;
+    width: 55px;
+    height: 55px;
+    background: radial-gradient(circle, rgba(255, 245, 190, 0.45) 0%, transparent 70%);
+    animation-duration: 12s;
+    animation-delay: -2s;
+}
+
+@keyframes bokehFloat {
+    0% { transform: translateY(0) scale(1); opacity: 0.6; }
+    50% { transform: translateY(-20px) scale(1.15); opacity: 0.85; }
+    100% { transform: translateY(15px) scale(0.95); opacity: 0.55; }
+}
+
+/* Đèn trời xa xăm mờ ảo DOF blur (Depth of Field) */
+.bokeh-distant-lantern {
+    position: absolute;
+    width: 14px;
+    height: 20px;
+    background: radial-gradient(circle at 50% 60%, #ffffff 0%, #ffd56b 40%, #ff7a18 80%);
+    border-radius: 4px 4px 6px 6px;
+    box-shadow: 0 0 14px #ffd56b, 0 0 24px #ff7a18;
+    filter: blur(3.5px);
+    opacity: 0.65;
+    animation: distantLanternAscend 20s linear infinite;
+    pointer-events: none;
+}
+
+.bokeh-distant-lantern.dl-1 {
+    left: 20%;
+    bottom: -30px;
+    animation-duration: 22s;
+    animation-delay: -5s;
+}
+
+.bokeh-distant-lantern.dl-2 {
+    right: 24%;
+    bottom: -30px;
+    width: 10px;
+    height: 15px;
+    filter: blur(4.5px);
+    opacity: 0.5;
+    animation-duration: 27s;
+    animation-delay: -14s;
+}
+
+.bokeh-distant-lantern.dl-3 {
+    left: 58%;
+    bottom: -30px;
+    width: 18px;
+    height: 24px;
+    filter: blur(3px);
+    opacity: 0.7;
+    animation-duration: 19s;
+    animation-delay: -18s;
+}
+
+@keyframes distantLanternAscend {
+    0% {
+        transform: translateY(0) translateX(0) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-920px) translateX(30px) scale(0.6);
+        opacity: 0;
+    }
+}
+
+/* Lớp sương lam huyền ảo trôi chậm */
+.atmospheric-fog-layer {
+    position: absolute;
+    left: -20%;
+    width: 140%;
+    pointer-events: none;
+    filter: blur(25px);
+    opacity: 0.38;
+}
+
+.fog-top {
+    top: 14%;
+    height: 130px;
+    background: linear-gradient(90deg, transparent 0%, rgba(130, 204, 221, 0.15) 30%, rgba(255, 215, 107, 0.18) 70%, transparent 100%);
+    animation: fogDriftTop 28s ease-in-out infinite alternate;
+}
+
+.fog-mid {
+    top: 45%;
+    height: 150px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 175, 50, 0.12) 40%, rgba(108, 92, 231, 0.15) 80%, transparent 100%);
+    animation: fogDriftMid 34s ease-in-out infinite alternate;
+}
+
+@keyframes fogDriftTop {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(45px); }
+}
+
+@keyframes fogDriftMid {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50px); }
+}
+
+/* ==============================================
+   APP CONTAINER (MOBILE-FIRST FRAMING)
+   ============================================== */
+.app-container {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    background: var(--bg-gradient);
+    box-shadow: 0 0 70px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 180, 50, 0.08);
+    z-index: 10;
+}
+
+@media (min-width: 768px) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at center, #111428 0%, #050711 100%);
+    }
+    .app-container {
+        width: 540px;
+        max-width: 560px;
+        height: 94vh;
+        max-height: 920px;
+        border-radius: 36px;
+        border: 1px solid rgba(255, 215, 120, 0.32);
+        box-shadow: 
+            0 0 100px rgba(0, 0, 0, 0.95), 
+            0 0 55px rgba(255, 185, 70, 0.22),
+            inset 0 0 35px rgba(255, 215, 120, 0.08);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        background: radial-gradient(circle at 50% 25%, rgba(20, 24, 52, 0.88) 0%, rgba(10, 13, 30, 0.94) 50%, rgba(4, 6, 15, 0.98) 100%);
+    }
+    .moon-stage-container {
+        transform: scale(1.42) !important;
+        transform-origin: center 25% !important;
+        margin-top: 32px !important;
+    }
+}
+
+/* ==============================================
+   HEADER & TOP CONTROLS (OPTIMIZED FOR NOTCH & DYNAMIC ISLAND)
+   ============================================== */
+.app-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    padding-bottom: 8px;
+    padding-left: calc(16px + env(safe-area-inset-left, 0px));
+    padding-right: calc(16px + env(safe-area-inset-right, 0px));
+    z-index: 50;
+    pointer-events: none;
+}
+
+.header-actions {
+    margin-left: auto;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-bubble-quote {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(15, 20, 38, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 6px 14px;
+    border-radius: 24px;
+    font-size: clamp(0.76rem, 2.5vw, 0.86rem);
+    color: #ffe6eb;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    animation: floatGentle 4s ease-in-out infinite;
+    max-width: calc(100% - 60px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-bubble-quote .avatar-icon {
+    font-size: 1.05rem;
+}
+
+/* Music disc button */
+.btn-music {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    outline: none;
+}
+
+.music-disc {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2d3436 20%, #1e272e 50%, #000000 100%);
+    border: 2px solid var(--gold-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 14px rgba(255, 213, 107, 0.45);
+    transition: transform 0.3s;
+}
+
+.music-disc.playing {
+    animation: spinDisc 3.5s linear infinite;
+}
+
+.music-disc .disc-inner {
+    font-size: 0.95rem;
+}
+
+.music-equalizer {
+    display: flex;
+    align-items: flex-end;
+    gap: 2.5px;
+    height: 16px;
+}
+
+.music-equalizer span {
+    width: 3px;
+    height: 4px;
+    background: var(--gold-glow);
+    border-radius: 2px;
+    transition: height 0.2s;
+}
+
+.music-disc.playing + .music-equalizer span:nth-child(1) {
+    animation: eqBar 0.8s ease-in-out infinite alternate;
+}
+.music-disc.playing + .music-equalizer span:nth-child(2) {
+    animation: eqBar 0.6s ease-in-out 0.2s infinite alternate;
+}
+.music-disc.playing + .music-equalizer span:nth-child(3) {
+    animation: eqBar 0.9s ease-in-out 0.4s infinite alternate;
+}
+
+/* ==============================================
+   STORY PROGRESS INDICATOR DOTS
+   ============================================== */
+.story-progress-bar {
+    position: absolute;
+    top: calc(56px + env(safe-area-inset-top, 0px));
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 45;
+}
+
+.progress-step {
+    width: 22px;
+    height: 5px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.22);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    touch-action: manipulation;
+}
+
+/* Tăng vùng chạm (hitbox) trên điện thoại */
+.progress-step::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    bottom: -12px;
+    left: -4px;
+    right: -4px;
+}
+
+.progress-step.active {
+    width: 36px;
+    background: linear-gradient(90deg, #ffd56b, #ff7a18);
+    box-shadow: 0 0 10px rgba(255, 213, 107, 0.7);
+}
+
+/* ==============================================
+   SCENE WRAPPER & TRANSITIONS
+   ============================================== */
+.story-scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(75px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    padding-left: calc(16px + env(safe-area-inset-left, 0px));
+    padding-right: calc(16px + env(safe-area-inset-right, 0px));
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(18px) scale(0.98);
+    transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.3, 1);
+    z-index: 20;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.story-scene.scene-hidden,
+.scene-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.story-scene.scene-active {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) scale(1);
+    z-index: 25;
+}
+
+.scene-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 14px;
+    padding: 0 6px;
+}
+
+/* Nút quay lại tiện lợi trên điện thoại */
+.btn-scene-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(18, 24, 45, 0.7);
+    border: 1px solid rgba(255, 215, 120, 0.35);
+    color: #ffd56b;
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    font-family: var(--font-main);
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    z-index: 10;
+    min-height: 30px;
+    touch-action: manipulation;
+}
+
+.btn-scene-back:active {
+    transform: scale(0.93);
+    background: rgba(255, 215, 107, 0.25);
+}
+
+.btn-scene-back .back-arrow {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.chapter-badge {
+    display: none !important;
+}
+
+.scene-title {
+    font-family: var(--font-serif);
+    font-size: 1.48rem;
+    color: #fff9ea;
+    text-shadow: 0 2px 14px rgba(255, 213, 107, 0.35);
+    margin-bottom: 4px;
+}
+
+.scene-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.lantern-counter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 160, 50, 0.15);
+    border: 1px solid rgba(255, 160, 50, 0.35);
+    color: #ffbe76;
+    padding: 3px 12px;
+    border-radius: 14px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    margin-top: 6px;
+    animation: pulseGlow 2.5s infinite;
+}
+
+/* ==============================================
+   CHƯƠNG 1: ĐÊM RẰM HUYỀN ẢO (VISUALS MATCHING IMAGE)
+   ============================================== */
+#scene-1 {
+    justify-content: space-between;
+    padding-bottom: 30px;
+}
+
+.moon-stage-container {
+    position: relative;
+    width: 350px;
+    height: 410px;
+    margin: 8px auto 0;
+    transform: scale(1.18);
+    transform-origin: center 22%;
+    transition: transform 0.4s ease;
+    z-index: 20;
+}
+
+/* Traditional Ornamental Red & Gold Moon Ring - Concentric with the Moon */
+.traditional-moon-ring {
+    position: absolute;
+    top: 26%;
+    left: 35%;
+    width: 220px;
+    height: 220px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.75;
+    animation: moonRingSpinSlow 60s linear infinite;
+}
+
+@keyframes moonRingSpinSlow {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.ring-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 12px rgba(255, 175, 50, 0.45));
+}
+
+.ring-outer {
+    fill: none;
+    stroke: rgba(225, 80, 60, 0.65);
+    stroke-width: 3.5;
+}
+
+.ring-middle {
+    fill: none;
+    stroke: rgba(255, 215, 107, 0.85);
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+}
+
+.ring-inner {
+    fill: none;
+    stroke: rgba(180, 40, 60, 0.5);
+    stroke-width: 2;
+}
+
+.ring-cloud {
+    fill: #ffd56b;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 107, 0.9));
+}
+
+/* Luminous Full Moon (Hold Target - Tọa lạc trên cao bên trái cung trăng, ngắm nhìn thỏ ngọc) */
+.luminous-moon {
+    position: absolute;
+    top: 26%;
+    left: 35%;
+    width: 175px;
+    height: 175px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 25;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    filter: drop-shadow(0 0 28px rgba(255, 220, 100, 0.7)) drop-shadow(0 0 56px rgba(255, 180, 40, 0.35));
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+    animation: moonFloatSway 8s ease-in-out infinite alternate;
+}
+
+@keyframes moonFloatSway {
+    0%   { filter: drop-shadow(0 0 22px rgba(255, 220, 100, 0.65)) drop-shadow(0 0 50px rgba(255, 180, 40, 0.30)); }
+    50%  { filter: drop-shadow(0 0 35px rgba(255, 235, 140, 0.85)) drop-shadow(0 0 70px rgba(255, 200, 60, 0.50)); }
+    100% { filter: drop-shadow(0 0 26px rgba(255, 210, 90, 0.70)) drop-shadow(0 0 55px rgba(255, 175, 35, 0.35)); }
+}
+
+.luminous-moon:hover {
+    transform: translate(-50%, -50%) scale(1.04);
+    filter: drop-shadow(0 0 38px rgba(255, 240, 160, 0.95)) drop-shadow(0 0 80px rgba(255, 200, 60, 0.60));
+}
+
+.luminous-moon:active, .luminous-moon.holding {
+    transform: translate(-50%, -50%) scale(0.97);
+    filter: drop-shadow(0 0 55px rgba(255, 240, 160, 1)) drop-shadow(0 0 100px rgba(255, 200, 60, 0.85)) brightness(1.25);
+}
+
+/* Multi-Layered Ethereal Moon Glow Aura */
+.moon-glow-halo-far {
+    position: absolute;
+    inset: -60px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 240, 160, 0.40) 0%,
+        rgba(255, 200, 80, 0.20) 40%,
+        rgba(255, 150, 30, 0.08) 65%,
+        transparent 78%
+    );
+    filter: blur(22px);
+    animation: moonHaloBreathe 6s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.moon-glow-aura {
+    position: absolute;
+    inset: -28px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 210, 0.60) 10%,
+        rgba(255, 220, 100, 0.35) 45%,
+        rgba(255, 170, 40, 0.12) 70%,
+        transparent 82%
+    );
+    filter: blur(16px);
+    animation: moonPulse 4s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes moonHaloBreathe {
+    0%   { transform: scale(0.90); opacity: 0.65; }
+    50%  { transform: scale(1.05); opacity: 0.90; }
+    100% { transform: scale(1.15); opacity: 1.00; }
+}
+
+/* Realistic Luminous Super Moon Sphere */
+.moon-sphere-container {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+    touch-action: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    box-shadow:
+        0 0 0 2px rgba(255, 245, 200, 0.55),
+        0 0 20px rgba(255, 240, 160, 0.80),
+        0 0 55px rgba(255, 200, 80, 0.55),
+        0 0 100px rgba(255, 160, 40, 0.30),
+        inset 0 0 25px rgba(255, 255, 240, 0.85),
+        inset 0 -15px 30px rgba(200, 140, 20, 0.30);
+    z-index: 5;
+    background: radial-gradient(circle at 40% 35%, #ffe8a0, #c8890a);
+}
+
+.moon-sphere-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    filter: contrast(1.10) brightness(1.08) saturate(1.08);
+    animation: moonSurfaceGlow 7s ease-in-out infinite alternate;
+}
+
+@keyframes moonSurfaceGlow {
+    0%   { filter: contrast(1.05) brightness(1.02) saturate(1.00); }
+    50%  { filter: contrast(1.12) brightness(1.10) saturate(1.12); }
+    100% { filter: contrast(1.18) brightness(1.16) saturate(1.06); }
+}
+
+.moon-specular-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 220, 0.20) 40%, transparent 65%),
+        radial-gradient(ellipse at 70% 75%, rgba(200, 130, 20, 0.18) 0%, transparent 50%);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 6;
+}
+
+.moon-lunar-edge-highlight {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 248, 210, 0.75);
+    box-shadow:
+        inset 0 0 18px rgba(255, 230, 140, 0.65),
+        inset -4px -4px 12px rgba(180, 110, 10, 0.25);
+    pointer-events: none;
+    z-index: 7;
+}
+
+/* Ambient Transparent Sky Lanterns (Chuẩn xác như hình chụp) */
+.ambient-sky-lantern {
+    position: absolute;
+    pointer-events: none;
+    z-index: 12;
+    mix-blend-mode: screen;
+}
+
+.floating-trans-lantern {
+    width: 100%;
+    height: auto;
+    animation: lanternFloatSway 4.5s ease-in-out infinite alternate;
+}
+
+.lantern-top-right {
+    top: 25px;
+    right: 18px;
+    width: 68px;
+}
+
+.lantern-mid-right {
+    top: 110px;
+    right: 38px;
+    width: 32px;
+    animation: lanternFloatSway 3.8s 1s ease-in-out infinite alternate;
+}
+
+.lantern-center-bottom {
+    top: 165px;
+    right: 68px;
+    left: auto;
+    width: 44px;
+    animation: lanternFloatSway 5s 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes lanternFloatSway {
+    0% { transform: translateY(0) rotate(-2deg); }
+    100% { transform: translateY(-12px) rotate(2deg); }
+}
+
+/* Cute White Rabbit on Blooming Osmanthus Branch (Tọa lạc dưới cành cây ngắm trăng) */
+.rabbit-branch-container {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    left: auto;
+    width: 275px;
+    height: 265px;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.rabbit-branch-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+    pointer-events: none;
+    animation: rabbitGentleBreathe 4.5s ease-in-out infinite alternate;
+    transition: transform 0.2s;
+}
+
+.rabbit-branch-img:active {
+    transform: scale(0.96);
+}
+
+/* Bong bóng thoại bé Thỏ Ngọc */
+.rabbit-speech-bubble {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.7) translateY(8px);
+    z-index: 25;
+    background: rgba(12, 18, 42, 0.94);
+    border: 1.5px solid rgba(255, 215, 120, 0.9);
+    padding: 6px 14px;
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: max-content;
+    max-width: calc(100% - 24px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.75), 0 0 16px rgba(255, 215, 120, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+}
+
+.rabbit-speech-bubble.bubble-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) scale(1) translateY(0);
+    animation: bubbleFloating 3s ease-in-out infinite alternate;
+}
+
+@keyframes bubbleFloating {
+    0%   { transform: translateX(-50%) translateY(0) scale(1); }
+    100% { transform: translateX(-50%) translateY(-4px) scale(1.02); }
+}
+
+.rabbit-speech-bubble .bubble-icon {
+    font-size: 1rem;
+    line-height: 1;
+    display: inline-block;
+    animation: bunnyBounce 1.4s ease-in-out infinite;
+}
+
+@keyframes bunnyBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-3px) scale(1.12); }
+}
+
+.rabbit-speech-bubble .bubble-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff9e6;
+    letter-spacing: 0.2px;
+    font-family: "Quicksand", sans-serif;
+    text-shadow: 0 0 8px rgba(255, 215, 120, 0.5);
+    line-height: 1.2;
+}
+
+.rabbit-speech-bubble .bubble-tail {
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 7px solid rgba(255, 215, 120, 0.9);
+}
+
+.rabbit-speech-bubble .bubble-tail::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: -5px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 6px solid rgba(12, 18, 42, 0.98);
+}
+
+@keyframes rabbitGentleBreathe {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+}
+
+/* ==============================================
+   CELESTIAL MOON EFFECTS & OSMANTHUS PETALS
+   ============================================== */
+.moon-radial-beams {
+    position: absolute;
+    inset: -65px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        rgba(255, 215, 107, 0.16) 0deg,
+        transparent 25deg,
+        rgba(255, 225, 130, 0.22) 50deg,
+        transparent 75deg,
+        rgba(255, 170, 50, 0.18) 100deg,
+        transparent 135deg,
+        rgba(255, 215, 107, 0.2) 170deg,
+        transparent 200deg,
+        rgba(255, 225, 130, 0.24) 230deg,
+        transparent 265deg,
+        rgba(255, 170, 50, 0.18) 290deg,
+        transparent 320deg,
+        rgba(255, 215, 107, 0.16) 360deg
+    );
+    filter: blur(12px);
+    animation: moonBeamsRotate 35s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes moonBeamsRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.luminous-moon.holding .moon-radial-beams {
+    animation-duration: 6s;
+    filter: blur(8px) brightness(1.6);
+    inset: -85px;
+}
+
+/* Orbiting Celestial Stardust Ring */
+.moon-orbit-particles {
+    position: absolute;
+    inset: -28px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    animation: moonOrbitSpin 14s linear infinite;
+}
+
+.moon-orbit-speck {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 10%, #ffd56b 70%, transparent 100%);
+    box-shadow: 0 0 10px #ffd56b, 0 0 16px #ff9f43;
+    animation: speckTwinkle 2s ease-in-out infinite alternate;
+}
+
+@keyframes moonOrbitSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes speckTwinkle {
+    0% { transform: scale(0.6); opacity: 0.35; }
+    100% { transform: scale(1.4); opacity: 1; }
+}
+
+/* Osmanthus Petals Shower (Mưa Cánh Hoa Quế Rơi Lãng Mạn) */
+.osmanthus-petals-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 18;
+}
+
+.osmanthus-petal {
+    position: absolute;
+    width: 11px;
+    height: 15px;
+    background: radial-gradient(ellipse at 30% 30%, #fff7be 0%, #ffd56b 45%, #ff9f43 100%);
+    border-radius: 50% 50% 50% 10% / 60% 60% 40% 40%;
+    box-shadow: 0 0 6px rgba(255, 215, 107, 0.7);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    opacity: 0.88;
+    animation: petalFallDrift linear infinite;
+}
+
+@keyframes petalFallDrift {
+    0% {
+        transform: translateY(-25px) translateX(0) rotate(0deg) rotateY(0deg);
+        opacity: 0;
+    }
+    12% {
+        opacity: 0.95;
+    }
+    85% {
+        opacity: 0.88;
+    }
+    100% {
+        transform: translateY(330px) translateX(45px) rotate(380deg) rotateY(180deg);
+        opacity: 0;
+    }
+}
+
+/* ==============================================
+   INTERACTIVE JADE RABBIT COMPANION
+   ============================================== */
+.rabbit-interactive-wrapper {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    left: auto;
+    width: 275px;
+    height: 265px;
+    z-index: 28;
+    pointer-events: none;
+}
+
+.rabbit-tap-zone {
+    position: absolute;
+    bottom: 25px;
+    right: 35px;
+    left: auto;
+    width: 140px;
+    height: 160px;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 30;
+    transition: transform 0.15s ease;
+}
+
+.rabbit-tap-zone:active {
+    transform: scale(0.92);
+}
+
+/* Rabbit Hop Joy Animation (Nhảy tung tăng nhẹ nhàng, không làm biến mất hình) */
+.rabbit-branch-container.rabbit-hopping,
+.rabbit-branch-img.rabbit-hopping {
+    animation: rabbitHopJoy 0.65s cubic-bezier(0.25, 1.4, 0.5, 1) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+@keyframes rabbitHopJoy {
+    0%   { transform: translateY(0) scale(1); opacity: 1; }
+    25%  { transform: translateY(4px) scale(1.03, 0.97); opacity: 1; }
+    55%  { transform: translateY(-16px) scale(0.97, 1.04); opacity: 1; }
+    75%  { transform: translateY(2px) scale(1.01, 0.99); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Floating Emoji Emitter */
+.rabbit-hearts-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 35;
+}
+
+.floating-heart-emoji {
+    position: absolute;
+    font-size: 1.4rem;
+    pointer-events: none;
+    animation: floatHeartUp 1.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    filter: drop-shadow(0 0 8px rgba(255, 120, 150, 0.8));
+}
+
+@keyframes floatHeartUp {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
+    }
+    15% {
+        opacity: 1;
+        transform: translate(calc(var(--rand-x) * 0.3), -25px) scale(1.2);
+    }
+    80% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--rand-x), -145px) scale(1.5) rotate(var(--rand-rot));
+    }
+}
+
+/* Hold-to-Charge Progress Ring */
+.hold-progress-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 156px;
+    height: 156px;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    pointer-events: none;
+    z-index: 26;
+}
+
+.hold-progress-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.14);
+    stroke-width: 6;
+}
+
+.hold-progress-bar {
+    fill: none;
+    stroke: url(#holdGrad);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-dasharray: 421;
+    stroke-dashoffset: 421; /* Fully empty initially */
+    filter: drop-shadow(0 0 10px #ff7a18);
+    transition: stroke-dashoffset 0.05s linear;
+}
+
+/* Miniature Folklore Cuội on Moon Stage */
+.stage-folklore-cuoi {
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    width: 82px;
+    height: 82px;
+    z-index: 22;
+    pointer-events: none;
+    animation: floatGentle 5s ease-in-out infinite alternate;
+}
+
+.stage-folklore-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 107, 0.8));
+    opacity: 0.85;
+}
+
+/* Watermark inside luminous moon */
+/* Inner Moon Palace Glow Effect (CSS-only, no external image) */
+.moon-folklore-palace {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Decorative inner radial halo ring (Cung Trăng silhouette bằng CSS) */
+.moon-folklore-palace::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 55%;
+    height: 55%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 250, 200, 0.22);
+    box-shadow:
+        0 0 12px 4px rgba(255, 240, 160, 0.12),
+        inset 0 0 18px rgba(255, 235, 150, 0.08);
+    animation: moonPalaceGlow 5s ease-in-out infinite alternate;
+}
+
+.moon-folklore-palace::after {
+    content: '宮';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    color: rgba(255, 248, 210, 0.18);
+    font-family: var(--font-serif);
+    letter-spacing: 2px;
+    text-shadow: 0 0 14px rgba(255, 230, 120, 0.35);
+    animation: moonPalaceGlow 5s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes moonPalaceGlow {
+    0%   { opacity: 0.55; transform: translate(-50%, -50%) scale(0.95); }
+    100% { opacity: 1;    transform: translate(-50%, -50%) scale(1.08); }
+}
+
+.luminous-moon.holding .moon-folklore-palace::before,
+.luminous-moon.holding .moon-folklore-palace::after {
+    opacity: 0;
+}
+
+
+/* Ripples when pressed */
+.hold-ripples {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hold-ripple-wave {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 220, 110, 0.8);
+    animation: rippleExpand 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+/* Osmanthus Branch & Jade Rabbit */
+.branch-rabbit-composite {
+    position: absolute;
+    bottom: -15px;
+    left: -20px;
+    width: 290px;
+    height: 180px;
+    pointer-events: none;
+    z-index: 14;
+}
+
+.branch-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.branch-stalk {
+    fill: none;
+    stroke: #5d4037;
+    stroke-width: 7;
+    stroke-linecap: round;
+}
+
+.branch-twig {
+    fill: none;
+    stroke: #6d4c41;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.leaf {
+    fill: #2e7d32;
+    stroke: #1b5e20;
+    stroke-width: 1;
+}
+
+/* Osmanthus Golden Flower Clusters */
+.flower-cluster {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffd32a;
+    box-shadow: 
+        -4px 2px 0 #ffc048,
+        4px 3px 0 #ffdd59,
+        0 -4px 0 #ff9f1a,
+        -3px -3px 0 #fff200,
+        0 0 10px rgba(255, 221, 89, 0.8);
+}
+.flower-cluster.c1 { top: 92px; left: 65px; }
+.flower-cluster.c2 { top: 78px; left: 135px; }
+.flower-cluster.c3 { top: 110px; left: 175px; }
+.flower-cluster.c4 { top: 70px; left: 215px; }
+.flower-cluster.c5 { top: 95px; left: 245px; }
+
+/* Adorable Jade Rabbit */
+.jade-rabbit {
+    position: absolute;
+    top: 42px;
+    left: 88px;
+    width: 60px;
+    height: 65px;
+    cursor: pointer;
+    pointer-events: auto;
+    animation: rabbitBreathe 3.5s ease-in-out infinite;
+}
+
+.rabbit-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.rabbit-head {
+    position: absolute;
+    top: 14px;
+    right: 10px;
+    width: 32px;
+    height: 30px;
+    background: #ffffff;
+    border-radius: 50% 60% 50% 50%;
+    box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rabbit-ear {
+    position: absolute;
+    width: 10px;
+    height: 26px;
+    background: #ffffff;
+    border-radius: 50% 50% 20% 20%;
+    box-shadow: inset 0 -2px 3px #ffb8b8;
+    transform-origin: bottom center;
+}
+
+.rabbit-ear.left {
+    top: -8px;
+    right: 28px;
+    transform: rotate(-18deg);
+    animation: earTwitchLeft 5s infinite;
+}
+
+.rabbit-ear.right {
+    top: -10px;
+    right: 17px;
+    transform: rotate(10deg);
+    animation: earTwitchRight 4.5s infinite;
+}
+
+.rabbit-eye {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    width: 5px;
+    height: 6px;
+    background: #2d3436;
+    border-radius: 50%;
+}
+.rabbit-eye::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 50%;
+}
+
+.rabbit-blush {
+    position: absolute;
+    top: 16px;
+    right: 6px;
+    width: 7px;
+    height: 4px;
+    background: #ffb8b8;
+    border-radius: 50%;
+    opacity: 0.7;
+}
+
+.rabbit-paw {
+    position: absolute;
+    bottom: 4px;
+    right: 20px;
+    width: 14px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+}
+
+.rabbit-tail {
+    position: absolute;
+    bottom: 12px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 50%;
+}
+
+/* Ambient Realistic Mid-Autumn Lanterns (Đèn trời, Đèn ông sao, Đèn cá chép, Đèn hoa đăng) */
+.ambient-lantern {
+    position: absolute;
+    pointer-events: none;
+    z-index: 13;
+}
+
+.real-lantern-glow {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 215, 120, 0.4);
+    box-shadow: 0 0 20px rgba(255, 160, 50, 0.85), inset 0 0 10px rgba(255, 255, 255, 0.4);
+    animation: lanternGlowBreath 3s ease-in-out infinite alternate;
+}
+
+.lantern-1 { 
+    top: 15px; 
+    right: 18px; 
+    width: 46px; 
+    height: 46px; 
+    animation: floatDrift 5s ease-in-out infinite alternate; 
+}
+
+.lantern-2 { 
+    top: 85px; 
+    right: 8px; 
+    width: 44px; 
+    height: 44px; 
+    animation: floatDrift 4s 1s ease-in-out infinite alternate; 
+}
+
+.lantern-3 { 
+    top: 45px; 
+    left: 10px; 
+    width: 48px; 
+    height: 48px; 
+    animation: floatDrift 6s 0.5s ease-in-out infinite alternate; 
+}
+
+.lantern-lotus { 
+    bottom: 25px; 
+    left: 20px; 
+    width: 50px; 
+    height: 50px; 
+    animation: lotusSway 5s ease-in-out infinite alternate; 
+}
+
+@keyframes lanternGlowBreath {
+    0% { filter: drop-shadow(0 0 10px rgba(255, 160, 50, 0.6)); }
+    100% { filter: drop-shadow(0 0 24px rgba(255, 185, 70, 1)); }
+}
+
+@keyframes lotusSway {
+    0% { transform: translateY(0) rotate(-4deg); }
+    100% { transform: translateY(-8px) rotate(4deg); }
+}
+
+/* ==============================================
+   BỨC TRANH TIÊN CẢNH: DÃY NÚI MỜ SƯƠNG XA XĂM (FAIRYTALE DISTANT MOUNTAINS)
+   ============================================== */
+.distant-mountain-silhouettes {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    right: 0;
+    height: 180px;
+    pointer-events: none;
+    z-index: 3;
+    overflow: hidden;
+    opacity: 0.85;
+}
+
+.mountains-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.45));
+    animation: mountainMistBreathe 12s ease-in-out infinite alternate;
+}
+
+@keyframes mountainMistBreathe {
+    0% { opacity: 0.75; transform: scaleY(1); }
+    100% { opacity: 0.95; transform: scaleY(1.03); }
+}
+
+/* ==============================================
+   MÂY TƯỜNG VÂN & MÂY LỤA BỒNG BỀNH TIÊN CẢNH (CELESTIAL CLOUDS)
+   ============================================== */
+.celestial-clouds-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    overflow: hidden;
+}
+
+.flowing-cloud {
+    position: absolute;
+    pointer-events: none;
+    filter: drop-shadow(0 0 16px rgba(255, 215, 107, 0.45));
+}
+
+.cloud-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Mây lụa vắt ngang bầu trời sao trôi chậm rãi */
+.cloud-wispy-drift {
+    top: 55px;
+    left: -40px;
+    width: 290px;
+    height: 55px;
+    opacity: 0.65;
+    animation: cloudDriftSlow 24s ease-in-out infinite alternate;
+}
+
+@keyframes cloudDriftSlow {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(50px) translateY(-8px); }
+    100% { transform: translateX(10px) translateY(4px); }
+}
+
+/* Mây Tường Vân cuộn góc trên bên trái */
+.cloud-auspicious-left {
+    top: 90px;
+    left: -15px;
+    width: 165px;
+    height: 95px;
+    opacity: 0.85;
+    animation: auspiciousFloatLeft 8s ease-in-out infinite alternate;
+}
+
+@keyframes auspiciousFloatLeft {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(-10px) rotate(2deg) scale(1.05); }
+}
+
+/* Mây Tường Vân cuộn góc phải vắt qua cành hoa quế */
+.cloud-auspicious-right {
+    top: 180px;
+    right: -20px;
+    width: 185px;
+    height: 95px;
+    opacity: 0.8;
+    animation: auspiciousFloatRight 9s 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes auspiciousFloatRight {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(12px) rotate(-2deg) scale(1.06); }
+}
+
+/* Dải mây bồng bềnh lướt nhẹ dưới chân vầng trăng */
+.cloud-moon-whisper {
+    top: 255px;
+    left: 20px;
+    width: 280px;
+    height: 75px;
+    opacity: 0.62;
+    z-index: 8;
+    animation: moonWhisperDrift 11s ease-in-out infinite alternate;
+}
+
+@keyframes moonWhisperDrift {
+    0% { transform: translateX(0) scale(1); opacity: 0.5; }
+    50% { transform: translateX(25px) scale(1.06); opacity: 0.72; }
+    100% { transform: translateX(-15px) scale(0.96); opacity: 0.55; }
+}
+
+/* Mây sương mờ bồng bềnh phía chân trời mặt hồ */
+.cloud-horizon-mist {
+    bottom: 165px;
+    left: -20px;
+    width: 380px;
+    height: 65px;
+    opacity: 0.55;
+    z-index: 8;
+    animation: horizonMistDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes horizonMistDrift {
+    0% { transform: translateX(0) scaleY(0.9); }
+    50% { transform: translateX(35px) scaleY(1.1); }
+    100% { transform: translateX(-15px) scaleY(0.95); }
+}
+
+/* ==============================================
+   BỨC TRANH TIÊN CẢNH: MẶT HỒ HUYỀN ẢO SOI ÁNH TRĂNG (MYSTIC MOONLIT LAKE)
+   ============================================== */
+.mystic-moonlit-lake {
+    position: absolute;
+    bottom: 0;
+    left: -20px;
+    right: -20px;
+    height: 195px;
+    z-index: 12;
+    overflow: hidden;
+    pointer-events: auto;
+    border-radius: 44px 44px 0 0;
+}
+
+/* Deep Midnight Water Surface */
+.lake-water-surface {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(9, 18, 42, 0.35) 0%,
+        rgba(10, 24, 54, 0.75) 25%,
+        rgba(7, 15, 36, 0.92) 65%,
+        #060a1a 100%
+    );
+    border-top: 1px solid rgba(130, 204, 221, 0.35);
+    box-shadow: 
+        inset 0 8px 24px rgba(0, 0, 0, 0.6),
+        0 -10px 30px rgba(10, 24, 54, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Vệt Sáng Ánh Trăng Soi Rọi Xuống Mặt Nước (Moonlight Shimmer Path) */
+.moonlight-water-reflection {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 36%;
+    width: 150px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    opacity: 0.92;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.4) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.4) 100%);
+}
+
+.shimmer-strip {
+    height: 3px;
+    border-radius: 4px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 215, 107, 0.15) 15%,
+        rgba(255, 240, 180, 0.9) 50%,
+        rgba(255, 215, 107, 0.15) 85%,
+        transparent 100%
+    );
+    filter: drop-shadow(0 0 5px rgba(255, 215, 107, 0.85));
+    animation: lakeShimmerDance 3.6s ease-in-out infinite alternate;
+}
+
+.shimmer-strip.s-1 { width: 35px; height: 2px; animation-delay: 0s; }
+.shimmer-strip.s-2 { width: 55px; height: 3px; animation-delay: 0.4s; }
+.shimmer-strip.s-3 { width: 85px; height: 3.5px; animation-delay: 0.8s; }
+.shimmer-strip.s-4 { width: 110px; height: 4px; animation-delay: 1.2s; }
+.shimmer-strip.s-5 { width: 135px; height: 4.5px; animation-delay: 1.6s; }
+.shimmer-strip.s-6 { width: 115px; height: 4px; animation-delay: 2.0s; }
+.shimmer-strip.s-7 { width: 80px; height: 3px; animation-delay: 2.4s; }
+.shimmer-strip.s-8 { width: 50px; height: 2.5px; animation-delay: 2.8s; }
+
+@keyframes lakeShimmerDance {
+    0% {
+        transform: scaleX(0.85) translateX(-4px);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scaleX(1.15) translateX(3px);
+        opacity: 1;
+        filter: drop-shadow(0 0 8px rgba(255, 230, 130, 0.95));
+    }
+    100% {
+        transform: scaleX(0.9) translateX(-2px);
+        opacity: 0.75;
+    }
+}
+
+/* Layered Water Wave Lines */
+.lake-water-ripples {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.water-waves-svg {
+    width: 150%;
+    height: 100%;
+    opacity: 0.45;
+    animation: waterWaveDrift 16s ease-in-out infinite alternate;
+}
+
+.wave-path.wave-1 {
+    fill: none;
+    stroke: rgba(130, 204, 221, 0.28);
+    stroke-width: 1.5;
+}
+
+.wave-path.wave-2 {
+    fill: none;
+    stroke: rgba(255, 215, 107, 0.18);
+    stroke-width: 1.2;
+    stroke-dasharray: 8 6;
+}
+
+@keyframes waterWaveDrift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-15%); }
+}
+
+/* ==============================================
+   HOA ĐĂNG SEN NỔI BỒNG BỀNH (FLOATING LOTUS LANTERNS)
+   ============================================== */
+.lake-lotus-fleet {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.floating-lotus-lantern {
+    position: absolute;
+    cursor: pointer;
+    pointer-events: auto;
+    mix-blend-mode: screen;
+    transition: transform 0.2s ease;
+}
+
+.floating-lotus-lantern:active {
+    transform: scale(0.92);
+}
+
+/* Hero Lotus: Thả trôi trên vệt sáng trăng bên trái */
+.lotus-hero {
+    left: 4%;
+    bottom: 62px;
+    width: 62px;
+    animation: lotusBobHero 5.2s ease-in-out infinite alternate;
+}
+
+/* Companion Lotus: Thả trôi phía dưới cành hoa quế bên phải */
+.lotus-companion {
+    right: 5%;
+    bottom: 50px;
+    width: 50px;
+    animation: lotusBobCompanion 4.6s 1.2s ease-in-out infinite alternate;
+}
+
+/* Distant Lotus: Xa xa giữa lòng hồ */
+.lotus-distant {
+    left: 48%;
+    bottom: 110px;
+    width: 30px;
+    opacity: 0.75;
+    animation: lotusBobDistant 6s 0.8s ease-in-out infinite alternate;
+}
+
+.lotus-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Lửa Nến Phát Sáng Tỏa Hào Quang Ấm Áp */
+.lotus-candle-aura {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 230, 120, 0.85) 0%, rgba(255, 140, 40, 0.45) 45%, transparent 75%);
+    filter: blur(4px);
+    pointer-events: none;
+    animation: candleFlameFlicker 2.5s ease-in-out infinite alternate;
+    z-index: 2;
+}
+
+.lotus-candle-aura.sm {
+    width: 25px;
+    height: 25px;
+}
+
+@keyframes candleFlameFlicker {
+    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.75; }
+    50% { transform: translate(-48%, -52%) scale(1.1); opacity: 1; }
+    100% { transform: translate(-52%, -48%) scale(0.95); opacity: 0.85; }
+}
+
+/* Bóng Phản Chiếu Hoa Sen Dập Dềnh Dưới Nước */
+.lotus-water-reflection {
+    position: absolute;
+    top: 75%;
+    left: 10%;
+    right: 10%;
+    height: 50%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255, 110, 140, 0.4) 0%, rgba(255, 170, 50, 0.25) 50%, transparent 80%);
+    filter: blur(4px);
+    pointer-events: none;
+    transform: scaleY(-0.7);
+    opacity: 0.65;
+}
+
+.lotus-water-reflection.sm {
+    height: 35%;
+}
+
+/* Gợn Sóng Nước Lan Tỏa Dưới Đáy Hoa Sen */
+.lotus-ripple-ring {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(2.2);
+    width: 32px;
+    height: 12px;
+    border: 1px solid rgba(255, 215, 107, 0.45);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    animation: lotusRipplePulse 4s ease-out infinite;
+}
+
+.lotus-ripple-ring.delay {
+    animation-delay: 2s;
+}
+
+@keyframes lotusRipplePulse {
+    0% { transform: translateX(-50%) scale(0.4) scaleX(2); opacity: 0.8; }
+    80% { transform: translateX(-50%) scale(1.8) scaleX(2.4); opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes lotusBobHero {
+    0% { transform: translateY(0) rotate(-2deg); }
+    100% { transform: translateY(-7px) rotate(2.5deg); }
+}
+
+@keyframes lotusBobCompanion {
+    0% { transform: translateY(0) rotate(2deg); }
+    100% { transform: translateY(-6px) rotate(-2deg); }
+}
+
+@keyframes lotusBobDistant {
+    0% { transform: translateY(0) rotate(-1.5deg); }
+    100% { transform: translateY(-4px) rotate(1.5deg); }
+}
+
+/* ==============================================
+   LÀN SƯƠNG KHÓI MỜ ẢO LÀ LÀ MẶT HỒ (ETHEREAL LAKE MIST)
+   ============================================== */
+.ethereal-lake-mist {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+}
+
+.mist-layer {
+    position: absolute;
+    bottom: 0;
+    width: 250%;
+    height: 100%;
+}
+
+.mist-layer.mist-1 {
+    background: radial-gradient(ellipse at 40% 70%, rgba(160, 205, 255, 0.16) 0%, rgba(120, 170, 240, 0.08) 45%, transparent 70%);
+    filter: blur(18px);
+    animation: mistFloatDrift 24s linear infinite alternate;
+}
+
+.mist-layer.mist-2 {
+    background: radial-gradient(ellipse at 65% 60%, rgba(255, 225, 160, 0.12) 0%, rgba(200, 160, 240, 0.06) 50%, transparent 65%);
+    filter: blur(22px);
+    animation: mistFloatDrift 18s linear infinite alternate-reverse;
+}
+
+@keyframes mistFloatDrift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-35%); }
+}
+
+/* ==============================================
+   ĐÀN ĐOM ĐÓM DẠ QUANG (LIVING FAIRY FIREFLIES)
+   ============================================== */
+.fireflies-lake-layer {
+    position: absolute;
+    inset: -40px -20px 0 -20px;
+    pointer-events: none;
+    z-index: 6;
+    overflow: visible;
+}
+
+.fairy-firefly {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: fireflyBlinkPulse var(--flicker-dur, 2.5s) ease-in-out infinite alternate;
+    transition: transform 0.4s ease-out;
+}
+
+@keyframes fireflyBlinkPulse {
+    0% {
+        opacity: 0.15;
+        transform: scale(0.65);
+        box-shadow: 0 0 4px var(--glow-color, #ffeaa7);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.35);
+        box-shadow: 0 0 12px var(--glow-color, #ffeaa7), 0 0 20px rgba(85, 239, 196, 0.6);
+    }
+    100% {
+        opacity: 0.25;
+        transform: scale(0.8);
+        box-shadow: 0 0 6px var(--glow-color, #ffeaa7);
+    }
+}
+
+/* Lớp Chạm Mặt Hồ Tương Tác Tạo Sóng Nước */
+.lake-touch-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 7;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Vòng Sóng Nước Khi Người Dùng Chạm Vào Hồ */
+.water-ripple-ring {
+    position: absolute;
+    border: 1.5px solid rgba(130, 204, 221, 0.85);
+    box-shadow: 0 0 10px rgba(255, 215, 107, 0.6), inset 0 0 6px rgba(130, 204, 221, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.1) scaleX(2.2);
+    pointer-events: none;
+    z-index: 8;
+    animation: waterTouchExpand 1.4s cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
+}
+
+@keyframes waterTouchExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0.1) scaleX(2.2);
+        opacity: 0.95;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2.8) scaleX(2.5);
+        opacity: 0;
+    }
+}
+
+/* ==============================================
+   NÚT ẤN GIỮ VÀO MẶT TRĂNG (FLOATING CELESTIAL PROMPT)
+   ============================================== */
+.hold-action-area {
+    text-align: center;
+    position: relative;
+    z-index: 35;
+    margin-top: auto;
+    margin-bottom: 24px;
+    padding: 0 16px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(24px) scale(0.92);
+    transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hold-action-area.button-revealed {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.hold-prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(14, 22, 48, 0.88);
+    border: 1px solid rgba(255, 215, 120, 0.6);
+    padding: 10px 24px;
+    border-radius: 30px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 213, 107, 0.35);
+    animation: promptPulse 2.2s ease-in-out infinite;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.hold-prompt:active, .hold-prompt.holding {
+    transform: scale(0.96);
+    background: linear-gradient(135deg, rgba(255, 159, 67, 0.55), rgba(238, 82, 83, 0.55));
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 25px rgba(255, 159, 67, 0.8);
+}
+
+.hold-prompt .finger-tap-icon {
+    font-size: 1.25rem;
+    animation: tapBounce 1.2s ease-in-out infinite;
+}
+
+.hold-prompt .prompt-text {
+    font-weight: 700;
+    font-size: 0.96rem;
+    color: #fff6d9;
+    letter-spacing: 0.4px;
+}
+
+.hold-status-hint {
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ==============================================
+   COMMON GLASS PANEL & BUTTON STYLES
+   ============================================== */
+.glass-panel {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 20px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--glass-shadow);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff9f43 0%, #ee5253 60%, #b33939 100%);
+    color: #ffffff;
+    font-family: var(--font-main);
+    font-size: clamp(0.86rem, 3.6vw, 0.96rem);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(238, 82, 83, 0.45);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: transform 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 10px rgba(238, 82, 83, 0.3);
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 12px 18px;
+    border: 1px solid rgba(255, 215, 120, 0.4);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.2s;
+}
+.btn-secondary:active {
+    transform: scale(0.97);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==============================================
+   CHƯƠNG 2: BẢN GỐC CUỘN THƯ HOÀNG GIA TRONG VŨ TRỤ
+   ============================================== */
+
+.scroll-wooden-rod {
+    position: relative;
+    width: 104%;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+.rod-top { margin-bottom: -5px; }
+.rod-bottom { margin-top: -5px; }
+
+.rod-shaft {
+    flex: 1;
+    height: 12px;
+    background: linear-gradient(180deg, #5c2c16 0%, #2b1208 50%, #5c2c16 100%);
+    border: 1px solid #d4af37;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.rod-knob {
+    width: 16px;
+    height: 20px;
+    background: radial-gradient(circle at 40% 40%, #ffeaa7 0%, #d4af37 60%, #8a6818 100%);
+    border-radius: 50%;
+    border: 1px solid #fff2a3;
+    box-shadow: 0 0 8px rgba(255, 215, 107, 0.6);
+}
+
+.royal-scroll-parchment {
+    position: relative;
+    width: 100%;
+    max-height: calc(88dvh - 36px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(180deg, #fffbf2 0%, #fdf5e4 30%, #f9edcf 100%);
+    border-left: 5px solid #d4af37;
+    border-right: 5px solid #d4af37;
+    border-top: 1px solid #e6c875;
+    border-bottom: 1px solid #e6c875;
+    padding: 26px 20px 22px;
+    box-shadow: inset 0 0 35px rgba(180, 130, 60, 0.18), inset 0 0 10px rgba(0, 0, 0, 0.08);
+}
+
+.parchment-corner {
+    position: absolute;
+    font-size: 1.1rem;
+    color: #c59b27;
+    opacity: 0.75;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.corner-tl { top: 8px; left: 8px; }
+.corner-tr { top: 8px; right: 8px; }
+.corner-bl { bottom: 8px; left: 8px; }
+.corner-br { bottom: 8px; right: 8px; }
+
+.letter-scroll-header {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.scroll-crest {
+    font-size: 1.05rem;
+    color: #c59b27;
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+}
+
+.royal-scroll-parchment .letter-heading {
+    font-family: var(--font-serif);
+    font-size: 1.32rem;
+    font-weight: 700;
+    color: #632212;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    border: none;
+    padding: 0;
+}
+
+.scroll-header-rule {
+    width: 60%;
+    height: 2px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, transparent 0%, #d4af37 50%, transparent 100%);
+}
+
+.royal-scroll-parchment .letter-content-body {
+    font-family: var(--font-main);
+    font-size: 0.94rem;
+    line-height: 1.85;
+    color: #3b2518;
+    min-height: 160px;
+}
+
+.royal-scroll-parchment .scroll-paragraph {
+    margin-bottom: 14px;
+    text-align: justify;
+    text-justify: inter-word;
+    letter-spacing: 0.1px;
+}
+
+.royal-scroll-parchment .scroll-paragraph.salutation {
+    font-family: var(--font-serif);
+    font-size: 1.06rem;
+    font-weight: 700;
+    color: #7b2915;
+    font-style: italic;
+    margin-bottom: 12px;
+}
+
+.letter-signature-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(197, 155, 39, 0.28);
+}
+
+.letter-signature-content {
+    text-align: left;
+}
+
+.letter-signature-content .sig-from {
+    font-size: 0.82rem;
+    color: #7d5e49;
+    font-style: italic;
+}
+
+.letter-signature-content .sig-name {
+    font-family: var(--font-script);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #9c2710;
+    margin-top: 2px;
+}
+
+.imperial-red-seal {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #d63031 0%, #b71540 100%);
+    border: 2.5px solid #a81c24;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(183, 21, 64, 0.4), inset 0 0 6px rgba(255, 255, 255, 0.35);
+    transform: rotate(-6deg);
+    cursor: pointer;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.imperial-red-seal:hover {
+    transform: rotate(0deg) scale(1.08);
+}
+
+.seal-inner-frame {
+    border: 1px solid rgba(255, 230, 180, 0.85);
+    border-radius: 4px;
+    padding: 2px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+}
+
+.seal-char-top, .seal-char-bot {
+    font-family: var(--font-serif);
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #ffeaa7;
+    letter-spacing: 1px;
+}
+
+.btn-scroll-action {
+    background: linear-gradient(135deg, #c59b27 0%, #a87915 50%, #7b550b 100%);
+    border: 1px solid #ffd56b;
+    box-shadow: 0 4px 16px rgba(168, 121, 21, 0.45);
+    color: #fffbf2;
+    margin-top: 14px;
+}
+
+.btn-scroll-action:hover, .btn-scroll-action:active {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+}
+
+.letter-actions {
+    margin-top: 16px;
+    text-align: center;
+}
+
+/* ==============================================
+   CHƯƠNG 5: THẢ ĐÈN TRỜI NGUYỆN ƯỚC
+   ============================================== */
+.wish-release-container {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    min-height: 240px;
+    margin: 4px 0 14px 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 16px;
+    transition: height 0.3s ease, margin 0.3s ease;
+}
+
+/* Sky Ambient Warmth Glow during release */
+#scene-3.sky-illuminated::before,
+.wish-release-container.sky-illuminated::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 140, 30, 0.35) 0%, rgba(255, 90, 20, 0.15) 50%, transparent 80%);
+    filter: blur(28px);
+    pointer-events: none;
+    animation: skyWarmthPulse 13s ease-in-out forwards;
+    z-index: 1;
+}
+
+@keyframes skyWarmthPulse {
+    0% { opacity: 0; transform: scale(0.9); }
+    15% { opacity: 1; transform: scale(1.1); }
+    75% { opacity: 0.85; transform: scale(1.25); }
+    100% { opacity: 0.55; transform: scale(1.35); }
+}
+
+/* ==============================================
+   COMPANION LANTERN FLEET (BIỂN ĐÈN TRỜI BAY LÊN CHẬM RÃI)
+   ============================================== */
+.lantern-fleet-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 3;
+}
+
+.fleet-lantern {
+    position: absolute;
+    bottom: -60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    animation: fleetLanternAscend linear forwards;
+}
+
+.fleet-lantern-body {
+    position: relative;
+    border-radius: 6px 6px 3px 3px;
+    background: radial-gradient(ellipse at 50% 65%, #fff2a3 0%, #ff9f43 55%, #ee5253 100%);
+    box-shadow: 0 0 16px rgba(255, 160, 40, 0.95), 0 0 35px rgba(255, 100, 20, 0.65);
+    filter: drop-shadow(0 0 8px rgba(255, 180, 50, 0.85));
+    animation: fleetCandlePulse 2.2s ease-in-out infinite alternate;
+}
+
+.fleet-lantern-flame {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 35%;
+    height: 35%;
+    background: radial-gradient(circle, #ffffff 0%, #fff7be 45%, transparent 80%);
+    border-radius: 50%;
+    filter: blur(1px);
+    animation: fleetFlicker 0.4s infinite alternate;
+}
+
+@keyframes fleetLanternAscend {
+    0% {
+        transform: translateY(0) translateX(0) scale(var(--scale, 0.5)) rotate(0deg);
+        opacity: 0;
+    }
+    6% {
+        opacity: var(--opacity, 0.85);
+        transform: translateY(-50px) translateX(calc(var(--drift-x, 25px) * 0.1)) scale(var(--scale, 0.5)) rotate(-1.5deg);
+    }
+    30% {
+        transform: translateY(-300px) translateX(calc(var(--drift-x, 25px) * 0.45)) scale(calc(var(--scale, 0.5) * 0.9)) rotate(2deg);
+    }
+    60% {
+        transform: translateY(-600px) translateX(calc(var(--drift-x, 25px) * 0.75)) scale(calc(var(--scale, 0.5) * 0.75)) rotate(-1.5deg);
+    }
+    85% {
+        opacity: var(--opacity, 0.85);
+        transform: translateY(-900px) translateX(var(--drift-x, 25px)) scale(calc(var(--scale, 0.5) * 0.6)) rotate(1.2deg);
+    }
+    100% {
+        transform: translateY(-1150px) translateX(calc(var(--drift-x, 25px) * 1.25)) scale(calc(var(--scale, 0.5) * 0.45));
+        opacity: 0;
+    }
+}
+
+@keyframes fleetCandlePulse {
+    0% { box-shadow: 0 0 12px rgba(255, 160, 40, 0.7); }
+    100% { box-shadow: 0 0 25px rgba(255, 180, 60, 1), 0 0 45px rgba(255, 100, 20, 0.8); }
+}
+
+@keyframes fleetFlicker {
+    0% { transform: translateX(-50%) scale(0.88); opacity: 0.85; }
+    100% { transform: translateX(-50%) scale(1.15); opacity: 1; }
+}
+
+/* ==============================================
+   SPARKLING EMBERS TRAIL BEHIND LANTERN
+   ============================================== */
+.lantern-ember-trail {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.rising-ember {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #ffd56b 40%, #ff7a18 100%);
+    box-shadow: 0 0 8px #ffd56b, 0 0 14px #ff7a18;
+    pointer-events: none;
+    animation: emberDriftFall 2.4s cubic-bezier(0.1, 0.6, 0.2, 1) forwards;
+}
+
+@keyframes emberDriftFall {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1.1);
+    }
+    30% {
+        opacity: 0.95;
+    }
+    70% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--ember-dx, 15px), var(--ember-dy, 75px)) scale(0.2);
+    }
+}
+
+/* ==============================================
+   GIANT WISH LANTERN & IGNITION CORE
+   ============================================== */
+.giant-wish-lantern {
+    position: relative;
+    width: 175px;
+    height: 225px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 8;
+    mix-blend-mode: screen;
+    margin-bottom: 8px;
+    transition: transform 3.5s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 3.5s ease;
+}
+
+/* Inner Flame Core */
+.lantern-flame-core {
+    position: absolute;
+    bottom: 24%;
+    left: 50%;
+    width: 65px;
+    height: 80px;
+    transform: translateX(-50%);
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    background: radial-gradient(ellipse at 50% 70%, #ffffff 0%, #fff2a3 30%, #ff9f43 65%, rgba(238, 82, 83, 0.8) 85%, transparent 100%);
+    box-shadow: 0 0 25px #ffd56b, 0 0 45px #ff7a18;
+    filter: blur(2px);
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 2;
+    transition: all 0.6s ease;
+    animation: flameCoreFlicker 0.25s ease-in-out infinite alternate;
+}
+
+@keyframes flameCoreFlicker {
+    0% { transform: translateX(-50%) scale(0.94, 0.98); opacity: 0.7; }
+    100% { transform: translateX(-50%) scale(1.06, 1.03); opacity: 0.95; }
+}
+
+/* Ignited State (When release button is clicked) */
+.giant-wish-lantern.ignited .lantern-flame-core {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.4);
+    box-shadow: 0 0 50px #fff2a3, 0 0 90px #ff7a18, 0 0 140px #ee5253;
+}
+
+.giant-wish-lantern.ignited .wish-preview-text {
+    color: #3b0900;
+    text-shadow: 0 0 14px rgba(255, 240, 180, 1), 0 0 28px rgba(255, 180, 50, 0.95);
+    animation: wishTextGlow 1s ease-in-out infinite alternate;
+}
+
+.lantern-flying-wish-text {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 78%;
+    text-align: center;
+    font-family: var(--font-script);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #4a0e00;
+    text-shadow: 0 0 10px rgba(255, 235, 170, 0.95), 0 0 20px rgba(255, 180, 50, 0.9);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    line-height: 1.4;
+    transition: opacity 0.8s ease;
+}
+
+.giant-wish-lantern.ignited .lantern-flying-wish-text {
+    opacity: 1;
+    animation: wishTextGlow 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes wishTextGlow {
+    0% { text-shadow: 0 0 10px rgba(255, 240, 180, 0.9); }
+    100% { text-shadow: 0 0 22px rgba(255, 255, 220, 1), 0 0 38px rgba(255, 160, 40, 1); }
+}
+
+/* Spectacular Realistic Cinematic Flight (Chậm rãi, lắc lư tự nhiên theo làn gió) */
+.giant-wish-lantern.floating-away-spectacular {
+    animation: lanternSpectacularAscent 12s cubic-bezier(0.28, 0.08, 0.22, 1) forwards;
+}
+
+@keyframes lanternSpectacularAscent {
+    0% {
+        transform: translateY(0) translateX(0) scale(1) rotate(0deg);
+        opacity: 1;
+        filter: drop-shadow(0 0 25px rgba(255, 150, 40, 0.95)) drop-shadow(0 0 50px rgba(255, 100, 20, 0.6));
+    }
+    8% {
+        /* Nhấc bổng êm ái khỏi tay, ngập ngừng nâng khí nóng */
+        transform: translateY(-30px) translateX(-5px) scale(0.99) rotate(-1.6deg);
+        opacity: 1;
+    }
+    20% {
+        /* Chầm chậm bay lên, nghiêng nhẹ theo làn gió đêm */
+        transform: translateY(-115px) translateX(12px) scale(0.95) rotate(2deg);
+        opacity: 1;
+    }
+    35% {
+        /* Trôi bồng bềnh êm ái ngang tầm mắt */
+        transform: translateY(-240px) translateX(-6px) scale(0.88) rotate(-1.8deg);
+        opacity: 0.98;
+    }
+    52% {
+        /* Lên cao vào tầng mây dịu nhẹ */
+        transform: translateY(-400px) translateX(16px) scale(0.76) rotate(1.5deg);
+        opacity: 0.96;
+    }
+    70% {
+        /* Hòa vào không gian ngàn vì sao */
+        transform: translateY(-580px) translateX(-8px) scale(0.62) rotate(-1.2deg);
+        opacity: 0.92;
+    }
+    86% {
+        /* Nhỏ dần thành ngôi sao ước nguyện lung linh */
+        transform: translateY(-750px) translateX(14px) scale(0.48) rotate(1deg);
+        opacity: 0.85;
+    }
+    100% {
+        /* Tỏa sáng vĩnh cửu trên cung trăng */
+        transform: translateY(-940px) translateX(22px) scale(0.32) rotate(-0.5deg);
+        opacity: 0.55;
+        filter: drop-shadow(0 0 35px rgba(255, 200, 70, 1)) drop-shadow(0 0 70px rgba(255, 120, 30, 0.9));
+    }
+}
+
+.giant-wish-lantern.floating-away {
+    transform: translateY(-500px) scale(0.2);
+    opacity: 0.1;
+}
+
+.giant-lantern-trans-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter:
+        drop-shadow(0 0 28px rgba(255, 150, 40, 0.95))
+        drop-shadow(0 0 55px rgba(255, 100, 20, 0.65))
+        brightness(1.08) saturate(1.1);
+    animation: lanternPulseGlow 3s ease-in-out infinite alternate;
+}
+
+.wish-preview-overlay {
+    display: none !important;
+}
+
+@keyframes lanternPulseGlow {
+    0% { filter: drop-shadow(0 0 20px rgba(255, 150, 40, 0.8)); }
+    100% { filter: drop-shadow(0 0 40px rgba(255, 170, 50, 1)) drop-shadow(0 0 65px rgba(255, 110, 20, 0.7)); }
+}
+
+.wish-input-card {
+    margin-top: auto;
+}
+
+.wish-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--gold-bright);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+/* Quick-Wish Chips (Tối ưu vuốt chạm ngón cái trên điện thoại) */
+.quick-wish-container {
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.quick-wish-chips-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 6px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.quick-wish-chips-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.wish-chip {
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 215, 120, 0.35);
+    color: #ffeaa7;
+    font-family: var(--font-main);
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    touch-action: manipulation;
+}
+
+.wish-chip:active, .wish-chip.chip-active {
+    background: linear-gradient(135deg, rgba(255, 159, 67, 0.45), rgba(238, 82, 83, 0.45));
+    border-color: var(--gold-bright);
+    color: #ffffff;
+    transform: scale(0.95);
+}
+
+.input-wrapper textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 215, 120, 0.4);
+    border-radius: 14px;
+    padding: 12px 14px;
+    color: #ffffff;
+    font-family: var(--font-main);
+    font-size: 16px; /* 16px chuẩn để ngăn iOS Safari phóng to màn hình */
+    resize: none;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+    touch-action: manipulation;
+}
+
+.input-wrapper textarea:focus {
+    border-color: var(--gold-glow);
+    box-shadow: 0 0 12px rgba(255, 213, 107, 0.4);
+}
+
+/* Khi bàn phím ảo điện thoại xuất hiện */
+#scene-2.keyboard-focused .wish-release-container,
+#scene-3.keyboard-focused .wish-release-container,
+#scene-4.keyboard-focused .wish-release-container,
+#scene-5.keyboard-focused .wish-release-container {
+    height: 110px;
+    margin: 0;
+}
+
+#scene-2.keyboard-focused .giant-wish-lantern,
+#scene-3.keyboard-focused .giant-wish-lantern,
+#scene-4.keyboard-focused .giant-wish-lantern,
+#scene-5.keyboard-focused .giant-wish-lantern {
+    transform: scale(0.62);
+}
+
+#scene-2.keyboard-focused .scene-header,
+#scene-3.keyboard-focused .scene-header,
+#scene-4.keyboard-focused .scene-header,
+#scene-5.keyboard-focused .scene-header {
+    margin-bottom: 2px;
+}
+
+#scene-2.keyboard-focused .scene-subtitle,
+#scene-3.keyboard-focused .scene-subtitle,
+#scene-4.keyboard-focused .scene-subtitle,
+#scene-5.keyboard-focused .scene-subtitle {
+    display: none;
+}
+
+/* ==============================================
+   CELEBRATION SUCCESS CARD (SCENE 4)
+   ============================================== */
+.wish-success-box {
+    display: none;
+    margin-top: auto;
+    text-align: center;
+    background: radial-gradient(circle at 50% 0%, rgba(35, 42, 75, 0.94) 0%, rgba(14, 18, 38, 0.98) 100%);
+    border: 2px solid #ffd56b;
+    border-radius: 28px;
+    padding: 24px 20px 20px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 213, 107, 0.35);
+    animation: modalSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative;
+    z-index: 25;
+}
+
+.wish-success-box.active {
+    display: block;
+}
+
+.wish-success-box .success-icon {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 12px #ffd56b);
+    animation: pulseGlow 2s infinite alternate;
+}
+
+.wish-success-box .success-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gold-bright);
+    margin-bottom: 10px;
+    text-shadow: 0 0 16px rgba(255, 215, 120, 0.6);
+}
+
+.wish-success-box .success-desc {
+    font-family: var(--font-main);
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #f7eedc;
+    margin-bottom: 16px;
+}
+
+.final-couple-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: linear-gradient(90deg, rgba(238, 82, 83, 0.25) 0%, rgba(255, 159, 67, 0.35) 50%, rgba(238, 82, 83, 0.25) 100%);
+    border: 1px solid rgba(255, 215, 120, 0.5);
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+
+.final-couple-badge .badge-text {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffd56b;
+    letter-spacing: 0.8px;
+}
+
+/* ==============================================
+   RESPONSIVE OPTIMIZATIONS FOR ALL MOBILE SCREENS
+   ============================================== */
+@media (max-height: 740px) {
+    .moon-stage-container {
+        transform: scale(1.08);
+        transform-origin: center 20%;
+        margin: 0 auto;
+    }
+    .wish-release-container {
+        height: 210px;
+    }
+}
+
+@media (max-height: 680px) {
+    .moon-stage-container {
+        transform: scale(0.98);
+        transform-origin: center 18%;
+        margin: 0 auto;
+    }
+    .giant-wish-lantern {
+        transform: scale(0.85);
+    }
+    .wish-release-container {
+        height: 180px;
+    }
+    .chat-bubble-quote {
+        font-size: 0.74rem;
+        padding: 4px 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .moon-stage-container {
+        transform: scale(0.98);
+        transform-origin: center 20%;
+    }
+    .traditional-moon-ring {
+        width: 240px;
+        height: 240px;
+    }
+    .luminous-moon {
+        width: 130px;
+        height: 130px;
+    }
+}
+
+/* Success Celebration Box */
+.wish-success-box {
+    display: none;
+    text-align: center;
+    margin-top: auto;
+    animation: modalSlideUp 0.6s ease;
+}
+
+.wish-success-box.active {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-release-another {
+    background: linear-gradient(135deg, #ff9f43 0%, #ee5253 60%, #ff4d94 100%) !important;
+    box-shadow: 0 4px 18px rgba(238, 82, 83, 0.45) !important;
+    border: 1px solid rgba(255, 235, 170, 0.6) !important;
+    font-weight: 700;
+}
+
+.btn-release-another:active {
+    transform: scale(0.97);
+}
+
+.success-icon {
+    font-size: 2rem;
+    margin-bottom: 6px;
+}
+
+.success-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--gold-bright);
+    margin-bottom: 8px;
+}
+
+.success-desc {
+    font-size: 0.88rem;
+    color: #f1f2f6;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.final-couple-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: rgba(255, 215, 107, 0.15);
+    border: 1px solid rgba(255, 215, 107, 0.35);
+    color: var(--gold-glow);
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+/* ==============================================
+   KEYFRAME ANIMATIONS
+   ============================================== */
+@keyframes moonPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.12); opacity: 1; }
+}
+
+@keyframes spinDisc {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes eqBar {
+    from { height: 4px; }
+    to { height: 16px; }
+}
+
+@keyframes floatGentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes promptPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 213, 107, 0.2); }
+    50% { transform: scale(1.03); box-shadow: 0 0 20px rgba(255, 213, 107, 0.45); }
+}
+
+@keyframes tapBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes rabbitBreathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03) translateY(-1px); }
+}
+
+@keyframes earTwitchLeft {
+    0%, 80%, 100% { transform: rotate(-18deg); }
+    85% { transform: rotate(-25deg); }
+    90% { transform: rotate(-15deg); }
+}
+
+@keyframes earTwitchRight {
+    0%, 75%, 100% { transform: rotate(10deg); }
+    80% { transform: rotate(18deg); }
+    85% { transform: rotate(8deg); }
+}
+
+@keyframes lanternFlicker {
+    0% { opacity: 0.85; filter: drop-shadow(0 0 12px rgba(255, 159, 67, 0.7)); }
+    100% { opacity: 1; filter: drop-shadow(0 0 22px rgba(255, 159, 67, 1)); }
+}
+
+@keyframes floatDrift {
+    0% { transform: translateY(0) translateX(0); }
+    100% { transform: translateY(-12px) translateX(6px); }
+}
+
+@keyframes cloudDrift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-25%); }
+}
+
+@keyframes rippleExpand {
+    0% { transform: scale(0.9); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes riseUp {
+    0% { transform: translateY(280px) scale(0.8); opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translateY(-40px) scale(1.1); opacity: 0; }
+}
+
+@keyframes tasselSway {
+    0% { transform: rotate(-6deg); }
+    100% { transform: rotate(6deg); }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 213, 107, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(255, 213, 107, 0.7); }
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(35px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes flameCorePulse {
+    from { transform: scale(0.9); opacity: 0.9; }
+    to { transform: scale(1.2); opacity: 1; }
+}
+
+/* ==============================================
+   CHƯƠNG 4: VŨ TRỤ TÌNH YÊU (3D LOVE GALAXY - TREND TIKTOK)
+   ============================================== */
+.scene-galaxy-universe {
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #020308;
+    z-index: 35 !important;
+}
+
+.galaxy-universe-wrapper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #150928 0%, #080314 45%, #020308 100%);
+}
+
+.galaxy-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+    z-index: 10;
+}
+
+.galaxy-canvas:active {
+    cursor: grabbing;
+}
+
+/* Top Floating Lyric Banner */
+.galaxy-lyric-hud {
+    position: absolute;
+    top: calc(84px + env(safe-area-inset-top, 0px));
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 25;
+    padding: 0 16px;
+    transition: opacity 0.4s ease;
+}
+
+.letter-open .galaxy-lyric-hud {
+    opacity: 0 !important;
+}
+
+.galaxy-lyric-banner {
+    font-family: var(--font-main);
+    font-weight: 800;
+    font-size: clamp(0.85rem, 3.6vw, 1.1rem);
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-align: center;
+    line-height: 1.35;
+    text-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.95), 
+        0 0 18px rgba(255, 105, 180, 0.85),
+        0 0 35px rgba(224, 86, 253, 0.7);
+    animation: lyricGlowPulse 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes lyricGlowPulse {
+    0% { opacity: 0.82; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1.02); text-shadow: 0 0 12px #fff, 0 0 25px #ff79c6, 0 0 45px #e056fd; }
+}
+
+/* Optimization: Hide heavy backdrop blurs when in Galaxy to eliminate all GPU lag */
+body.in-galaxy #celestial-backdrop,
+body.in-galaxy .deep-depth-atmosphere,
+body.in-galaxy .backdrop-folklore-cluster,
+body.in-galaxy .desktop-decorative-scene {
+    display: none !important;
+}
+body.in-galaxy {
+    background: #020308 !important;
+}
+
+/* HUD Controls */
+.galaxy-hud-controls {
+    position: absolute;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    left: calc(16px + env(safe-area-inset-left, 0px));
+    z-index: 55;
+    pointer-events: none;
+}
+
+.galaxy-hud-controls > * {
+    pointer-events: auto;
+}
+
+.galaxy-back-btn {
+    position: static !important;
+    background: rgba(22, 16, 42, 0.82) !important;
+    border: 1px solid rgba(255, 120, 190, 0.45) !important;
+    color: #ff9fdb !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 120, 190, 0.25) !important;
+}
+
+.galaxy-touch-hint {
+    position: absolute;
+    bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.76rem;
+    color: #ffb8e6;
+    letter-spacing: 0.4px;
+    pointer-events: none;
+    z-index: 25;
+    opacity: 0.88;
+    text-shadow: 0 0 8px rgba(255, 120, 190, 0.6);
+    animation: hintBreathe 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes hintBreathe {
+    0% { opacity: 0.65; transform: translateY(0); }
+    100% { opacity: 1; transform: translateY(-4px); }
+}
+
+/* Explore Galaxy button in Chapter 3 celebration */
+.btn-galaxy-explore {
+    margin-bottom: 10px !important;
+    background: linear-gradient(135deg, #e056fd 0%, #ff4d94 50%, #ff79c6 100%) !important;
+    box-shadow: 0 6px 24px rgba(224, 86, 253, 0.55), 0 0 20px rgba(255, 77, 148, 0.4) !important;
+    animation: galaxyPulseBtn 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes galaxyPulseBtn {
+    0% { transform: scale(1); box-shadow: 0 6px 20px rgba(224, 86, 253, 0.5), 0 0 15px rgba(255, 77, 148, 0.35); }
+    100% { transform: scale(1.02); box-shadow: 0 8px 30px rgba(224, 86, 253, 0.8), 0 0 30px rgba(255, 77, 148, 0.6); }
+}
+
+/* Sticker Action Tag (Chạm để mở thư tình) */
+.sticker-action-tag {
+    margin-top: 6px;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ff4d94, #e056fd);
+    color: #ffffff;
+    font-size: 0.74rem;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(255, 77, 148, 0.45);
+    animation: tapTagPulse 1.8s infinite alternate;
+}
+
+@keyframes tapTagPulse {
+    0% { transform: scale(0.96); box-shadow: 0 0 6px rgba(255, 77, 148, 0.4); }
+    100% { transform: scale(1.04); box-shadow: 0 0 14px rgba(224, 86, 253, 0.8); }
+}
+
+
+
+/* Embedded Royal Love Letter Modal inside Galaxy */
+.galaxy-letter-modal {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(48px + env(safe-area-inset-top, 0px)) 16px 24px;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.92);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.galaxy-letter-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+.galaxy-letter-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 4, 12, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.galaxy-scroll-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 440px;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    animation: scrollUnrollGalaxy 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scrollUnrollGalaxy {
+    0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.galaxy-parchment {
+    max-height: 68vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.85),
+        0 0 35px rgba(255, 215, 120, 0.45);
+}
+
+.btn-close-galaxy-letter {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(184, 88, 10, 0.15);
+    border: 1px solid rgba(184, 88, 10, 0.4);
+    color: #8b3a00;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s;
+    touch-action: manipulation;
+}
+
+.btn-close-galaxy-letter:active {
+    transform: scale(0.9);
+    background: rgba(184, 88, 10, 0.3);
+}
+
+.galaxy-parchment .letter-signature-container,
+.galaxy-parchment .galaxy-letter-actions {
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border-top: 0 solid transparent !important;
+    transform: translateY(16px) scale(0.97);
+    pointer-events: none;
+    overflow: hidden;
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                max-height 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                margin-top 0.45s ease,
+                padding-top 0.45s ease,
+                visibility 0.65s;
+}
+
+.galaxy-letter-modal.letter-finished .galaxy-parchment .letter-signature-container,
+.galaxy-parchment.letter-finished .letter-signature-container {
+    opacity: 1;
+    visibility: visible;
+    max-height: 160px;
+    margin-top: 16px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid rgba(197, 155, 39, 0.28) !important;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    overflow: visible;
+}
+
+.galaxy-parchment .galaxy-letter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.galaxy-letter-modal.letter-finished .galaxy-parchment .galaxy-letter-actions,
+.galaxy-parchment.letter-finished .galaxy-letter-actions {
+    opacity: 1;
+    visibility: visible;
+    max-height: 100px;
+    margin-top: 14px !important;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    overflow: visible;
+    transition-delay: 0.18s;
+}
+
+.galaxy-letter-actions .btn-close-letter-action {
+    flex: 1;
+    font-size: 0.84rem;
+    padding: 11px 12px;
+}
+
+.galaxy-letter-actions .btn-scroll-action {
+    flex: 1.3;
+    font-size: 0.84rem;
+    padding: 11px 12px;
+}
+
+/* ==============================================
+   GIRLFRIEND PHOTO CAMEO & ROMANTIC MODAL STYLES
+   ============================================== */
+.btn-gf-cameo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(20, 15, 35, 0.72);
+    border: 1.5px solid rgba(255, 215, 120, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 4px 10px 4px 5px;
+    border-radius: 28px;
+    cursor: pointer;
+    box-shadow: 
+        0 4px 18px rgba(0, 0, 0, 0.45),
+        0 0 14px rgba(255, 215, 120, 0.35);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    outline: none;
+}
+
+.btn-gf-cameo:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: rgba(255, 235, 170, 0.9);
+    box-shadow: 
+        0 6px 22px rgba(255, 180, 50, 0.4),
+        0 0 22px rgba(255, 215, 120, 0.6);
+}
+
+.btn-gf-cameo:active {
+    transform: scale(0.96);
+}
+
+.cameo-glow-aura {
+    position: absolute;
+    inset: -3px;
+    border-radius: 30px;
+    background: radial-gradient(circle, rgba(255, 215, 120, 0.5) 0%, transparent 75%);
+    filter: blur(4px);
+    opacity: 0.7;
+    animation: cameoPulse 3s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes cameoPulse {
+    0%   { opacity: 0.4; transform: scale(0.96); }
+    100% { opacity: 0.9; transform: scale(1.04); }
+}
+
+.cameo-avatar-ring {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid #ffeaa7;
+    box-shadow: 0 0 8px rgba(255, 215, 120, 0.7);
+    z-index: 2;
+}
+
+.cameo-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.cameo-label-tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff2d6;
+    font-family: 'Dancing Script', 'Quicksand', sans-serif;
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 8px rgba(255, 215, 120, 0.7);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+/* Girlfriend Romantic Photo Modal */
+.gf-photo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gf-photo-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.gf-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(15, 12, 30, 0.88) 0%, rgba(5, 3, 12, 0.96) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.gf-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    background: linear-gradient(145deg, rgba(28, 20, 48, 0.92) 0%, rgba(16, 11, 30, 0.96) 100%);
+    border: 1.5px solid rgba(255, 215, 120, 0.65);
+    border-radius: 24px;
+    padding: 24px 20px 20px 20px;
+    box-shadow: 
+        0 15px 45px rgba(0, 0, 0, 0.65),
+        0 0 35px rgba(255, 180, 50, 0.25),
+        inset 0 0 20px rgba(255, 235, 170, 0.1);
+    text-align: center;
+    z-index: 2;
+    transform: scale(0.88) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gf-photo-modal.active .gf-modal-card {
+    transform: scale(1) translateY(0);
+}
+
+.gf-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 215, 120, 0.4);
+    color: #ffd56b;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.gf-modal-close:hover {
+    background: rgba(255, 100, 100, 0.3);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.gf-crown-badge {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffd56b;
+    background: rgba(255, 215, 120, 0.12);
+    border: 1px solid rgba(255, 215, 120, 0.35);
+    padding: 4px 14px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(255, 215, 120, 0.6);
+}
+
+.gf-card-title {
+    font-family: 'Dancing Script', 'Playfair Display', cursive;
+    font-size: 1.55rem;
+    color: #fff;
+    margin: 4px 0 6px 0;
+    text-shadow: 0 0 12px rgba(255, 220, 140, 0.8);
+}
+
+.gf-title-divider {
+    font-size: 0.8rem;
+    color: #ffd56b;
+    margin-bottom: 16px;
+    opacity: 0.8;
+}
+
+/* GF Photo Frame Container */
+.gf-photo-frame-container {
+    position: relative;
+    width: 210px;
+    height: 250px;
+    margin: 0 auto 16px auto;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 225, 150, 0.8);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(255, 215, 120, 0.45),
+        inset 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.gf-portrait-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(1.04) contrast(1.05);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.gf-photo-frame-container:hover .gf-portrait-photo {
+    transform: scale(1.06);
+}
+
+.gf-photo-glow-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    box-shadow: inset 0 0 20px rgba(255, 215, 120, 0.5);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.gf-photo-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.gf-corner-sparkle {
+    position: absolute;
+    color: #ffeaa7;
+    font-size: 0.9rem;
+    z-index: 4;
+    animation: sparkleBreathe 2s ease-in-out infinite alternate;
+}
+
+.gf-corner-sparkle.sp-1 { top: 6px; left: 8px; }
+.gf-corner-sparkle.sp-2 { top: 6px; right: 8px; animation-delay: 0.5s; }
+.gf-corner-sparkle.sp-3 { bottom: 6px; left: 8px; animation-delay: 1s; }
+.gf-corner-sparkle.sp-4 { bottom: 6px; right: 8px; animation-delay: 1.5s; }
+
+@keyframes sparkleBreathe {
+    0%   { opacity: 0.4; transform: scale(0.8); }
+    100% { opacity: 1;   transform: scale(1.2); }
+}
+
+.gf-quote-container {
+    background: rgba(255, 215, 120, 0.08);
+    border: 1px solid rgba(255, 215, 120, 0.25);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.gf-quote-text {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #ffe6ed;
+    font-style: italic;
+    margin: 0 0 8px 0;
+}
+
+.gf-heart-seal {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ff7675;
+    text-shadow: 0 0 8px rgba(255, 118, 117, 0.6);
+}
+
+/* In-letter girlfriend photo frame custom adjustments */
+.scroll-gf-frame .gf-painting-wrapper {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid rgba(255, 215, 120, 0.7);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.scroll-gf-frame .gf-painting-img {
+    max-height: 220px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.gf-heart-tag {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 10, 25, 0.82);
+    border: 1px solid rgba(255, 215, 120, 0.6);
+    color: #ffd56b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 16px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ==============================================
+   CLEAN & ROBUST MID-AUTUMN PRELOADER
+   ============================================== */
+.app-preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #151a33 0%, #080c1b 100%);
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.app-preloader.loaded-fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.preloader-content {
+    position: relative;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.preloader-lantern-icon {
+    font-size: 3.2rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 16px rgba(255, 175, 50, 0.8));
+    animation: preloaderLanternBounce 2.2s ease-in-out infinite;
+}
+
+@keyframes preloaderLanternBounce {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+.preloader-title {
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #ffd56b;
+    margin: 0 0 16px 0;
+    text-shadow: 0 0 14px rgba(255, 213, 107, 0.5);
+    letter-spacing: 0.5px;
+}
+
+.preloader-status-container {
+    width: 100%;
+    background: rgba(255, 215, 120, 0.08);
+    border: 1px solid rgba(255, 215, 120, 0.25);
+    border-radius: 20px;
+    padding: 12px 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.preloader-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 215, 120, 0.2);
+}
+
+.preloader-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffd56b 0%, #ff9f43 50%, #ee5253 100%);
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(255, 215, 120, 0.8);
+    transition: width 0.25s ease;
+}
+
+.preloader-status-text {
+    font-size: 0.82rem;
+    color: #ffd56b;
+    font-weight: 600;
+}
+
+.preloader-enter-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 16px;
+    animation: preloaderPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes preloaderPopIn {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.btn-enter-app {
+    width: 100%;
+    padding: 13px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #ffd56b 0%, #ff9f43 50%, #ee5253 100%);
+    color: #2c0e0e;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(238, 82, 83, 0.45), 0 0 14px rgba(255, 213, 107, 0.6);
+    transition: transform 0.2s, box-shadow 0.2s;
+    touch-action: manipulation;
+}
+
+.btn-enter-app:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 159, 67, 0.6), 0 0 22px rgba(255, 215, 120, 0.8);
+}
+
+.btn-enter-app:active {
+    transform: scale(0.96);
+}
+
+.btn-fullscreen-preloader {
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: var(--font-main);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 215, 120, 0.35);
+    color: #ffeaa7;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.22s ease;
+    touch-action: manipulation;
+}
+
+.btn-fullscreen-preloader:hover {
+    background: rgba(255, 215, 120, 0.16);
+    border-color: rgba(255, 215, 120, 0.7);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 120, 0.25);
+}
+
+.btn-fullscreen-preloader:active {
+    transform: scale(0.97);
+}
+
+.btn-fullscreen-preloader.is-fullscreen {
+    background: rgba(255, 215, 120, 0.22);
+    border-color: var(--gold-bright);
+    color: #ffffff;
+}
+
+.btn-fullscreen-preloader .fs-icon {
+    font-size: 1.05rem;
+}
+
+/* ==============================================
+   CINEMATIC STAGGERED PAINTING REVEAL (HIỆN BỨC TRANH TỪ TỪ TỪNG CÁI)
+   ============================================== */
+.painting-reveal-active .distant-mountain-silhouettes {
+    animation: paintingFadeRise 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.1s both;
+}
+
+.painting-reveal-active .celestial-clouds-atmosphere {
+    animation: paintingCloudUnveil 1.3s cubic-bezier(0.25, 1, 0.5, 1) 0.35s both;
+}
+
+.painting-reveal-active .traditional-moon-ring {
+    animation: paintingRingExpand 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s both;
+}
+
+.painting-reveal-active .luminous-moon {
+    animation: paintingMoonBloom 1.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s both;
+}
+
+.painting-reveal-active .ambient-sky-lantern {
+    animation: paintingLanternFloat 1.2s ease-out 0.95s both;
+}
+
+body.painting-reveal-active:not(.painting-revealed) .rabbit-branch-container {
+    animation: paintingRabbitSlide 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 1.15s both;
+}
+
+body.painting-revealed .rabbit-branch-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none;
+    filter: none;
+}
+
+.painting-reveal-active .mystic-moonlit-lake {
+    animation: paintingLakeRise 1.3s cubic-bezier(0.25, 1, 0.5, 1) 1.35s both;
+}
+
+.painting-reveal-active .app-header {
+    animation: paintingHeaderFade 0.8s ease-out 1.8s both;
+}
+
+@keyframes paintingFadeRise {
+    0%   { opacity: 0; transform: translateY(35px) scale(0.97); filter: blur(8px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingCloudUnveil {
+    0%   { opacity: 0; transform: translateY(-20px) scale(0.92); filter: blur(6px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingRingExpand {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(-45deg); filter: blur(10px); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); filter: blur(0); }
+}
+
+@keyframes paintingMoonBloom {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); filter: brightness(2) blur(15px); }
+    50%  { opacity: 0.9; transform: translate(-50%, -50%) scale(1.12); filter: brightness(1.4) blur(4px); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: brightness(1) blur(0); }
+}
+
+@keyframes paintingLanternFloat {
+    0%   { opacity: 0; transform: translateY(40px) scale(0.7); filter: blur(5px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingRabbitSlide {
+    0%   { opacity: 0; transform: translate(45px, 35px) scale(0.85); filter: blur(6px); }
+    100% { opacity: 1; transform: translate(0, 0) scale(1); filter: blur(0); }
+}
+
+@keyframes paintingLakeRise {
+    0%   { opacity: 0; transform: translateY(50px); filter: blur(10px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes paintingPromptPop {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.85); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+@keyframes paintingHeaderFade {
+    0%   { opacity: 0; transform: translateY(-15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ==============================================
+   3D MORPH TRANSFORM (MẶT TRĂNG ➔ ẢNH BẠN GÁI VỪA VẶN HOÀN TOÀN)
+   ============================================== */
+.luminous-moon.transformed-active {
+    z-index: 50 !important;
+}
+
+.gf-moon-active .moon-stage-container,
+.moon-stage-container:has(.transformed-gf) {
+    z-index: 50 !important;
+}
+
+.moon-sphere-container {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, filter 0.3s ease;
+}
+
+.moon-sphere-container.transformed-gf {
+    z-index: 50 !important;
+    background: #000000 !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    transform: none !important;
+    box-shadow: 
+        0 0 0 2px rgba(255, 245, 200, 0.85),
+        0 0 25px rgba(255, 220, 120, 0.85),
+        0 0 60px rgba(255, 170, 70, 0.5),
+        inset 0 0 20px rgba(255, 255, 240, 0.6) !important;
+    animation: gfMoonSphereGlow 3.5s ease-in-out infinite alternate !important;
+}
+
+.moon-sphere-container.transformed-gf .moon-sphere-img {
+    filter: brightness(1.05) contrast(1.05) saturate(1.05) !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    z-index: 10 !important;
+    position: relative !important;
+    display: block !important;
+}
+
+.moon-sphere-container.transformed-gf .moon-specular-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.35) 0%, transparent 60%);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 12;
+    display: block !important;
+}
+
+.moon-sphere-container.transformed-gf .moon-lunar-edge-highlight {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 245, 200, 0.75);
+    box-shadow: inset 0 0 15px rgba(255, 225, 130, 0.5);
+    pointer-events: none;
+    z-index: 14;
+    display: block !important;
+}
+
+/* Ensure traditional ornamental gold ring and celestial clouds remain 100% visible framing the portrait from behind */
+.gf-moon-active .traditional-moon-ring {
+    opacity: 0.95 !important;
+    visibility: visible !important;
+    display: block !important;
+    z-index: 5 !important;
+    transition: opacity 0.5s ease;
+}
+
+.gf-moon-active .celestial-clouds-atmosphere,
+.gf-moon-active .flowing-cloud {
+    opacity: 0.85 !important;
+    visibility: visible !important;
+    z-index: 2 !important;
+}
+
+.gf-moon-active .moon-radial-beams,
+.gf-moon-active .moon-glow-aura,
+.gf-moon-active .moon-glow-halo-far {
+    opacity: 0.85 !important;
+}
+
+@keyframes gfMoonSphereGlow {
+    0%   { box-shadow: 0 0 0 2px rgba(255, 245, 200, 0.8), 0 0 22px rgba(255, 220, 120, 0.75), 0 0 50px rgba(255, 170, 70, 0.4), inset 0 0 16px rgba(255, 255, 240, 0.5); }
+    100% { box-shadow: 0 0 0 3px rgba(255, 255, 220, 0.95), 0 0 32px rgba(255, 230, 140, 0.95), 0 0 70px rgba(255, 180, 80, 0.65), inset 0 0 24px rgba(255, 255, 240, 0.75); }
+}
+
+.moon-gf-badge {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(20, 15, 35, 0.94) 0%, rgba(45, 25, 55, 0.94) 100%);
+    border: 1.5px solid rgba(255, 215, 120, 0.9);
+    color: #ffd56b;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 18px;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65), 0 0 12px rgba(255, 215, 120, 0.5);
+    z-index: 20;
+    animation: gfBadgePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes gfBadgePop {
+    0%   { transform: translateX(-50%) scale(0); opacity: 0; }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+
+
+
